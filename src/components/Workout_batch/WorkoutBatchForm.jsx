@@ -12,34 +12,26 @@ import {
 } from "@/components/bigin/formKit";
 
 /**
- * Native replica of the Zoho Bigin "Student Registration Form"
- * (book-your-1on1-counseling-session, org 60068257282).
+ * Native replica of the Zoho Bigin "WORKOUT BATCH" form
+ * (forms/workout-batch, org 60068257282).
  *
- * Pixel-matches the Bigin default form look (white card, top-aligned labels,
- * red mandatory bars, blue #1980d8 submit).
- *
- * Submissions are POSTed as JSON to our own server (server/index.js), which
- * holds the Zoho credentials and inserts a Contact via the Bigin REST API.
- * The refresh token must never reach the browser, so we never call Bigin
- * directly from here.
+ * Same setup as the counseling form: posts JSON to our server (server/index.js
+ * → /api/workout-batch), which inserts a Bigin Contact and forwards the lead +
+ * UTMs to the leads API. Lead_Source is fixed to "Workout Batch" server-side.
  */
 
-const COUNSELING_API = LEAD_API_BASE;
+const WORKOUT_API = `${LEAD_API_BASE}/api/workout-batch`;
 
-const LANGUAGE_OPTIONS = ["English", "Tamil", "Hindi"];
-
-const CounselingForm = () => {
+const WorkoutBatchForm = () => {
   const navigate = useNavigate();
   const [values, setValues] = useState({
     "First Name": "",
     "Last Name": "",
     dialCode: "+91",
     phone: "",
-    CONTACTCF1: "", // CA status
-    CONTACTCF7: "", // Attempt
-    State: "", // State
-    "Other City": "", // City
-    Language: "", // Preferred Language
+    CA_Status: "",
+    State: "",
+    "Other City": "",
     company: "", // honeypot — must stay empty for real users
   });
   const [errors, setErrors] = useState({});
@@ -47,7 +39,6 @@ const CounselingForm = () => {
   const [submitError, setSubmitError] = useState("");
   const [utms, setUtms] = useState(null);
 
-  // Capture UTMs once on mount (first-touch, persisted in captureUtms).
   useEffect(() => {
     setUtms(captureUtms());
   }, []);
@@ -71,7 +62,6 @@ const CounselingForm = () => {
     };
     req("First Name");
     req("Last Name");
-    // Bigin names are letters-only
     if (values["First Name"].trim() && /\d/.test(values["First Name"]))
       e["First Name"] = "Only letters are allowed.";
     if (values["Last Name"].trim() && /\d/.test(values["Last Name"]))
@@ -79,11 +69,9 @@ const CounselingForm = () => {
     if (!values.phone.trim()) e.phone = "This field is required.";
     else if (!/^[0-9]{6,15}$/.test(values.phone.trim()))
       e.phone = "Enter a valid Phone.";
-    req("CONTACTCF1");
-    req("CONTACTCF7");
+    req("CA_Status");
     req("State");
     req("Other City");
-    req("Language");
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -97,19 +85,16 @@ const CounselingForm = () => {
       firstName: values["First Name"].trim(),
       lastName: values["Last Name"].trim(),
       phone: `${values.dialCode}${values.phone}`.trim(),
-      caStatus: values.CONTACTCF1,
-      attempt: values.CONTACTCF7,
+      caStatus: values.CA_Status,
       city: values["Other City"],
       state: values.State,
-      language: values.Language,
       company: values.company, // honeypot
-      // UTM attribution — forwarded to the leads API (never stored in Bigin).
       utm: utms || captureUtms(),
     };
 
     setSubmitting(true);
     try {
-      const res = await fetch(`${COUNSELING_API}/api/counseling`, {
+      const res = await fetch(WORKOUT_API, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -119,16 +104,14 @@ const CounselingForm = () => {
         throw new Error(data.error || "Submission failed. Please try again.");
       }
 
-      // Fire lead tracking (same events the rest of the site uses).
       if (typeof window.fbq === "function") window.fbq("track", "Lead");
       if (typeof window.gtag === "function")
-        window.gtag("event", "counseling_form_submit", {
+        window.gtag("event", "workout_batch_submit", {
           event_category: "engagement",
-          event_label: "Book 1 on 1 Counseling Session",
+          event_label: "Workout Batch Enroll",
         });
 
-      // Redirect to the success page (https://focasedu.com/success in prod).
-      navigate("/success");
+      navigate("/workout-batch-success");
     } catch (err) {
       setSubmitError(err.message || "Something went wrong. Please try again.");
     } finally {
@@ -142,10 +125,9 @@ const CounselingForm = () => {
 
       <div className="bwf-wrapper">
         <form className="bwf-form" onSubmit={handleSubmit} noValidate>
-          <h1 className="bwf-header">Student Registration Form</h1>
+          <h1 className="bwf-header">WORKOUT BATCH</h1>
 
           <Honeypot value={values.company} onChange={set("company")} />
-
 
           <Row label="First Name" name="First Name" error={errors["First Name"]}>
             <input
@@ -192,12 +174,12 @@ const CounselingForm = () => {
             />
           </Row>
 
-          <Row label="CA status  - Foundation - Intermediate - Final" name="CONTACTCF1" error={errors.CONTACTCF1}>
+          <Row label="CA Status  - Foundation - Intermediate - Final" name="CA_Status" error={errors.CA_Status}>
             <select
-              name="CONTACTCF1"
+              name="CA_Status"
               className="bwf-input bwf-select"
-              value={values.CONTACTCF1}
-              onChange={set("CONTACTCF1")}
+              value={values.CA_Status}
+              onChange={set("CA_Status")}
             >
               <option value="" disabled>
                 -Select-
@@ -208,17 +190,6 @@ const CounselingForm = () => {
                 </option>
               ))}
             </select>
-          </Row>
-
-          <Row label="Attempt" name="CONTACTCF7" error={errors.CONTACTCF7}>
-            <input
-              name="CONTACTCF7"
-              maxLength={255}
-              type="text"
-              className="bwf-input"
-              value={values.CONTACTCF7}
-              onChange={set("CONTACTCF7")}
-            />
           </Row>
 
           <Row label="State &amp; City" name="location" error={errors.State || errors["Other City"]}>
@@ -257,24 +228,6 @@ const CounselingForm = () => {
             </div>
           </Row>
 
-          <Row label="Preferred Language" name="Language" error={errors.Language}>
-            <select
-              name="Language"
-              className="bwf-input bwf-select"
-              value={values.Language}
-              onChange={set("Language")}
-            >
-              <option value="" disabled>
-                -Select-
-              </option>
-              {LANGUAGE_OPTIONS.map((o) => (
-                <option key={o} value={o}>
-                  {o}
-                </option>
-              ))}
-            </select>
-          </Row>
-
           {submitError && <div className="bwf-submit-error">{submitError}</div>}
 
           <div className="bwf-btn-wrap">
@@ -288,4 +241,4 @@ const CounselingForm = () => {
   );
 };
 
-export default CounselingForm;
+export default WorkoutBatchForm;

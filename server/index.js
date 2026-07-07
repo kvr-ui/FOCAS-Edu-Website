@@ -93,7 +93,8 @@ async function getAccessToken() {
 }
 
 // ── Build the Bigin Contact from the form payload ──
-function buildContact(b) {
+// leadSource sets Lead_Source1 (e.g. "Student Registration", "Workout Batch").
+function buildContact(b, leadSource = "Student Registration") {
   const first = String(b.firstName || "").trim();
   const last = String(b.lastName || "").trim();
   const phone = String(b.phone || "").trim();
@@ -115,7 +116,7 @@ function buildContact(b) {
     Attempt: attempt,
     Other_City: otherCity,
     Language: language,
-    Lead_Source1: "Student Registration",
+    Lead_Source1: leadSource,
   };
   if (first) rec.First_Name = first;
   return rec;
@@ -123,7 +124,7 @@ function buildContact(b) {
 
 // Forward the full lead (student details + UTMs) to the external leads API.
 // Best-effort: never blocks or fails the Bigin insert.
-async function forwardLead(body, biginId) {
+async function forwardLead(body, biginId, source = "counseling-form") {
   if (!LEADS_API_URL) return;
   const u = body.utm || {};
   const payload = {
@@ -145,7 +146,7 @@ async function forwardLead(body, biginId) {
     landingUrl: u.landingUrl || "",
     referrer: u.referrer || "",
     biginContactId: biginId || "",
-    source: "counseling-form",
+    source,
   };
   try {
     const res = await fetch(LEADS_API_URL, {
@@ -246,7 +247,15 @@ const server = http.createServer((req, res) => {
     return sendJson(res, 200, { ok: true });
   }
 
-  if (req.method === "POST" && req.url === "/api/counseling") {
+  // Both lead forms share the same pipeline; they differ only in the Lead
+  // Source written to Bigin and the "source" tag sent to the leads API.
+  const FORMS = {
+    "/api/counseling": { leadSource: "Student Registration", source: "counseling-form" },
+    "/api/workout-batch": { leadSource: "Hindi WB", source: "workout-batch" },
+  };
+
+  if (req.method === "POST" && FORMS[req.url]) {
+    const cfg = FORMS[req.url];
     const ip = clientIp(req);
     if (!checkRateLimit(ip)) {
       console.warn(`[counseling] rate limited: ${ip}`);
@@ -272,11 +281,11 @@ const server = http.createServer((req, res) => {
           return sendJson(res, 200, { ok: true });
         }
 
-        const record = buildContact(body);
+        const record = buildContact(body, cfg.leadSource);
         const id = await insertContact(record);
-        console.log(`[counseling] contact created: ${id}`);
+        console.log(`[counseling] contact created: ${id} (${cfg.source})`);
         // Forward student details + UTMs to the leads API (best-effort).
-        await forwardLead(body, id);
+        await forwardLead(body, id, cfg.source);
         sendJson(res, 200, { ok: true, id });
       } catch (err) {
         const status = err?.status || 500;
