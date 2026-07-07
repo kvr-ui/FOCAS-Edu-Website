@@ -9,11 +9,14 @@
 // Needs Node 18+ (uses the built-in global fetch). No npm install required.
 
 import http from "node:http";
-import { readFileSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
+import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
-import { dirname, join } from "node:path";
+import { dirname, join, extname, normalize } from "node:path";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+// Built frontend (produced by `vite build`). Served on the same port as the API.
+const DIST_DIR = join(__dirname, "..", "dist");
 
 // ── Load .env (simple parser; does not overwrite real process.env) ──
 function loadEnv() {
@@ -38,7 +41,7 @@ const CLIENT_ID = process.env.ZOHO_CLIENT_ID || process.env.OHO_CLIENT_ID;
 const CLIENT_SECRET = process.env.ZOHO_CLIENT_SECRET;
 const REFRESH_TOKEN = process.env.ZOHO_REFRESH_TOKEN;
 const REGION = (process.env.ZOHO_REGION || "in").toLowerCase();
-const PORT = Number(process.env.COUNSELING_PORT || 7001);
+const PORT = Number(process.env.PORT || process.env.COUNSELING_PORT || 8080);
 const ALLOWED = (process.env.COUNSELING_ALLOWED_ORIGINS || "")
   .split(",")
   .map((s) => s.trim())
@@ -235,6 +238,56 @@ function sendJson(res, status, obj) {
   res.end(body);
 }
 
+// ── Static frontend (the built Vite app) ──
+const MIME = {
+  ".html": "text/html; charset=utf-8",
+  ".js": "text/javascript; charset=utf-8",
+  ".css": "text/css; charset=utf-8",
+  ".json": "application/json",
+  ".svg": "image/svg+xml",
+  ".png": "image/png",
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".webp": "image/webp",
+  ".gif": "image/gif",
+  ".ico": "image/x-icon",
+  ".woff": "font/woff",
+  ".woff2": "font/woff2",
+  ".ttf": "font/ttf",
+  ".map": "application/json",
+  ".mp4": "video/mp4",
+  ".webmanifest": "application/manifest+json",
+  ".txt": "text/plain; charset=utf-8",
+};
+
+async function serveStatic(req, res) {
+  // Resolve the request path safely inside DIST_DIR (block traversal).
+  const urlPath = decodeURIComponent(new URL(req.url, "http://x").pathname);
+  const safePath = normalize(join(DIST_DIR, urlPath));
+  const isInside = safePath.startsWith(DIST_DIR);
+
+  try {
+    if (!isInside || urlPath === "/" || urlPath.endsWith("/")) throw 0;
+    const data = await readFile(safePath);
+    res.writeHead(200, {
+      "Content-Type": MIME[extname(safePath).toLowerCase()] || "application/octet-stream",
+    });
+    return res.end(data);
+  } catch {
+    // SPA fallback: any unknown route → index.html (React Router handles it).
+    try {
+      const html = await readFile(join(DIST_DIR, "index.html"));
+      res.writeHead(200, { "Content-Type": MIME[".html"] });
+      return res.end(html);
+    } catch {
+      res.writeHead(404, { "Content-Type": "text/plain" });
+      return res.end(
+        "Frontend not built. Run `npm run build` first (creates dist/)."
+      );
+    }
+  }
+}
+
 const server = http.createServer((req, res) => {
   applyCors(req, res);
 
@@ -296,10 +349,16 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  // Anything else that's a GET → serve the built frontend (single-port setup).
+  if (req.method === "GET") return serveStatic(req, res);
+
   sendJson(res, 404, { ok: false, error: "Not found" });
 });
 
 server.listen(PORT, () => {
-  console.log(`[counseling] Bigin submission server listening on :${PORT}`);
-  console.log(`[counseling] Zoho DC: ${API_HOST}  | allowed origins: ${ALLOWED.join(", ") || "*"}`);
+  console.log(`[counseling] server (site + API) listening on http://localhost:${PORT}`);
+  console.log(`[counseling] Zoho DC: ${API_HOST}`);
+  if (!existsSync(DIST_DIR)) {
+    console.warn("[counseling] dist/ not found — run `npm run build` so the site is served.");
+  }
 });

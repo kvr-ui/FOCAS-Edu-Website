@@ -4,8 +4,9 @@
 
 // Base URL of our submission server (server/index.js). Both forms post here,
 // to different paths (/api/counseling, /api/workout-batch).
-export const LEAD_API_BASE =
-  import.meta.env.VITE_COUNSELING_API || "http://localhost:7001";
+// Empty default = same origin (the server serves the site + API on one port).
+// Set VITE_COUNSELING_API only if the API runs on a different host/port.
+export const LEAD_API_BASE = import.meta.env.VITE_COUNSELING_API || "";
 
 export const DIAL_CODES = ["+91", "+1", "+44", "+61", "+971", "+65", "+60", "+64"];
 
