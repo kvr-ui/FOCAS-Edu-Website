@@ -16,6 +16,13 @@ export default defineConfig(({ mode }) => ({
       "endorsingly-portulacaceous-velva.ngrok-free.dev"
     ],
 
+    // In `npm run dev`, forward API calls to the node server (run on :7001 via
+    // `npm run server:dev`). Lets the form work with hot-reload on one port.
+    proxy: {
+      "/api": "http://localhost:7001",
+      "/health": "http://localhost:7001",
+    },
+
     hmr: {
       overlay: false,
     },
