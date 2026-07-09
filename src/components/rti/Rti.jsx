@@ -64,7 +64,7 @@ const COMPARE_ROWS = [
 const FAQS = [
   { q: "Who is this event for?", a: "CA Inter students who appeared in the May 2026 attempt and are targeting Sep 2026. This event helps you understand the reason behind your result being UNSUCCESSFUL." },
   { q: "What is RTI Day?", a: "RTI stands for Right To Information Act, through which you can apply for your exam answer sheets. RTI Day is a full-day event where CA Mentors personally review your exam paper, give performance feedback and help you strategize for Sep 26." },
-  { q: "What is the entry fee?", a: "₹799 per group. ₹1499 if you opt for both groups. For a full day of mentoring, personalized guidance and feedback." },
+  { q: "What is the entry fee?", a: "₹499 per group (reduced from ₹799). ₹999 if you opt for both groups (reduced from ₹1499). For a full day of mentoring, personalized guidance and feedback. Have a coupon code? Apply it at checkout for an extra discount." },
   { q: "Do I need to submit my exam papers beforehand?", a: "Yes. You will be sent a link for uploading your evaluated answer sheets, which will be the basis of our assessment." },
   { q: "What language will the event be held in?", a: "Primarily in English and Tamil. A bilingual approach is adopted to make the students feel comfortable." },
   { q: "Who is conducting the event?", a: "The event is being brought to you by FOCAS Edu — an institute which has guided 300+ students in their journey to realizing their CA dreams." },
@@ -72,14 +72,25 @@ const FAQS = [
   { q: "How do I register?", a: "Simply click on Register Now, pay the fee, and that's it. You're enrolled!" },
 ];
 
+// ─── Attribution helper ──────────────────────────────────────────────────────
+// URL-only: the source is whatever utm_source is on the current link. No memory,
+// so a plain link (no UTM) is always "direct". ?utm_source=youtube alone still
+// gets campaign "rti_2026" automatically.
+function getAttribution() {
+  const params = new URLSearchParams(window.location.search);
+  return {
+    source:   params.get("utm_source")   || "direct",
+    campaign: params.get("utm_campaign") || "rti_2026",
+  };
+}
+
 // ─── Campaign Tracking Utility ───────────────────────────────────────────────
 async function trackCampaignVisit() {
   const BACKEND = import.meta.env.VITE_RTI_BACKEND_URL || "http://localhost:8000";
   const params = new URLSearchParams(window.location.search);
 
-  const phone    = params.get("phone");
-  const source   = params.get("utm_source")   || "whatsapp";
-  const campaign = params.get("utm_campaign") || "rti_2026";
+  const phone = params.get("phone");
+  const { source, campaign } = getAttribution();
 
   console.log("📊 [Campaign Track] URL Params:", {
     phone,
@@ -242,12 +253,19 @@ function Hero({ onRegister }) {
           <span>Now Open for Registration. <span style={{ color: ORANGE, fontWeight: 900 }}>CA INTER Sep 26</span></span>
         </div>
 
+        <div className="flex flex-wrap items-center gap-2 justify-center lg:justify-start mb-3">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-black uppercase tracking-wider text-white" style={{ background: ORANGE }}>
+            🔥 Price Dropped
+          </span>
+          <span className="text-xs font-semibold text-gray-500">+ extra off with a coupon at checkout</span>
+        </div>
+
         <div className="flex flex-wrap gap-3 justify-center lg:justify-start mb-5">
           <div className="inline-grid grid-cols-2 border border-gray-200 rounded-2xl overflow-hidden shadow-sm text-sm font-bold">
             <div className="px-5 py-3 bg-gray-50 text-gray-500 border-b border-r border-gray-200">Group 1 or 2</div>
             <div className="px-5 py-3 bg-gray-50 text-gray-500 border-b border-gray-200">Both Groups</div>
-            <div className="px-5 py-3 text-gray-900 border-r border-gray-100">₹799 / group</div>
-            <div className="px-5 py-3 text-gray-900">₹1499</div>
+            <div className="px-5 py-3 text-gray-900 border-r border-gray-100"><span className="text-gray-400 font-semibold mr-1.5" style={{ textDecoration: "line-through" }}>₹799</span>₹499 / group</div>
+            <div className="px-5 py-3 text-gray-900"><span className="text-gray-400 font-semibold mr-1.5" style={{ textDecoration: "line-through" }}>₹1499</span>₹999</div>
           </div>
         </div>
 
@@ -257,7 +275,7 @@ function Hero({ onRegister }) {
             className="flex items-center gap-2 px-7 py-4 rounded-full text-white font-bold text-base shadow-lg transition-all hover:scale-105 hover:shadow-xl"
             style={{ background: GREEN }}
           >
-            Register Now — ₹799/Group <span>→</span>
+            Register Now — ₹499/Group <span>→</span>
           </button>
         </div>
 
@@ -603,9 +621,19 @@ function RegisterPage({ onClose, campaignPhone }) {
   const [status, setStatus] = useState("idle");
   const [errorMsg, setErrorMsg] = useState("");
 
+  // Coupon — real codes live only on the backend; the frontend just relays what
+  // the user types and shows the discount the server returns. No code is exposed.
+  const [couponInput, setCouponInput]     = useState("");
+  const [couponApplied, setCouponApplied] = useState(null); // { discountAmount, finalAmount } in paise
+  const [couponMsg, setCouponMsg]         = useState("");
+  const [couponLoading, setCouponLoading] = useState(false);
+
   const BACKEND = import.meta.env.VITE_RTI_BACKEND_URL || "http://localhost:8000";
 
   const toggleGroup = (g) => {
+    // Changing the group changes the price, so any applied coupon is now stale.
+    setCouponApplied(null);
+    setCouponMsg("");
     setForm(f => ({
       ...f,
       groupSelection: f.groupSelection.includes(g)
@@ -614,9 +642,57 @@ function RegisterPage({ onClose, campaignPhone }) {
     }));
   };
 
+  const groupSelectionValue = () =>
+    form.groupSelection.length === 2 ? "Both Group" : form.groupSelection[0];
+
+  const applyCouponCode = async () => {
+    setCouponMsg("");
+    const code = couponInput.trim();
+    if (!code) return;
+    if (form.groupSelection.length === 0) {
+      setCouponMsg("Please select a group first.");
+      return;
+    }
+    setCouponLoading(true);
+    try {
+      const res = await fetch(`${BACKEND}/api/attendees/validate-coupon`, {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify({ groupSelection: groupSelectionValue(), couponCode: code }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success || !data.discountAmount) {
+        setCouponApplied(null);
+        setCouponMsg(data.message || "Invalid coupon code.");
+      } else {
+        setCouponApplied(data);
+      }
+    } catch {
+      setCouponApplied(null);
+      setCouponMsg("Couldn't validate coupon. Please try again.");
+    } finally {
+      setCouponLoading(false);
+    }
+  };
+
+  const removeCoupon = () => {
+    setCouponApplied(null);
+    setCouponInput("");
+    setCouponMsg("");
+  };
+
+  // Base (pre-coupon) price in ₹ for the current selection.
+  const baseRupees = () => (form.groupSelection.length === 2 ? 999 : 499);
+
+  // paise → "₹449" or "₹449.10" (drops the decimals when the amount is whole).
+  const formatRs = (paise) => {
+    const rs = paise / 100;
+    return `₹${Number.isInteger(rs) ? rs : rs.toFixed(2)}`;
+  };
+
   const price = () => {
-    if (form.groupSelection.length === 2) return "₹1499";
-    return "₹799";
+    if (couponApplied) return formatRs(couponApplied.finalAmount);
+    return `₹${baseRupees()}`;
   };
 
   const handleSubmit = async () => {
@@ -630,13 +706,18 @@ function RegisterPage({ onClose, campaignPhone }) {
       return;
     }
 
+    const { source, campaign } = getAttribution();
+
     const payload = {
       name:           form.name,
       phone:          `+91${form.phone}`,
       email:          form.email,
       appliedForSep:  form.appliedForSep,
       appliedForRTI:  form.appliedForRTI,
-      groupSelection: form.groupSelection.length === 2 ? "Both Group" : form.groupSelection[0],
+      groupSelection: groupSelectionValue(),
+      source,    // which channel the sale came from (youtube / instagram / whatsapp / …)
+      campaign,
+      ...(couponApplied && { couponCode: couponInput.trim() }),
     };
 
     setStatus("loading");
@@ -683,7 +764,7 @@ function RegisterPage({ onClose, campaignPhone }) {
           const verifyData = await verifyRes.json();
 
           if (verifyData.success) {
-            const amount = payload.groupSelection === "Both Group" ? 1499 : 799;
+            const amount = order.amount / 100; // actual amount charged (after any discount), in ₹
             if (window.fbq) {
               window.fbq("track", "Purchase", {
                 content_name: "RTI Day 2026 Registration",
@@ -781,8 +862,33 @@ function RegisterPage({ onClose, campaignPhone }) {
                 </button>
               ))}
             </div>
-            {form.groupSelection.length === 2 && <p className="text-xs text-gray-500 mt-2 text-center">Both groups selected — <strong>₹1499</strong></p>}
-            {form.groupSelection.length === 1 && <p className="text-xs text-gray-500 mt-2 text-center">{form.groupSelection[0]} selected — <strong>₹799</strong></p>}
+            {form.groupSelection.length === 2 && <p className="text-xs text-gray-500 mt-2 text-center">Both groups selected — <span className="text-gray-400 mr-1" style={{ textDecoration: "line-through" }}>₹1499</span><strong>₹999</strong></p>}
+            {form.groupSelection.length === 1 && <p className="text-xs text-gray-500 mt-2 text-center">{form.groupSelection[0]} selected — <span className="text-gray-400 mr-1" style={{ textDecoration: "line-through" }}>₹799</span><strong>₹499</strong></p>}
+          </div>
+
+          {/* Coupon */}
+          <div>
+            <p className="text-sm font-semibold text-gray-700 mb-2">Have a coupon code?</p>
+            {couponApplied ? (
+              <div className="flex items-center justify-between gap-3 px-4 py-3 rounded-2xl border-2 border-[#1D9E75] bg-[#e8f8f2]">
+                <span className="flex items-center gap-2 text-sm font-extrabold" style={{ color: "#0b5e48" }}>
+                  <span className="flex items-center justify-center w-5 h-5 rounded-full text-white text-[11px] font-black flex-shrink-0" style={{ background: GREEN }}>✓</span>
+                  Coupon applied — you save {formatRs(couponApplied.discountAmount)}
+                </span>
+                <button type="button" onClick={removeCoupon} className="text-xs font-bold text-red-500 hover:text-red-600 underline underline-offset-2 flex-shrink-0 transition-colors">Remove</button>
+              </div>
+            ) : (
+              <div className="flex gap-3">
+                <input type="text" placeholder="Enter coupon code" value={couponInput}
+                  onChange={e => { setCouponInput(e.target.value); setCouponMsg(""); }}
+                  className="flex-1 px-5 py-3.5 border-2 border-gray-200 rounded-2xl text-sm font-medium text-gray-700 outline-none focus:border-[#1D9E75] transition-all placeholder:text-gray-400 uppercase" />
+                <button type="button" onClick={applyCouponCode} disabled={couponLoading || !couponInput.trim()}
+                  className="px-6 py-3.5 rounded-2xl text-sm font-bold border-2 border-[#1D9E75] text-[#1D9E75] bg-white transition-all hover:bg-[#e8f8f2] disabled:opacity-50">
+                  {couponLoading ? "..." : "Apply"}
+                </button>
+              </div>
+            )}
+            {couponMsg && <p className="text-xs text-red-500 mt-1">{couponMsg}</p>}
           </div>
 
           {errorMsg && <p className="text-center text-sm font-semibold text-red-500">{errorMsg}</p>}
@@ -973,7 +1079,7 @@ export default function Rti() {
           className="flex items-center gap-2 px-5 py-3 rounded-full text-white font-bold text-sm shadow-2xl hover:-translate-y-0.5 hover:shadow-3xl transition-all"
           style={{ background: GREEN }}>
           <span className="w-2 h-2 rounded-full bg-white" style={{ animation: "ping 1.2s ease infinite" }} />
-          Register — ₹799
+          Register — ₹499
         </button>
       </div>
 
