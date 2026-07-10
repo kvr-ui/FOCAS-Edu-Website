@@ -84,6 +84,13 @@ function getAttribution() {
   };
 }
 
+// Reads a browser cookie by name (used for Meta's _fbp / _fbc, which we forward
+// to the server-side Conversions API so it can match the same user/event).
+function getCookie(name) {
+  const match = document.cookie.match(new RegExp("(?:^|; )" + name + "=([^;]*)"));
+  return match ? decodeURIComponent(match[1]) : undefined;
+}
+
 // ─── Campaign Tracking Utility ───────────────────────────────────────────────
 async function trackCampaignVisit() {
   const BACKEND = import.meta.env.VITE_RTI_BACKEND_URL || "http://localhost:8000";
@@ -759,6 +766,9 @@ function RegisterPage({ onClose, campaignPhone }) {
               razorpay_order_id:   response.razorpay_order_id,
               razorpay_payment_id: response.razorpay_payment_id,
               razorpay_signature:  response.razorpay_signature,
+              // Meta cookies — let the server-side CAPI event match this browser.
+              fbp: getCookie("_fbp"),
+              fbc: getCookie("_fbc"),
             }),
           });
           const verifyData = await verifyRes.json();
@@ -766,16 +776,19 @@ function RegisterPage({ onClose, campaignPhone }) {
           if (verifyData.success) {
             const amount = order.amount / 100; // actual amount charged (after any discount), in ₹
             if (window.fbq) {
+              // Only fires now that the backend confirmed the payment is CAPTURED.
+              // eventID = Razorpay payment id → dedupes against the server-side
+              // CAPI Purchase so Meta counts ONE purchase, not two.
               window.fbq("track", "Purchase", {
                 content_name: "RTI Day 2026 Registration",
                 content_type: "product",
                 currency: "INR",
                 value: amount,
-              });
+              }, { eventID: response.razorpay_payment_id });
             }
             window.location.href = "/rti-success";
           } else {
-            setErrorMsg("Payment verification failed. Please contact support.");
+            setErrorMsg(verifyData.message || "Payment verification failed. Please contact support.");
             setStatus("idle");
           }
         },
