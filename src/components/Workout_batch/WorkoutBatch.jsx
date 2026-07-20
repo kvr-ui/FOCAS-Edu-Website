@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import logo from "../../../public/logo.png";
 import React from "react";
+import WorkoutBatchForm from "./WorkoutBatchForm";
 
 const GREEN = "#1D9E75";
 const ORANGE = "#FFA500";
@@ -73,48 +74,13 @@ const FAQS = [
   { q: "What language are the sessions held in?", a: "Sessions are conducted in both English and Hindi (हिंदी) so every student feels comfortable." },
 ];
 
-/* ── Enroll modal with Bigin iframe ── */
+/* ── Enroll modal with native Bigin form ── */
 function EnrolModal({ onClose }) {
-  const SUCCESS_URL = "/workout-batch-success";
-
-  // Bigin submits the form via AJAX (no iframe navigation), and the form is
-  // cross-origin, so we can't read its content. We detect a successful submit
-  // two ways:
-  //   1. postMessage — Bigin/Zoho posts a message to the parent on submit.
-  //   2. iframe redirect — if the Bigin form is configured to redirect to our
-  //      SUCCESS_URL, the iframe becomes same-origin and we read its location
-  //      to break out to the full page.
-  useEffect(() => {
-    const onMessage = (event) => {
-      const origin = event.origin || "";
-      if (!/bigin\.online|zoho/i.test(origin)) return;
-      const data = typeof event.data === "string" ? event.data : JSON.stringify(event.data ?? "");
-      if (/submit|success|thank|complete/i.test(data)) {
-        window.location.href = SUCCESS_URL;
-      }
-    };
-    window.addEventListener("message", onMessage);
-    return () => window.removeEventListener("message", onMessage);
-  }, []);
-
-  const handleIframeLoad = (e) => {
-    try {
-      // Throws while still on the cross-origin Bigin form; succeeds only once
-      // Bigin has redirected the iframe to our own (same-origin) success page.
-      const href = e.currentTarget.contentWindow.location.href;
-      if (href.includes(SUCCESS_URL)) {
-        window.location.href = SUCCESS_URL;
-      }
-    } catch {
-      /* still on the Bigin form — ignore */
-    }
-  };
-
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 md:p-6" style={{ background: "rgba(0,0,0,0.6)" }} onClick={onClose}>
       <div
         className="relative bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col"
-        style={{ width: "min(96vw, 900px)", height: "min(95vh, 820px)" }}
+        style={{ width: "min(96vw, 640px)", maxHeight: "95vh" }}
         onClick={e => e.stopPropagation()}
       >
         {/* Close button */}
@@ -132,14 +98,9 @@ function EnrolModal({ onClose }) {
             <p className="text-xs text-gray-400">Enrollment Form — CA Intermediate</p>
           </div>
         </div>
-        {/* Iframe fills remaining height */}
-        <div className="flex-1 overflow-hidden">
-          <iframe
-            src="https://in.bigin.online/org60068257282/forms/workout-batch"
-            title="Workout Batch Enrollment"
-            onLoad={handleIframeLoad}
-            style={{ border: "none", display: "block", width: "100%", height: "100%" }}
-          />
+        {/* Native form (submits to Bigin via our server; redirects to success) */}
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 bg-gray-50">
+          <WorkoutBatchForm />
         </div>
       </div>
     </div>

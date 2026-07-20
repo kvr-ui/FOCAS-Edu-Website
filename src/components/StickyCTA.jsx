@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { X, Users } from "lucide-react";
+import CounselingForm from "@/components/CounselingForm";
 import logo from "../../public/focas.jpeg";
 
 const StickyCTA = () => {
@@ -63,13 +64,9 @@ const StickyCTA = () => {
                 </p>
               </div>
 
-              {/* Bigin Form */}
-            <div className="w-full h-[600px] mt-4 bg-transparent rounded-xl overflow-hidden">
-                <iframe
-                  srcDoc={"<!DOCTYPE html>\n<html>\n<head>\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<style>\nbody, html { margin: 0; padding: 0; height: 100%; width: 100%; background: transparent; }\n::-webkit-scrollbar { width: 8px; }\n::-webkit-scrollbar-track { background: transparent; }\n::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }\n</style>\n</head>\n<body>\n<script id='formScript1190292000000478002' src='https://in.bigin.online/org60068257282/forms/book-your-1on1-counseling-session?script=$sYG'></script>\n</body>\n</html>"}
-                  style={{ width: '100%', height: '100%', border: 'none', minHeight: '600px' }}
-                  title="Book Counseling Session"
-                />
+              {/* Counseling Form (native Bigin replica) */}
+              <div className="w-full mt-4 bg-transparent rounded-xl overflow-hidden">
+                <CounselingForm />
               </div>
             </div>
           </motion.div>
