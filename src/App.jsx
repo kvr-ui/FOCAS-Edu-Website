@@ -15,11 +15,13 @@ import ManualSuccess from "./components/manual/ManualSuccess";
 import WorkoutBatch from "./components/Workout_batch/WorkoutBatch";
 import WorkoutBatchSuccess from "./components/Workout_batch/Workoutbatchsuccess"
 import CoursePage from "./components/external/CoursePage.jsx";
+import Links from "./components/Links.jsx";
 //import FOCASLandingPage from "./components/FOCASLandingPage";
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
     { path: "/", element: <ExternalApp /> },
     { path: "/focas", element: <Index /> },
+    {path: "/links", element: <Links />},
     { path: "/success", element: <RegistrationSuccess /> },
     {path: "/rti", element: <Rti />},
     {path: "/rti-success", element: <RtiSuccess />},
