@@ -109,6 +109,9 @@ const CounselingForm = () => {
 
     setSubmitting(true);
     try {
+      // ✅ Capture the lead NOW, on submit — so no lead is ever lost even if the
+      //    user later abandons /meet or closes Razorpay without paying.
+      //    (The Zoho webhook fires later only on a successful payment.)
       const res = await fetch(`${COUNSELING_API}/api/counseling`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -127,8 +130,20 @@ const CounselingForm = () => {
           event_label: "Book 1 on 1 Counseling Session",
         });
 
-      // Redirect to the success page (https://focasedu.com/success in prod).
-      navigate("/success");
+      // Carry the full form data forward so /meet can prefill Razorpay and the
+      // paid Zoho webhook can include it — without asking anything twice.
+      const leadData = {
+        ...payload,
+        name: `${payload.firstName} ${payload.lastName}`.trim(),
+      };
+      try {
+        sessionStorage.setItem("focas_lead", JSON.stringify(leadData));
+      } catch {
+        /* sessionStorage may be unavailable (private mode) — non-fatal */
+      }
+
+      // Redirect to the meeting scheduler page (1:1 mentor consultation).
+      navigate("/meet", { state: leadData });
     } catch (err) {
       setSubmitError(err.message || "Something went wrong. Please try again.");
     } finally {
