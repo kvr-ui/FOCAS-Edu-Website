@@ -18,6 +18,8 @@ import CoursePage from "./components/external/CoursePage.jsx";
 import Links from "./components/Links.jsx";
 import MeetSchedule from "./components/MeetSchedule.jsx";
 import PaymentPage from "./components/PaymentPage.jsx";
+import Counselling from "./components/Counselling.jsx";
+import CounsellingSuccess from "./components/CounsellingSuccess.jsx";
 //import FOCASLandingPage from "./components/FOCASLandingPage";
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
@@ -27,6 +29,8 @@ const router = createBrowserRouter([
     { path: "/meet", element: <MeetSchedule /> },
     { path: "/payment", element: <PaymentPage /> },
     { path: "/success", element: <RegistrationSuccess /> },
+    {path: "/counselling", element: <Counselling />},
+    {path: "/counselling-success", element: <CounsellingSuccess />},
     {path: "/rti", element: <Rti />},
     {path: "/rti-success", element: <RtiSuccess />},
     {path: "/manual", element: <Manual />}, 

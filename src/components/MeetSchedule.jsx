@@ -43,12 +43,15 @@ const BENEFITS = [
 ];
 
 // Next 6 selectable days (starting tomorrow).
+// Sundays are skipped — mentors don't take consultations that day — so we keep
+// walking the calendar forward until 6 bookable days are collected.
 const buildDays = () => {
   const days = [];
   const base = new Date();
-  for (let i = 1; i <= 6; i++) {
+  for (let i = 1; days.length < 6; i++) {
     const d = new Date(base);
     d.setDate(base.getDate() + i);
+    if (d.getDay() === 0) continue; // 0 = Sunday
     days.push({
       key: d.toISOString().slice(0, 10),
       weekday: d.toLocaleDateString("en-IN", { weekday: "short" }),
