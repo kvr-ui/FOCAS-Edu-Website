@@ -10,6 +10,8 @@ import RegistrationSuccess from "./components/RegistrationSuccess";
 import ExternalApp from "./components/external/ExternalApp";
 import Rti from "./components/rti/Rti";
 import RtiSuccess from "./components/rti/RtiSuccess";
+import Audit from "./components/audit/Audit";
+import AuditSuccess from "./components/audit/AuditSuccess";
 import Manual from "./components/manual/Manual";
 import ManualSuccess from "./components/manual/ManualSuccess";
 import WorkoutBatch from "./components/Workout_batch/WorkoutBatch";
@@ -33,6 +35,8 @@ const router = createBrowserRouter([
     {path: "/counselling-success", element: <CounsellingSuccess />},
     {path: "/rti", element: <Rti />},
     {path: "/rti-success", element: <RtiSuccess />},
+    {path: "/audit", element: <Audit />},
+    {path: "/audit-success", element: <AuditSuccess />},
     {path: "/manual", element: <Manual />}, 
     {path:"/manual-success",element:<ManualSuccess />},
     {path:"/workout-batch",element:<WorkoutBatch />},

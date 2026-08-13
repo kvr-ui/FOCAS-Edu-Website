@@ -32,7 +32,8 @@ const stories = [
         video: "https://da3m0k666tznr.cloudfront.net/Successful_stories/Sridevi.mp4",
     },
 ];
-const SuccessStories = ({ titleClassName = "text-white" }) => {
+const SuccessStories = ({ titleClassName = "text-white", stories: customStories, title = "Inspiring Student Stories", centered = false }) => {
+    const storyList = customStories?.length ? customStories : stories;
     const scrollRef = useRef(null);
     const [selectedVideo, setSelectedVideo] = useState(null);
     const [isHovered, setIsHovered] = useState(null);
@@ -170,7 +171,7 @@ const SuccessStories = ({ titleClassName = "text-white" }) => {
     return (<section ref={sectionRef} className="w-full">
       <div className="text-center mt-2 md:my-4 px-4">
         <h2 ref={titleRef} className={`text-3xl md:text-5xl font-semibold ${titleClassName} mb-4 tracking-tight`}>
-          Inspiring Student Stories
+          {title}
         </h2>
       </div>
 
@@ -178,10 +179,16 @@ const SuccessStories = ({ titleClassName = "text-white" }) => {
         {/* Fixed: Added proper padding and removed problematic overflow */}
         <div className="px-6 md:px-8">
           <div ref={scrollRef} className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide relative" style={{ scrollBehavior: "smooth" }}>
-            {stories.map((story, index) => (<div className="flex-center h-full w-[80vw] sm:w-[300px] md:w-[400px] py-3 md:py-5 md:px-10 flex-shrink-0" key={index} style={{
+            {storyList.map((story, index) => (<div className="flex-center h-full w-[80vw] sm:w-[300px] md:w-[400px] py-3 md:py-5 md:px-10 flex-shrink-0" key={index} style={{
                 /* Fixed: Removed border that was causing visual issues */
-                paddingLeft: index === 0 ? "0" : "12px",
-                paddingRight: index === stories.length - 1 ? "0" : "12px",
+                paddingLeft: index === 0 ? "0" : centered ? "20px" : "12px",
+                paddingRight: index === storyList.length - 1 ? "0" : centered ? "20px" : "12px",
+                /* Auto side margins center the group when it fits, and safely
+                   collapse to 0 when the row overflows into a scroll. */
+                ...(centered && {
+                    marginLeft: index === 0 ? "auto" : undefined,
+                    marginRight: index === storyList.length - 1 ? "auto" : undefined,
+                }),
             }}>
                 <div ref={(el) => {
                 cardsRef.current[index] = el;
