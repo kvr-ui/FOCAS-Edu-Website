@@ -7,7 +7,7 @@ import thumnail from "../../public/thumnail.jpeg";
 const HeroSection = () => {
     const [isVideoOpen, setIsVideoOpen] = useState(false);
     const [isCounselingOpen, setIsCounselingOpen] = useState(false);
-    const availableSeats = 8; // Change this number dynamically
+    const availableSeats = 7; // Change this number dynamically
     const totalSeats = 20;
     return (<>
       <section className="pt-24 pb-12">
@@ -75,7 +75,7 @@ const HeroSection = () => {
             </h1>
             <p className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-4xl font-bold font-sora mt-2 sm:mt-3 px-2">
               <span className="text-primary tracking-wide">FOCAS</span>{" "}
-              <span className="text-foreground">Personalised Classes for Sept 2026!</span>
+              <span className="text-foreground">Personalised Classes for Jan 2027!</span>
             </p>
           </motion.div>
 

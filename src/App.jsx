@@ -24,6 +24,12 @@ import Counselling from "./components/Counselling.jsx";
 import CounsellingSuccess from "./components/CounsellingSuccess.jsx";
 //import FOCASLandingPage from "./components/FOCASLandingPage";
 const queryClient = new QueryClient();
+const PrivacyPolicyRedirect = () => {
+    useEffect(() => {
+        window.location.replace("/privacy-policy.html");
+    }, []);
+    return null;
+};
 const router = createBrowserRouter([
     { path: "/", element: <ExternalApp /> },
     { path: "/focas", element: <Index /> },
@@ -42,6 +48,7 @@ const router = createBrowserRouter([
     {path:"/workout-batch",element:<WorkoutBatch />},
     {path:"/workout-batch-success",element:<WorkoutBatchSuccess />},
     { path: "/course/:id", element: <CoursePage /> },
+    { path: "/privacy-policy", element: <PrivacyPolicyRedirect /> },
     /*  {path:"/description",element:<FOCASLandingPage />}, */
     { path: "*", element: <NotFound /> },
 ], {
