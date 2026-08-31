@@ -1,0 +1,49 @@
+# FOCAS Edu
+
+> FOCAS Edu is a practical, exam-oriented Chartered Accountancy (CA) preparation ecosystem, combining personalised coaching (via focasedu.com, based in Trichy, Tamil Nadu) with a self-study "Last Attempt Kit" product line (via kit.focasedu.com, a Shopify storefront) — Question Banks, video-evaluated mock tests, and revision planners for CA Intermediate and CA Final students.
+
+FOCAS Edu's positioning is "Make it Your Last Attempt" — helping CA students clear exams in fewer attempts through focused coaching, ICAI-style test papers with video evaluation, and structured revision systems (Deep FOCAS marathons, MCQ marathons, FOCAS Planner and Manual).
+
+## Coaching (focasedu.com)
+- [Home](https://focasedu.com/): Personal CA tutoring — expert-guided sessions, personalised tutor tracking and 100% syllabus coverage, with the course catalogue by level (CA Foundation, CA Intermediate, CA Final).
+- [1 Tutor for Every 10 Students](https://focasedu.com/focas): FOCAS Personalised Classes (current batch for the January 2027 attempt) — low student-to-tutor ratio and teaching philosophy.
+- [Free Counselling Session](https://focasedu.com/counselling): Book a free one-to-one counselling session on what to study next and how to study next.
+- [RTI Answer-Sheet Analysis](https://focasedu.com/rti): Expected 60 but ended up with 39? Analyse your ICAI RTI answer sheets with a mentor and get personalised feedback (Group 1, Group 2 or both).
+- [7-Day Auditing Crash Tutoring](https://focasedu.com/audit): Short, intensive crash tutoring for the CA Inter Audit paper.
+- [Workout Batch](https://focasedu.com/workout-batch): Solve RTP, MTP and PYP questions with a personal tutor — Group 1, Group 2 and Unit 2D combos.
+- [FOCAS Manual](https://focasedu.com/manual): Don't know where to start studying? A structured manual and planner that tells you what to do first.
+- [Privacy Policy](https://focasedu.com/privacy-policy.html)
+- [Sitemap](https://focasedu.com/sitemap.xml)
+
+## Course Pages (focasedu.com)
+- [CA Foundation — Business Laws](https://focasedu.com/course/6a22c09b30117b5c60c9e1d2)
+- [CA Intermediate — Both Groups](https://focasedu.com/course/6a5f80cb135220bb62e7beb4)
+- [CA Intermediate — Advanced Accounting](https://focasedu.com/course/6a60bf67135220bb62e7ccce)
+- [CA Intermediate — Corporate and Other Laws](https://focasedu.com/course/6a60c0ac135220bb62e7cd0a)
+- [CA Intermediate — Taxation](https://focasedu.com/course/6a60c293135220bb62e7cd63)
+- [CA Intermediate — Group 1 Combo](https://focasedu.com/course/6a60c40b135220bb62e7cd7e)
+- [CA Intermediate — Cost and Management Accounting](https://focasedu.com/course/6a60c4ce135220bb62e7cd96)
+- [CA Intermediate — Auditing and Ethics](https://focasedu.com/course/6a60c5c4135220bb62e7cdba)
+- [CA Intermediate — Financial Management and Strategic Management](https://focasedu.com/course/6a60c6c7135220bb62e7cdd5)
+- [CA Intermediate — Group 2 Combo](https://focasedu.com/course/6a60c745135220bb62e7cdde)
+- [CA Intermediate — Unit 2D Combo](https://focasedu.com/course/6a60cba0135220bb62e7ce2c)
+- [CA Final — Audit](https://focasedu.com/course/6a1d829bf8ff58d8ffc27865)
+
+## Study Kits & Products (kit.focasedu.com)
+- [Shop — Last Attempt Kit](https://kit.focasedu.com/): Question Banks, test series, and revision materials for CA Inter/Final, in Lite and Pro tiers.
+- [All Products](https://kit.focasedu.com/collections/all): Full product catalog, including subject-wise kits (Advanced Accounting, Audit & Ethics, Corporate & Other Laws, Cost & Management Accounting, Taxation, Financial and Strategic Management) and Group 1/Group 2 combos.
+- [About Us](https://kit.focasedu.com/pages/about-us)
+- [Contact Us](https://kit.focasedu.com/pages/contact-us)
+- [FAQs](https://kit.focasedu.com/pages/faqs)
+- [Video Insights (Test Review)](https://kit.focasedu.com/pages/video-insights): Video-based evaluation of mock tests.
+- [FOCAS Planner](https://kit.focasedu.com/pages/planner): Study planning tool included with Pro kits.
+- [Sitemap](https://kit.focasedu.com/sitemap.xml)
+
+## Related
+- [CA Guru.AI](https://caguru.ai): Companion product linked from the FOCAS Edu site header.
+
+## Contact
+- Coaching campus: Rams Maris Apartments, Cantonment, Lawsons Road, Trichy 620001, Tamil Nadu, India.
+- Registered/office address (kit.focasedu.com): Aalamaram Startup Incubator, 6 Nava India Rd, behind Radisson Blu, Coimbatore, Tamil Nadu 641004.
+- Email: kvr@focasedu.com
+- WhatsApp: +91 63835 14285

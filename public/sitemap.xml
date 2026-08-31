@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Sitemap for https://focasedu.com/
+  The /course/<id> URLs are a static snapshot of the courses returned by
+  https://api.focasedu.com/api/purchase/course (taken 2026-08-31).
+  Update this list when courses are added/removed in the admin.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://focasedu.com/</loc>
+    <lastmod>2026-08-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://focasedu.com/focas</loc>
+    <lastmod>2026-08-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://focasedu.com/counselling</loc>
+    <lastmod>2026-08-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://focasedu.com/rti</loc>
+    <lastmod>2026-08-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://focasedu.com/audit</loc>
+    <lastmod>2026-08-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://focasedu.com/workout-batch</loc>
+    <lastmod>2026-08-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://focasedu.com/manual</loc>
+    <lastmod>2026-08-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Course pages: CA Foundation -->
+  <url>
+    <loc>https://focasedu.com/course/6a22c09b30117b5c60c9e1d2</loc>
+    <lastmod>2026-08-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Course pages: CA Intermediate -->
+  <url>
+    <loc>https://focasedu.com/course/6a5f80cb135220bb62e7beb4</loc>
+    <lastmod>2026-08-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://focasedu.com/course/6a60bf67135220bb62e7ccce</loc>
+    <lastmod>2026-08-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://focasedu.com/course/6a60c0ac135220bb62e7cd0a</loc>
+    <lastmod>2026-08-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://focasedu.com/course/6a60c293135220bb62e7cd63</loc>
+    <lastmod>2026-08-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://focasedu.com/course/6a60c40b135220bb62e7cd7e</loc>
+    <lastmod>2026-08-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://focasedu.com/course/6a60c4ce135220bb62e7cd96</loc>
+    <lastmod>2026-08-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://focasedu.com/course/6a60c5c4135220bb62e7cdba</loc>
+    <lastmod>2026-08-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://focasedu.com/course/6a60c6c7135220bb62e7cdd5</loc>
+    <lastmod>2026-08-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://focasedu.com/course/6a60c745135220bb62e7cdde</loc>
+    <lastmod>2026-08-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://focasedu.com/course/6a60cba0135220bb62e7ce2c</loc>
+    <lastmod>2026-08-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Course pages: CA Final -->
+  <url>
+    <loc>https://focasedu.com/course/6a1d829bf8ff58d8ffc27865</loc>
+    <lastmod>2026-08-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://focasedu.com/privacy-policy.html</loc>
+    <lastmod>2026-08-31</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+</urlset>
