@@ -5,7 +5,6 @@ import {
   BIGIN_CSS,
   DIAL_CODES,
   Honeypot,
-  LEAD_API_BASE,
   Row,
   captureUtms,
 } from "@/components/bigin/formKit";
@@ -13,17 +12,14 @@ import {
 /**
  * Registration form for the Foundation for School Students program (/fs).
  *
- * Same setup as CounselingForm: posts JSON to focas-lead-server
- * (/api/foundation-school), which upserts a Bigin Contact with
- * Lead_Source1 = "Foundation School". The lead is captured here, before the
- * ₹9 step on /fs/book, so no lead is lost if the parent skips payment.
+ * The lead is sent to the Zoho Flow webhook (leadSource "FS") — no lead-server
+ * call — then the parent moves on to the ₹9 step on /fs/book. It's captured
+ * here, before payment, so no lead is lost if the parent skips paying.
  *
  * `forStudents` (student page) addresses the student in the heading.
  */
 
-const FS_API = `${LEAD_API_BASE}/api/foundation-school`;
-
-// Zoho Flow incoming webhook — receives a copy of every /fs lead.
+// Zoho Flow incoming webhook — receives every /fs lead.
 const ZOHO_FLOW_WEBHOOK =
   "https://flow.zoho.in/60069821829/flow/webhook/incoming?zapikey=1001.804dd95f847c1f6546b9f0a668e7b885.3ee60bac2692893de8e8eed46767db77&isdebug=false";
 
@@ -124,21 +120,11 @@ const FsForm = ({ forStudents = false }) => {
       utm: utms || captureUtms(),
     };
 
-    // Skip bots that filled the honeypot; otherwise send regardless of the
-    // lead server's outcome so the webhook never misses a lead.
-    if (!payload.company) sendToZohoFlow(payload);
-
     setSubmitting(true);
     try {
-      const res = await fetch(FS_API, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok || !data.ok) {
-        throw new Error(data.error || "Submission failed. Please try again.");
-      }
+      // The lead goes only to the Zoho Flow webhook (skipped for bots that
+      // filled the honeypot — they still see the normal next step).
+      if (!payload.company) sendToZohoFlow(payload);
 
       if (typeof window.fbq === "function") window.fbq("track", "Lead");
       // Tell /success this Lead is already counted so it isn't sent twice.
