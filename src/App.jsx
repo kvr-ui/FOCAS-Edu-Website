@@ -14,6 +14,9 @@ import Manual from "./components/manual/Manual";
 import ManualSuccess from "./components/manual/ManualSuccess";
 import WorkoutBatch from "./components/Workout_batch/WorkoutBatch";
 import WorkoutBatchSuccess from "./components/Workout_batch/Workoutbatchsuccess"
+import FoundationSchool from "./components/fs/FoundationSchool";
+import FsBook from "./components/fs/FsBook";
+import FsSuccess from "./components/fs/FsSuccess";
 //import FOCASLandingPage from "./components/FOCASLandingPage";
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
@@ -26,6 +29,9 @@ const router = createBrowserRouter([
     {path:"/manual-success",element:<ManualSuccess />},
     {path:"/workout-batch",element:<WorkoutBatch />},
     {path:"/workout-batch-success",element:<WorkoutBatchSuccess />},
+    {path:"/fs",element:<FoundationSchool />},
+    {path:"/fs/book",element:<FsBook />},
+    {path:"/fs/success",element:<FsSuccess />},
     /*  {path:"/description",element:<FOCASLandingPage />}, */
     { path: "*", element: <NotFound /> },
 ], {
