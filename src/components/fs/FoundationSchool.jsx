@@ -88,10 +88,10 @@ const GALLERY = [
 
 const MARKSHEETS = [
   { name: "Kwaja", img: "/fs/marksheets/Kwaja-photo.webp", sheet: "/fs/marksheets/Kwaja.webp" },
-  { name: "Mathumetha", img: "/fs/marksheets/Mathumetha-photo.webp", sheet: "/fs/marksheets/Mathumetha.webp" },
-  { name: "Anupriya", img: "/fs/marksheets/Anupriya-photo.webp", sheet: "/fs/marksheets/Anupriya.webp" },
-  { name: "Kavitha", img: "/fs/marksheets/Kavitha-photo.webp", sheet: "/fs/marksheets/Kavitha.webp" },
-  { name: "Gowtham", img: "/fs/marksheets/Gowtham-photo.webp", sheet: "/fs/marksheets/Gowtham.webp" },
+  { name: "Mathumetha", img: "/Students/MathumethImg.jpeg", sheet: "/fs/marksheets/Mathumetha.webp" },
+  { name: "Anupriya", img: "/Students/Anupriya.jpg", sheet: "/fs/marksheets/Anupriya.webp" },
+  { name: "Kavitha", img: "/Students/Kavitha.jpg", sheet: "/fs/marksheets/Kavitha.webp" },
+  { name: "Gowtham", img: "/Students/Gowtham.jpg", sheet: "/fs/marksheets/Gowtham.webp" },
   { name: "Manjunath", img: "/Students/Manjunath.jpeg", sheet: "/fs/marksheets/Manjunath.webp" },
 ];
 
@@ -526,12 +526,27 @@ function About() {
         <div className="-mx-4 mt-6 flex snap-x snap-mandatory gap-5 overflow-x-auto px-4 pb-4 sm:-mx-6 sm:px-6">
           {MARKSHEETS.map((m, i) => (
             <Reveal key={m.name} delay={i * 0.06} className="w-72 flex-shrink-0 snap-start sm:w-80">
-              <figure className="overflow-hidden rounded-3xl border-2 border-[#0b3d33] bg-[#faf7f0]">
-                <img src={m.sheet} alt={`${m.name}'s CA marksheet`} loading="lazy" className="h-56 w-full bg-white object-contain p-2" />
-                <figcaption className="flex items-center gap-3 border-t-2 border-[#0b3d33] bg-white px-4 py-3">
-                  <img src={m.img} alt={m.name} loading="lazy" className="h-10 w-10 rounded-full object-cover ring-2 ring-[#e9b949]" />
-                  <span className="font-sora font-bold">{m.name}</span>
-                  <Trophy className="ml-auto h-5 w-5 text-[#e9b949]" />
+              <figure className="relative h-[26rem] overflow-hidden rounded-3xl border-2 border-[#0b3d33] bg-white">
+                {/* Marksheet as background */}
+                <img
+                  src={m.sheet}
+                  alt={`${m.name}'s CA marksheet`}
+                  loading="lazy"
+                  className="absolute inset-0 h-full w-full scale-110 object-cover opacity-60"
+                />
+                <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-[#0b3d33]" />
+                {/* Student photo in front */}
+                <div className="absolute inset-x-0 top-8 flex justify-center">
+                  <img
+                    src={m.img}
+                    alt={m.name}
+                    loading="lazy"
+                    className="h-56 w-48 rounded-2xl border-4 border-white object-cover object-top shadow-[0_12px_30px_rgba(11,61,51,0.45)] ring-2 ring-[#e9b949]"
+                  />
+                </div>
+                <figcaption className="absolute inset-x-0 bottom-0 flex items-center gap-3 px-5 py-4 text-white">
+                  <span className="font-sora text-xl font-extrabold">{m.name}</span>
+                  <Trophy className="ml-auto h-6 w-6 text-[#e9b949]" />
                 </figcaption>
               </figure>
             </Reveal>
@@ -545,32 +560,31 @@ function About() {
 function Team() {
   return (
     <section className="overflow-hidden bg-[#faf7f0] py-16 sm:py-24">
-      <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 sm:px-6 lg:grid-cols-2">
-        <Reveal>
-          <h2 className="font-sora text-3xl font-extrabold tracking-tight sm:text-4xl">Meet the Team behind FOCAS Edu</h2>
-          <p className="mt-5 text-lg text-[#0b3d33]/75">
-            At FOCAS Edu, our Academic Team is the backbone of student success. They are not just subject experts — they
-            are dedicated faculties, tutors, mentors who track your progress, clear every doubt, and guide you with
-            strategy and precision.
-          </p>
-          <div className="mt-8 grid max-w-sm grid-cols-2 gap-4">
-            {[
-              ["50+", "Tutors"],
-              ["1000+", "Students taught"],
-            ].map(([n, l]) => (
-              <div key={l} className="rounded-2xl border-2 border-[#0b3d33] bg-white px-5 py-4 shadow-[4px_4px_0_#0f6e56]">
-                <p className="font-sora text-3xl font-extrabold text-[#0f6e56]">{n}</p>
-                <p className="text-sm font-semibold text-[#0b3d33]/70">{l}</p>
-              </div>
-            ))}
+      <Reveal className="mx-auto max-w-6xl px-4 sm:px-6">
+        <div className="relative overflow-hidden rounded-[2rem] border-2 border-[#0b3d33] bg-white shadow-[6px_6px_0_#0f6e56]">
+          {/* Below xl the text sits above the photo; from xl up it overlays the photo's empty top-left corner. */}
+          <div className="p-6 sm:p-10 xl:absolute xl:left-0 xl:top-0 xl:w-[58%] xl:p-12">
+            <h2 className="font-sora text-3xl font-extrabold tracking-tight sm:text-4xl">Meet the Team behind FOCAS Edu</h2>
+            <p className="mt-4 text-base text-[#0b3d33]/75 sm:text-lg">
+              At FOCAS Edu, our Academic Team is the backbone of student success. They are not just subject experts —
+              they are dedicated faculties, tutors, mentors who track your progress, clear every doubt, and guide you
+              with strategy and precision.
+            </p>
+            <div className="mt-6 grid max-w-sm grid-cols-2 gap-4">
+              {[
+                ["50+", "Tutors"],
+                ["1000+", "Students taught"],
+              ].map(([n, l]) => (
+                <div key={l} className="rounded-2xl border-2 border-[#0b3d33] bg-white px-5 py-3 shadow-[4px_4px_0_#0f6e56]">
+                  <p className="font-sora text-3xl font-extrabold text-[#0f6e56]">{n}</p>
+                  <p className="text-sm font-semibold text-[#0b3d33]/70">{l}</p>
+                </div>
+              ))}
+            </div>
           </div>
-        </Reveal>
-        <Reveal delay={0.1}>
-          <div className="overflow-hidden rounded-[2rem] border-2 border-[#0b3d33] bg-white shadow-[6px_6px_0_#0f6e56]">
-            <img src="/fs/team.webp" alt="The FOCAS Edu academic team" loading="lazy" className="w-full" />
-          </div>
-        </Reveal>
-      </div>
+          <img src="/fs/team.webp" alt="The FOCAS Edu academic team" loading="lazy" className="w-full" />
+        </div>
+      </Reveal>
     </section>
   );
 }
