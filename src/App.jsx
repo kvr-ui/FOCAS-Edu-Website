@@ -22,6 +22,10 @@ import MeetSchedule from "./components/MeetSchedule.jsx";
 import PaymentPage from "./components/PaymentPage.jsx";
 import Counselling from "./components/Counselling.jsx";
 import CounsellingSuccess from "./components/CounsellingSuccess.jsx";
+import FoundationSchool from "./components/fs/FoundationSchool";
+import FsBook from "./components/fs/FsBook";
+import FsSuccess from "./components/fs/FsSuccess";
+import FsParents from "./components/fs/FsParents";
 //import FOCASLandingPage from "./components/FOCASLandingPage";
 const queryClient = new QueryClient();
 const PrivacyPolicyRedirect = () => {
@@ -49,6 +53,10 @@ const router = createBrowserRouter([
     {path:"/workout-batch-success",element:<WorkoutBatchSuccess />},
     { path: "/course/:id", element: <CoursePage /> },
     { path: "/privacy-policy", element: <PrivacyPolicyRedirect /> },
+    {path:"/fs",element:<FoundationSchool />},
+    {path:"/fs/book",element:<FsBook />},
+    {path:"/fs/parents",element:<FsParents />},
+    {path:"/fs/success",element:<FsSuccess />},
     /*  {path:"/description",element:<FOCASLandingPage />}, */
     { path: "*", element: <NotFound /> },
 ], {

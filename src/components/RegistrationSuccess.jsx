@@ -15,7 +15,17 @@ const RegistrationSuccess = () => {
     useEffect(() => {
         fbq?.("track", "PageView");
         fbq?.("track", "CompleteRegistration");
-        fbq?.("track", "Lead");
+        // Skip Lead when the form already sent it (/fs flow sets this flag).
+        let leadTracked = false;
+        try {
+            leadTracked = sessionStorage.getItem("focas_lead_tracked") === "1";
+            sessionStorage.removeItem("focas_lead_tracked");
+        }
+        catch {
+            /* sessionStorage unavailable — fall back to sending Lead */
+        }
+        if (!leadTracked)
+            fbq?.("track", "Lead");
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     // ✅ Auto redirect countdown
