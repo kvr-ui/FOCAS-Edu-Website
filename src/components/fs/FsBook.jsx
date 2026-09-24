@@ -12,6 +12,7 @@ import {
   Users,
   Loader2,
 } from "lucide-react";
+import { sendToZohoFlow } from "./FsForm";
 
 /**
  * FsBook — slot picker + ₹9 payment for the Foundation for School Students
@@ -20,7 +21,7 @@ import {
  * Flow:
  *   1. Parent picks a date & time for the counselling call.
  *   2. "Pay ₹9 to confirm" → Razorpay (prefilled from the /fs form).
- *   3. Payment verified server-side → /fs/success.
+ *   3. Payment verified server-side (or Skip) → /success (FOCAS success page).
  *
  * Uses the same consultation endpoints on the RTI backend as /meet; the amount
  * is fixed server-side and that backend fires the paid Zoho webhook.
@@ -109,7 +110,7 @@ const FsBook = () => {
   // Skip → the lead was already captured on form submit, so just continue.
   const handleSkip = () => {
     fbq?.("trackCustom", "FsBook_Skip");
-    navigate("/fs/success");
+    navigate("/success");
   };
 
   const pickTime = (t) => {
@@ -226,7 +227,18 @@ const FsBook = () => {
             const verifyData = await verifyRes.json().catch(() => ({}));
             if (verifyData.success) {
               firePurchaseTracking(response.razorpay_payment_id, slotText);
-              navigate("/fs/success");
+              // Paid lead → Zoho Flow webhook, tagged separately from the form lead.
+              sendToZohoFlow(lead, {
+                leadSource: "FS - PAID",
+                paymentStatus: "Paid",
+                amount: String(AMOUNT_RUPEES),
+                paymentId: response.razorpay_payment_id,
+                orderId: response.razorpay_order_id,
+                slotDate: selectedDay,
+                slotTime: selectedTime,
+                slotLabel: slotText,
+              });
+              navigate("/success");
             } else {
               setError(
                 verifyData.message ||

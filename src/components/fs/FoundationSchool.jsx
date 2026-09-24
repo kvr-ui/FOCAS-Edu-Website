@@ -1,73 +1,38 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
+import { Link } from "react-router-dom";
 import {
   ArrowRight,
   CheckCircle2,
   Download,
   GraduationCap,
-  Quote,
-  Phone,
   Trophy,
+  Users,
 } from "lucide-react";
-import FsForm from "./FsForm";
+import {
+  Footer,
+  HERO_STUDENTS,
+  INK,
+  MARKSHEETS,
+  Register,
+  Reveal,
+  Roadmap,
+  StickyMobileCTA,
+  StudentPhoto,
+  Testimonials,
+  openForm,
+} from "./shared";
 
 /**
  * /fs — "Foundation for School Students" landing page.
- * Audience: parents of 11th/12th students. Pitch: prepare for CA Foundation
- * alongside school and become a CA at 21. CTAs lead to the FsForm below.
+ * Audience: 11th/12th students (parents have their own page at /fs/parents).
+ * Pitch: prepare for CA Foundation alongside school and become a CA at 21.
+ * CTAs lead to the FsForm below.
  */
-
-const INK = "#0b3d33";
-
-// ─── Scroll reveal (same pattern as manual/Manual.jsx) ───────────────────────
-
-function useInView(threshold = 0.1) {
-  const ref = useRef(null);
-  const [visible, setVisible] = useState(false);
-  useEffect(() => {
-    const obs = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } },
-      { threshold }
-    );
-    if (ref.current) obs.observe(ref.current);
-    return () => obs.disconnect();
-  }, [threshold]);
-  return [ref, visible];
-}
-
-function Reveal({ children, delay = 0, className = "" }) {
-  const [ref, visible] = useInView();
-  return (
-    <div
-      ref={ref}
-      className={className}
-      style={{
-        opacity: visible ? 1 : 0,
-        transform: visible ? "none" : "translateY(28px)",
-        transition: `opacity 0.7s ease ${delay}s, transform 0.7s ease ${delay}s`,
-      }}
-    >
-      {children}
-    </div>
-  );
-}
-
-const scrollToForm = (source) => {
-  document.getElementById("register")?.scrollIntoView({ behavior: "smooth", block: "start" });
-  if (typeof window.gtag === "function")
-    window.gtag("event", "fs_cta_click", { event_category: "engagement", event_label: source });
-};
 
 // ─── Content ─────────────────────────────────────────────────────────────────
 
 // TODO: drop the FS brochure PDF at public/pdf/FS-Brochure.pdf
 const BROCHURE_URL = "/pdf/FS-Brochure.pdf";
-
-const HERO_STUDENTS = [
-  { name: "Dharani", img: "/fs/students/Dharani.webp" },
-  { name: "Aravindhan", img: "/fs/students/Aravindhan.webp" },
-  { name: "Keerthana", img: "/fs/students/Keerthana.webp" },
-  { name: "Jagadeeshwaran", img: "/fs/students/Jagadeeshwaran.webp" },
-];
 
 // Per-tile tint + tilt for the hero collage (photos have white backgrounds, so
 // mix-blend-multiply lets the tint show through as a cut-out backdrop).
@@ -79,20 +44,11 @@ const HERO_TILES = [
 ];
 
 const GALLERY = [
-  { src: "/fs/gallery/tuition-1.webp", alt: "Tutor explaining a concept to a small group" },
+  { src: "/fs/gallery/tuition-1.webp", alt: "Tutor going through answers with a student" },
   { src: "/fs/gallery/tuition-2.webp", alt: "One-on-one doubt clearing session" },
   { src: "/fs/gallery/tuition-3.webp", alt: "Students working through problems with a tutor" },
   { src: "/fs/gallery/workshop-session.webp", alt: "Students at a FOCAS workshop session" },
   { src: "/fs/gallery/tuition-5.webp", alt: "Tutor guiding a student at the table" },
-];
-
-const MARKSHEETS = [
-  { name: "Kwaja", img: "/fs/marksheets/Kwaja-photo.webp", sheet: "/fs/marksheets/Kwaja.webp" },
-  { name: "Mathumetha", img: "/Students/MathumethImg.jpeg", sheet: "/fs/marksheets/Mathumetha.webp" },
-  { name: "Anupriya", img: "/Students/Anupriya.jpg", sheet: "/fs/marksheets/Anupriya.webp" },
-  { name: "Kavitha", img: "/Students/Kavitha.jpg", sheet: "/fs/marksheets/Kavitha.webp" },
-  { name: "Gowtham", img: "/Students/Gowtham.jpg", sheet: "/fs/marksheets/Gowtham.webp" },
-  { name: "Manjunath", img: "/Students/Manjunath.jpeg", sheet: "/fs/marksheets/Manjunath.webp" },
 ];
 
 // ─── Tile illustrations (inline so they stay on-palette) ─────────────────────
@@ -181,69 +137,75 @@ const FEATURES = [
   },
 ];
 
-const ROADMAP = [
-  { age: 17, without: null, with: "Student clears Foundation." },
-  { age: 18, without: "Starts figuring out Foundation.", with: "Student clears Inter." },
-  { age: 19, without: "Starts preparing for Inter.", with: "Student is in the Articleship period." },
-  { age: 20, without: "Begins Articleship.", with: "Starts preparing for Final." },
-  { age: 21, without: "Still in Articleship.", with: "Student becomes a CA.", final: true },
-];
-
-const TESTIMONIALS = [
-  {
-    name: "Ragavi",
-    img: "/fs/testimonials/Ragavi.webp",
-    text: "Being a self study student, studying is hard. I realised how important this mentorship is in my journey.",
-  },
-  {
-    name: "Sabitha",
-    img: "/fs/testimonials/Sabitha.webp",
-    text: "I thought I knew the subjects. The only problem I felt was my presentation. But only after coming here, I understood that I actually know very little.",
-  },
-  {
-    name: "Yashika",
-    img: "/fs/testimonials/Yashika.webp",
-    text: "The method of teaching followed by FOCAS academy is perfect. Trust me, I was able to score 82 just by enrolling in their fast track — then imagine how their regular course would be.",
-  },
-  {
-    name: "Naveen",
-    img: "/fs/testimonials/Naveen.webp",
-    text: "I was able to complete preparation in class itself, because it was live studying and NO procrastination. Got rid of confusions in the class itself as there were Q&A discussions at the end of every topic.",
-  },
-  {
-    name: "Mercy",
-    img: "/fs/testimonials/Mercy.webp",
-    text: "Really happy and satisfied with the tutors — the way of teaching here is effective. The concept behind Deep FOCAS is too good and I gained the confidence I always wanted.",
-  },
-];
-
 // ─── Sections ────────────────────────────────────────────────────────────────
 
 function Nav() {
   return (
     <nav className="fixed inset-x-0 top-0 z-50 border-b border-[#0b3d33]/10 bg-[#faf7f0]/85 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-        <img src="/fs/logo.webp" alt="FOCAS Edu — Your First and Last Attempt" className="h-10 w-auto object-contain" />
-        <button
-          type="button"
-          onClick={() => scrollToForm("nav")}
-          className="rounded-full bg-[#0f6e56] px-4 py-2 text-sm font-bold text-white transition-colors hover:bg-[#0b5745]"
-        >
-          Register now
-        </button>
+        <img src="/fs/logo.webp" alt="FOCAS Edu — Your First and Last Attempt" className="h-8 w-auto object-contain sm:h-10" />
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <Link
+            to="/fs/parents"
+            className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border-2 border-[#0f6e56] px-3 py-1.5 text-xs font-bold text-[#0f6e56] transition-colors hover:bg-[#0f6e56] hover:text-white sm:px-4 sm:text-sm"
+          >
+            <Users className="hidden h-4 w-4 sm:block" /> For Parents
+          </Link>
+          <button
+            type="button"
+            onClick={() => openForm("nav")}
+            className="whitespace-nowrap rounded-full bg-[#0f6e56] px-3 py-2 text-xs font-bold sm:px-4 sm:text-sm text-white transition-colors hover:bg-[#0b5745]"
+          >
+            Register now
+          </button>
+        </div>
       </div>
     </nav>
   );
 }
 
-function StudentPhoto({ name, img, className = "" }) {
-  const [broken, setBroken] = useState(!img);
-  return broken ? (
-    <span className={`flex items-center justify-center bg-[#1D9E75] font-sora text-4xl font-extrabold text-white ${className}`}>
-      {name[0]}
-    </span>
-  ) : (
-    <img src={img} alt={name} onError={() => setBroken(true)} className={`object-cover object-top ${className}`} />
+// Program details + CTA — sits under the headline on desktop, below the image on mobile.
+function HeroDetails() {
+  return (
+    <>
+      <Reveal delay={0.2}>
+        <p className="mt-8 text-lg text-[#0b3d33]/75">Make it Possible with the</p>
+        <p className="mt-2 inline-flex items-center gap-2 rounded-full border border-[#0b3d33]/15 bg-white px-4 py-1.5 font-sora text-base font-bold">
+          <GraduationCap className="h-5 w-5 text-[#0f6e56]" />
+          Foundation For School Students Program
+        </p>
+        <p className="mt-1 text-sm font-semibold text-[#0b3d33]/60">by FOCAS Edu</p>
+        <ul className="mt-6 space-y-3">
+          {[
+            "Begin preparing for CA Foundation while in 11th/12th",
+            "Get personalized attention with our fool-proof tutor model",
+            "Appear for Foundation immediately after your 12th Board Exams",
+          ].map((b) => (
+            <li key={b} className="flex items-start gap-3 text-base sm:text-lg">
+              <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-[#1D9E75]" />
+              {b}
+            </li>
+          ))}
+        </ul>
+      </Reveal>
+      <Reveal delay={0.3}>
+        <p className="mt-8 font-sora text-lg font-bold">Get ahead of the curve with FOCAS Edu.</p>
+        <button
+          type="button"
+          onClick={() => openForm("hero")}
+          className="group mt-4 inline-flex items-center justify-center gap-2 rounded-2xl bg-[#0f6e56] px-7 py-4 text-base font-bold text-white shadow-lg shadow-[#0f6e56]/25 transition-all hover:bg-[#0b5745] active:scale-[.99]"
+        >
+          Book A Counselling Call Today
+          <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+        </button>
+        <p className="mt-4 text-sm text-[#0b3d33]/70">
+          Are you a parent?{" "}
+          <Link to="/fs/parents" className="font-bold text-[#0f6e56] underline underline-offset-4 hover:text-[#0b5745]">
+            See the program from a parent's view →
+          </Link>
+        </p>
+      </Reveal>
+    </>
   );
 }
 
@@ -273,37 +235,9 @@ function Hero() {
               It is challenging, but <span className="whitespace-nowrap rounded-md bg-[#e9b949] px-2 font-extrabold">NOT IMPOSSIBLE!</span>
             </p>
           </Reveal>
-          <Reveal delay={0.2}>
-            <p className="mt-8 text-lg text-[#0b3d33]/75">Make it Possible with the</p>
-            <p className="mt-2 inline-flex items-center gap-2 rounded-full border border-[#0b3d33]/15 bg-white px-4 py-1.5 font-sora text-base font-bold">
-              <GraduationCap className="h-5 w-5 text-[#0f6e56]" />
-              Foundation For School Students Program
-            </p>
-            <p className="mt-1 text-sm font-semibold text-[#0b3d33]/60">by FOCAS Edu</p>
-            <ul className="mt-6 space-y-3">
-              {[
-                "Begin preparing for CA Foundation while in 11th/12th",
-                "Get personalized attention with our fool-proof tutor model",
-                "Appear for Foundation immediately after your 12th Board Exams",
-              ].map((b) => (
-                <li key={b} className="flex items-start gap-3 text-base sm:text-lg">
-                  <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-[#1D9E75]" />
-                  {b}
-                </li>
-              ))}
-            </ul>
-          </Reveal>
-          <Reveal delay={0.3}>
-            <p className="mt-8 font-sora text-lg font-bold">Get ahead of the curve with FOCAS Edu.</p>
-            <button
-              type="button"
-              onClick={() => scrollToForm("hero")}
-              className="group mt-4 inline-flex items-center justify-center gap-2 rounded-2xl bg-[#0f6e56] px-7 py-4 text-base font-bold text-white shadow-lg shadow-[#0f6e56]/25 transition-all hover:bg-[#0b5745] active:scale-[.99]"
-            >
-              Book A Counselling Call Today
-              <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-            </button>
-          </Reveal>
+          <div className="hidden lg:block">
+            <HeroDetails />
+          </div>
         </div>
 
         <Reveal delay={0.2} className="relative mx-auto w-full max-w-xl">
@@ -338,6 +272,11 @@ function Hero() {
             </div>
           </div>
         </Reveal>
+
+        {/* On mobile the program details follow the image instead of preceding it. */}
+        <div className="-mt-8 lg:hidden">
+          <HeroDetails />
+        </div>
       </div>
     </section>
   );
@@ -384,99 +323,10 @@ function WhatYouGet() {
           <p className="font-sora text-xl font-bold sm:text-2xl">Enquire now and see how early you can get ahead.</p>
           <button
             type="button"
-            onClick={() => scrollToForm("features")}
+            onClick={() => openForm("features")}
             className="mt-5 inline-flex items-center gap-2 rounded-2xl bg-[#0f6e56] px-7 py-4 text-base font-bold text-white shadow-lg shadow-[#0f6e56]/25 transition-colors hover:bg-[#0b5745]"
           >
             Enquire now <ArrowRight className="h-5 w-5" />
-          </button>
-        </Reveal>
-      </div>
-    </section>
-  );
-}
-
-function Roadmap() {
-  return (
-    <section className="relative overflow-hidden bg-[#faf7f0] py-16 sm:py-24">
-      <div className="mx-auto max-w-5xl px-4 sm:px-6">
-        <Reveal className="text-center">
-          <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#1D9E75]">The Ultimate Roadmap</p>
-          <h2 className="mt-3 font-sora text-3xl font-extrabold tracking-tight sm:text-4xl">
-            Becoming a CA at 21 years
-          </h2>
-        </Reveal>
-
-        {/* Column headers (desktop) */}
-        <div className="mt-12 hidden grid-cols-[1fr_88px_1fr] items-center gap-4 md:grid">
-          <p className="text-right font-sora text-lg font-bold text-[#0b3d33]/45">Without FOCAS</p>
-          <span />
-          <p className="font-sora text-lg font-bold text-[#0f6e56]">With FOCAS</p>
-        </div>
-
-        <ol className="relative mt-8 md:mt-6">
-          {/* spine */}
-          <span aria-hidden className="absolute bottom-6 left-1/2 top-6 hidden w-1 -translate-x-1/2 rounded-full bg-gradient-to-b from-[#1D9E75]/30 via-[#1D9E75] to-[#e9b949] md:block" />
-
-          {ROADMAP.map((row, i) => (
-            <Reveal key={row.age} delay={i * 0.08}>
-              <li className="relative mb-5 grid gap-3 md:mb-6 md:grid-cols-[1fr_88px_1fr] md:items-center md:gap-4">
-                {/* Age badge */}
-                <div className="flex items-center gap-3 md:order-2 md:justify-center">
-                  <span
-                    className={`relative z-10 flex h-14 w-14 flex-shrink-0 flex-col items-center justify-center rounded-full border-2 font-sora leading-none ${
-                      row.final
-                        ? "border-[#0b3d33] bg-[#e9b949] text-[#0b3d33]"
-                        : "border-[#0f6e56] bg-white text-[#0f6e56]"
-                    }`}
-                  >
-                    <span className="text-[10px] font-semibold uppercase">Age</span>
-                    <span className="text-xl font-extrabold">{row.age}</span>
-                  </span>
-                  <span className="h-px flex-1 bg-[#0b3d33]/10 md:hidden" />
-                </div>
-
-                {/* Without */}
-                <div className="md:order-1">
-                  <div
-                    className={`rounded-2xl border border-dashed px-5 py-4 md:text-right ${
-                      row.without ? "border-[#0b3d33]/20 bg-white/60 text-[#0b3d33]/60" : "border-[#0b3d33]/10 bg-transparent text-[#0b3d33]/30"
-                    }`}
-                  >
-                    <p className="text-[11px] font-bold uppercase tracking-wider text-[#0b3d33]/40 md:hidden">Without FOCAS</p>
-                    <p className="text-base">{row.without || "—"}</p>
-                  </div>
-                </div>
-
-                {/* With */}
-                <div className="md:order-3">
-                  <div
-                    className={`rounded-2xl px-5 py-4 ${
-                      row.final
-                        ? "border-2 border-[#0b3d33] bg-[#0b3d33] text-white shadow-lg"
-                        : "border border-[#0f6e56]/25 bg-white text-[#0b3d33] shadow-sm"
-                    }`}
-                  >
-                    <p className={`text-[11px] font-bold uppercase tracking-wider md:hidden ${row.final ? "text-[#e9b949]" : "text-[#0f6e56]"}`}>
-                      With FOCAS
-                    </p>
-                    <p className={`flex items-center gap-2 text-base font-semibold ${row.final ? "font-sora text-lg" : ""}`}>
-                      {row.final && <Trophy className="h-5 w-5 flex-shrink-0 text-[#e9b949]" />}
-                      {row.with}
-                    </p>
-                  </div>
-                </div>
-              </li>
-            </Reveal>
-          ))}
-        </ol>
-
-        <Reveal className="mt-10 text-center">
-          <button
-            type="button"
-            onClick={() => scrollToForm("roadmap")}
-            className="inline-flex items-center gap-2 rounded-2xl bg-[#0f6e56] px-7 py-4 text-base font-bold text-white shadow-lg shadow-[#0f6e56]/25 transition-colors hover:bg-[#0b5745]"
-          >
-            Start the right-side journey <ArrowRight className="h-5 w-5" />
           </button>
         </Reveal>
       </div>
@@ -525,26 +375,16 @@ function About() {
         </Reveal>
         <div className="-mx-4 mt-6 flex snap-x snap-mandatory gap-5 overflow-x-auto px-4 pb-4 sm:-mx-6 sm:px-6">
           {MARKSHEETS.map((m, i) => (
-            <Reveal key={m.name} delay={i * 0.06} className="w-72 flex-shrink-0 snap-start sm:w-80">
-              <figure className="relative h-[26rem] overflow-hidden rounded-3xl border-2 border-[#0b3d33] bg-white">
-                {/* Marksheet as background */}
+            <Reveal key={m.name} delay={i * 0.06} className="w-[85%] flex-shrink-0 snap-start sm:w-[calc((100%-2.5rem)/2.5)]">
+              <figure className="overflow-hidden rounded-3xl border-2 border-[#0b3d33] bg-white">
+                {/* Student photo composited over their CA marksheet */}
                 <img
-                  src={m.sheet}
-                  alt={`${m.name}'s CA marksheet`}
+                  src={m.img}
+                  alt={`${m.name} with their CA marksheet`}
                   loading="lazy"
-                  className="absolute inset-0 h-full w-full scale-110 object-cover opacity-60"
+                  className="aspect-square w-full object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-[#0b3d33]" />
-                {/* Student photo in front */}
-                <div className="absolute inset-x-0 top-8 flex justify-center">
-                  <img
-                    src={m.img}
-                    alt={m.name}
-                    loading="lazy"
-                    className="h-56 w-48 rounded-2xl border-4 border-white object-cover object-top shadow-[0_12px_30px_rgba(11,61,51,0.45)] ring-2 ring-[#e9b949]"
-                  />
-                </div>
-                <figcaption className="absolute inset-x-0 bottom-0 flex items-center gap-3 px-5 py-4 text-white">
+                <figcaption className="flex items-center gap-3 bg-[#0b3d33] px-5 py-4 text-white">
                   <span className="font-sora text-xl font-extrabold">{m.name}</span>
                   <Trophy className="ml-auto h-6 w-6 text-[#e9b949]" />
                 </figcaption>
@@ -622,115 +462,10 @@ function CareerBanner() {
   );
 }
 
-function Testimonials() {
-  return (
-    <section className="bg-[#0b3d33] py-16 text-white sm:py-24">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <Reveal>
-          <h2 className="font-sora text-3xl font-extrabold tracking-tight sm:text-4xl">
-            Hear what our students have to say
-          </h2>
-        </Reveal>
-        <div className="mt-10 grid gap-5 md:grid-cols-2">
-          {TESTIMONIALS.map((t, i) => (
-            <Reveal
-              key={t.name}
-              delay={i * 0.08}
-              className={i === TESTIMONIALS.length - 1 && TESTIMONIALS.length % 2 ? "md:col-span-2" : ""}
-            >
-              <figure className="flex h-full flex-col rounded-3xl bg-white/[0.06] p-6 ring-1 ring-white/10 sm:p-8">
-                <Quote className="h-8 w-8 text-[#e9b949]" />
-                <blockquote className="mt-4 flex-1 text-lg leading-relaxed text-white/90">{t.text}</blockquote>
-                <figcaption className="mt-6 flex items-center gap-3">
-                  {t.img ? (
-                    <img src={t.img} alt={t.name} loading="lazy" className="h-12 w-12 rounded-full object-cover ring-2 ring-[#e9b949]" />
-                  ) : (
-                    <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[#1D9E75] font-sora text-lg font-bold ring-2 ring-[#e9b949]">
-                      {t.name[0]}
-                    </span>
-                  )}
-                  <span className="font-sora font-bold">{t.name}</span>
-                </figcaption>
-              </figure>
-            </Reveal>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function Register() {
-  return (
-    <section id="register" className="scroll-mt-16 bg-[#faf7f0] py-16 sm:py-24">
-      <div className="mx-auto grid max-w-6xl items-start gap-10 px-4 sm:px-6 lg:grid-cols-2">
-        <Reveal>
-          <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#1D9E75]">Get started</p>
-          <h2 className="mt-3 font-sora text-3xl font-extrabold tracking-tight sm:text-4xl">
-            Give your child a 3-year head start.
-          </h2>
-          <p className="mt-4 text-lg text-[#0b3d33]/70">
-            Register below and book a one-on-one counselling call with CA K Venkat Ramanan — for you and your child —
-            for just <strong className="text-[#0b3d33]">₹9</strong>.
-          </p>
-          <ol className="mt-8 space-y-4">
-            {["Fill in your child's details", "Pick a convenient slot & pay ₹9", "Talk with CA K Venkat Ramanan"].map((s, i) => (
-              <li key={s} className="flex items-center gap-4">
-                <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border-2 border-[#0b3d33] bg-white font-sora font-bold">
-                  {i + 1}
-                </span>
-                <span className="text-base font-semibold">{s}</span>
-              </li>
-            ))}
-          </ol>
-          <p className="mt-8 flex items-center gap-2 text-sm text-[#0b3d33]/60">
-            <Phone className="h-4 w-4" /> Questions? Call{" "}
-            <a href="tel:+916383514285" className="font-semibold text-[#0f6e56]">+91 63835 14285</a>
-          </p>
-        </Reveal>
-        <Reveal delay={0.1}>
-          <FsForm />
-        </Reveal>
-      </div>
-    </section>
-  );
-}
-
-function StickyMobileCTA() {
-  const [show, setShow] = useState(false);
-  useEffect(() => {
-    const onScroll = () => {
-      const form = document.getElementById("register");
-      const pastHero = window.scrollY > 500;
-      const atForm = form && form.getBoundingClientRect().top < window.innerHeight;
-      setShow(pastHero && !atForm);
-    };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  return (
-    <div
-      className={`fixed inset-x-0 bottom-0 z-40 border-t border-[#0b3d33]/10 bg-white/95 p-3 backdrop-blur transition-transform duration-300 md:hidden ${
-        show ? "translate-y-0" : "translate-y-full"
-      }`}
-    >
-      <button
-        type="button"
-        onClick={() => scrollToForm("sticky")}
-        className="w-full rounded-xl bg-[#0f6e56] py-3.5 text-base font-bold text-white"
-      >
-        Book counselling for ₹9
-      </button>
-    </div>
-  );
-}
-
 const FoundationSchool = () => {
   useEffect(() => {
     document.title = "Foundation for School Students | FOCAS Edu";
-    if (window.location.hash === "#register") scrollToForm("hash");
+    if (window.location.hash === "#register") openForm("hash");
   }, []);
 
   return (
@@ -744,12 +479,9 @@ const FoundationSchool = () => {
         <CareerBanner />
         <Testimonials />
         <WhatYouGet />
-        <Register />
+        <Register forStudents />
       </main>
-      <footer className="bg-[#0b3d33] px-4 py-8 pb-24 text-center text-sm text-white/60 md:pb-8">
-        <img src="/fs/logo-white.webp" alt="FOCAS Edu" loading="lazy" className="mx-auto mb-4 h-10 w-auto" />
-        © {new Date().getFullYear()} FOCAS Edu. All rights reserved.
-      </footer>
+      <Footer />
       <StickyMobileCTA />
     </div>
   );

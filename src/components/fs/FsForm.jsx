@@ -17,14 +17,41 @@ import {
  * (/api/foundation-school), which upserts a Bigin Contact with
  * Lead_Source1 = "Foundation School". The lead is captured here, before the
  * ₹9 step on /fs/book, so no lead is lost if the parent skips payment.
+ *
+ * `forStudents` (student page) addresses the student in the heading.
  */
 
 const FS_API = `${LEAD_API_BASE}/api/foundation-school`;
 
-const CLASS_OPTIONS = ["Class 11", "Class 12"];
+// Zoho Flow incoming webhook — receives a copy of every /fs lead.
+const ZOHO_FLOW_WEBHOOK =
+  "https://flow.zoho.in/60069821829/flow/webhook/incoming?zapikey=1001.804dd95f847c1f6546b9f0a668e7b885.3ee60bac2692893de8e8eed46767db77&isdebug=false";
+
+// Zoho Flow sends no CORS headers, so this is a fire-and-forget "simple"
+// request (form-encoded, no-cors): it is delivered but the response is opaque.
+// keepalive lets it finish even though we navigate away right after submit.
+// `extra` overrides/extends the fields — /fs/book uses it to send the paid lead
+// (leadSource "FS - PAID" + slot + payment id).
+// eslint-disable-next-line react-refresh/only-export-components
+export const sendToZohoFlow = (payload, extra = {}) => {
+  // eslint-disable-next-line no-unused-vars
+  const { utm, company, ...fields } = payload;
+  const body = new URLSearchParams({
+    ...fields,
+    ...(utm || {}),
+    source: "Foundation School",
+    leadSource: "FS",
+    ...extra,
+  });
+  fetch(ZOHO_FLOW_WEBHOOK, { method: "POST", mode: "no-cors", keepalive: true, body }).catch(
+    () => {} // never block the form on the webhook
+  );
+};
+
+const CLASS_OPTIONS = ["Below Class 10", "Class 10", "Class 11", "Class 12"];
 const LANGUAGE_OPTIONS = ["English", "Tamil", "Hindi"];
 
-const FsForm = () => {
+const FsForm = ({ forStudents = false }) => {
   const navigate = useNavigate();
   const [values, setValues] = useState({
     "First Name": "",
@@ -97,6 +124,10 @@ const FsForm = () => {
       utm: utms || captureUtms(),
     };
 
+    // Skip bots that filled the honeypot; otherwise send regardless of the
+    // lead server's outcome so the webhook never misses a lead.
+    if (!payload.company) sendToZohoFlow(payload);
+
     setSubmitting(true);
     try {
       const res = await fetch(FS_API, {
@@ -110,6 +141,12 @@ const FsForm = () => {
       }
 
       if (typeof window.fbq === "function") window.fbq("track", "Lead");
+      // Tell /success this Lead is already counted so it isn't sent twice.
+      try {
+        sessionStorage.setItem("focas_lead_tracked", "1");
+      } catch {
+        /* non-fatal */
+      }
       if (typeof window.gtag === "function")
         window.gtag("event", "fs_form_submit", {
           event_category: "engagement",
@@ -142,11 +179,11 @@ const FsForm = () => {
 
       <div className="bwf-wrapper">
         <form className="bwf-form" onSubmit={handleSubmit} noValidate>
-          <h2 className="bwf-header">Register your child</h2>
+          <h2 className="bwf-header">{forStudents ? "Register now" : "Register your child"}</h2>
 
           <Honeypot value={values.company} onChange={set("company")} />
 
-          <Row label="Student First Name" name="First Name" error={errors["First Name"]}>
+          <Row label="Student Name" name="First Name" error={errors["First Name"]}>
             <input
               name="First Name"
               maxLength={40}
@@ -157,7 +194,7 @@ const FsForm = () => {
             />
           </Row>
 
-          <Row label="Student Last Name" name="Last Name" error={errors["Last Name"]}>
+          <Row label="Parent's Name" name="Last Name" error={errors["Last Name"]}>
             <input
               name="Last Name"
               maxLength={80}
@@ -267,7 +304,7 @@ const FsForm = () => {
 
           <div className="bwf-btn-wrap">
             <button type="submit" className="bwf-btn" disabled={submitting}>
-              {submitting ? "Submitting…" : "Continue — Book counselling for ₹9"}
+              {submitting ? "Submitting…" : "Book 1-on-1 Counselling"}
             </button>
           </div>
         </form>
