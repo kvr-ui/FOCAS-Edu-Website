@@ -44,11 +44,11 @@ const HERO_TILES = [
 ];
 
 const GALLERY = [
-  { src: "/fs/gallery/tuition-1.webp", alt: "Tutor going through answers with a student" },
-  { src: "/fs/gallery/tuition-2.webp", alt: "One-on-one doubt clearing session" },
-  { src: "/fs/gallery/tuition-3.webp", alt: "Students working through problems with a tutor" },
-  { src: "/fs/gallery/workshop-session.webp", alt: "Students at a FOCAS workshop session" },
-  { src: "/fs/gallery/tuition-5.webp", alt: "Tutor guiding a student at the table" },
+  { src: "/fs-assets/gallery/tuition-1.webp", alt: "Tutor going through answers with a student" },
+  { src: "/fs-assets/gallery/tuition-2.webp", alt: "One-on-one doubt clearing session" },
+  { src: "/fs-assets/gallery/tuition-3.webp", alt: "Students working through problems with a tutor" },
+  { src: "/fs-assets/gallery/workshop-session.webp", alt: "Students at a FOCAS workshop session" },
+  { src: "/fs-assets/gallery/tuition-5.webp", alt: "Tutor guiding a student at the table" },
 ];
 
 // ─── Tile illustrations (inline so they stay on-palette) ─────────────────────
@@ -143,7 +143,7 @@ function Nav() {
   return (
     <nav className="fixed inset-x-0 top-0 z-50 border-b border-[#0b3d33]/10 bg-[#faf7f0]/85 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-        <img src="/fs/logo.webp" alt="FOCAS Edu — Your First and Last Attempt" className="h-8 w-auto object-contain sm:h-10" />
+        <img src="/fs-assets/logo.webp" alt="FOCAS Edu — Your First and Last Attempt" className="h-8 w-auto object-contain sm:h-10" />
         <div className="flex items-center gap-1.5 sm:gap-2">
           <Link
             to="/fs/parents"
@@ -422,7 +422,7 @@ function Team() {
               ))}
             </div>
           </div>
-          <img src="/fs/team.webp" alt="The FOCAS Edu academic team" loading="lazy" className="w-full" />
+          <img src="/fs-assets/team.webp" alt="The FOCAS Edu academic team" loading="lazy" className="w-full" />
         </div>
       </Reveal>
     </section>
@@ -435,7 +435,7 @@ function CareerBanner() {
       <Reveal className="mx-auto max-w-6xl">
         <div className="relative overflow-hidden rounded-[2rem] bg-[#0b3d33] text-white md:min-h-[420px]">
           <img
-            src="/fs/aravindha-banner.webp"
+            src="/fs-assets/aravindha-banner.webp"
             alt="Aravindha Lochanan, FOCAS student"
             loading="lazy"
             className="aspect-[2/1] w-full object-cover object-left md:absolute md:inset-0 md:aspect-auto md:h-full"

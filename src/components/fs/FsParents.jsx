@@ -32,7 +32,7 @@ import {
  * about their child. CTA sources are prefixed "parents-" in gtag.
  */
 
-const HERO_IMG = "/fs/parents/hero.webp";
+const HERO_IMG = "/fs-assets/parents/hero.webp";
 
 // TODO: YouTube video IDs. Sections render only once an ID is filled in.
 const WHAT_IS_CA_VIDEO_ID = "";
@@ -41,15 +41,15 @@ const VIDEO_TESTIMONIALS = [
 ];
 
 const GALLERY = [
-  { src: "/fs/gallery/tuition-1.webp", alt: "Tutor going through answers with a student" },
-  { src: "/fs/gallery/tuition-2.webp", alt: "One-on-one doubt clearing session" },
-  { src: "/fs/gallery/tuition-3.webp", alt: "Students working through problems with a tutor" },
-  { src: "/fs/gallery/tuition-4.webp", alt: "Small-group tutoring session at FOCAS" },
-  { src: "/fs/gallery/workshop-session.webp", alt: "Students at a FOCAS workshop session" },
-  { src: "/fs/gallery/tuition-5.webp", alt: "Tutor guiding a student at the table" },
-  { src: "/fs/gallery/tuition-6.webp", alt: "Students learning together with a FOCAS tutor" },
-  { src: "/fs/gallery/tuition-7.webp", alt: "Tutor reviewing answers with students" },
-  { src: "/fs/gallery/tuition-8.webp", alt: "Focused study session at FOCAS" },
+  { src: "/fs-assets/gallery/tuition-1.webp", alt: "Tutor going through answers with a student" },
+  { src: "/fs-assets/gallery/tuition-2.webp", alt: "One-on-one doubt clearing session" },
+  { src: "/fs-assets/gallery/tuition-3.webp", alt: "Students working through problems with a tutor" },
+  { src: "/fs-assets/gallery/tuition-4.webp", alt: "Small-group tutoring session at FOCAS" },
+  { src: "/fs-assets/gallery/workshop-session.webp", alt: "Students at a FOCAS workshop session" },
+  { src: "/fs-assets/gallery/tuition-5.webp", alt: "Tutor guiding a student at the table" },
+  { src: "/fs-assets/gallery/tuition-6.webp", alt: "Students learning together with a FOCAS tutor" },
+  { src: "/fs-assets/gallery/tuition-7.webp", alt: "Tutor reviewing answers with students" },
+  { src: "/fs-assets/gallery/tuition-8.webp", alt: "Focused study session at FOCAS" },
 ];
 
 const TRUST_PILLARS = [
@@ -73,7 +73,7 @@ function Nav() {
     <nav className="fixed inset-x-0 top-0 z-50 border-b border-[#0b3d33]/10 bg-[#faf7f0]/85 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
         <Link to="/fs">
-          <img src="/fs/logo.webp" alt="FOCAS Edu — Your First and Last Attempt" className="h-10 w-auto object-contain" />
+          <img src="/fs-assets/logo.webp" alt="FOCAS Edu — Your First and Last Attempt" className="h-10 w-auto object-contain" />
         </Link>
         <div className="flex items-center gap-2">
           <Link
@@ -320,7 +320,7 @@ function Team() {
               ))}
             </div>
           </div>
-          <img src="/fs/team.webp" alt="The FOCAS Edu academic team" loading="lazy" className="w-full" />
+          <img src="/fs-assets/team.webp" alt="The FOCAS Edu academic team" loading="lazy" className="w-full" />
         </div>
       </Reveal>
     </section>
@@ -368,7 +368,7 @@ function Program() {
           <div aria-hidden className="absolute inset-x-6 bottom-0 top-16 rounded-[2rem] bg-[#0f6e56]" />
           <div aria-hidden className="absolute inset-x-6 bottom-0 top-16 rounded-[2rem] opacity-30" style={{ backgroundImage: "radial-gradient(#e9b949 1.5px, transparent 1.5px)", backgroundSize: "16px 16px" }} />
           <img
-            src="/fs/venkat-ramanan.webp"
+            src="/fs-assets/venkat-ramanan.webp"
             alt="CA K Venkat Ramanan, Founder & CEO of FOCAS Edu"
             loading="lazy"
             className="relative w-full"

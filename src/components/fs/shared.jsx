@@ -53,19 +53,19 @@ export const openForm = (source) => {
 // ─── Content ─────────────────────────────────────────────────────────────────
 
 export const HERO_STUDENTS = [
-  { name: "Dharani", img: "/fs/students/Dharani.webp" },
-  { name: "Aravindhan", img: "/fs/students/Aravindhan.webp" },
-  { name: "Keerthana", img: "/fs/students/Keerthana.webp" },
-  { name: "Jagadeeshwaran", img: "/fs/students/Jagadeeshwaran.webp" },
+  { name: "Dharani", img: "/fs-assets/students/Dharani.webp" },
+  { name: "Aravindhan", img: "/fs-assets/students/Aravindhan.webp" },
+  { name: "Keerthana", img: "/fs-assets/students/Keerthana.webp" },
+  { name: "Jagadeeshwaran", img: "/fs-assets/students/Jagadeeshwaran.webp" },
 ];
 
 export const MARKSHEETS = [
-  { name: "Kwaja", img: "/fs/marksheets/Kwaja-result.webp" },
-  { name: "Mathumetha", img: "/fs/marksheets/Mathumetha-result.webp" },
-  { name: "Anupriya", img: "/fs/marksheets/Anupriya-result.webp" },
-  { name: "Kavitha", img: "/fs/marksheets/Kavitha-result.webp" },
-  { name: "Gowtham", img: "/fs/marksheets/Gowtham-result.webp" },
-  { name: "Manjunath", img: "/fs/marksheets/Manjunath-result.webp" },
+  { name: "Kwaja", img: "/fs-assets/marksheets/Kwaja-result.webp" },
+  { name: "Mathumetha", img: "/fs-assets/marksheets/Mathumetha-result.webp" },
+  { name: "Anupriya", img: "/fs-assets/marksheets/Anupriya-result.webp" },
+  { name: "Kavitha", img: "/fs-assets/marksheets/Kavitha-result.webp" },
+  { name: "Gowtham", img: "/fs-assets/marksheets/Gowtham-result.webp" },
+  { name: "Manjunath", img: "/fs-assets/marksheets/Manjunath-result.webp" },
 ];
 
 const ROADMAP = [
@@ -80,27 +80,27 @@ const ROADMAP = [
 const TESTIMONIALS = [
   {
     name: "Ragavi",
-    img: "/fs/testimonials/Ragavi.webp",
+    img: "/fs-assets/testimonials/Ragavi.webp",
     text: "Being a self study student, studying is hard. I realised how important this mentorship is in my journey.",
   },
   {
     name: "Sabitha",
-    img: "/fs/testimonials/Sabitha.webp",
+    img: "/fs-assets/testimonials/Sabitha.webp",
     text: "I thought I knew the subjects. The only problem I felt was my presentation. But only after coming here, I understood that I actually know very little.",
   },
   {
     name: "Yashika",
-    img: "/fs/testimonials/Yashika.webp",
+    img: "/fs-assets/testimonials/Yashika.webp",
     text: "The method of teaching followed by FOCAS academy is perfect. Trust me, I was able to score 82 just by enrolling in their fast track — then imagine how their regular course would be.",
   },
   {
     name: "Naveen",
-    img: "/fs/testimonials/Naveen.webp",
+    img: "/fs-assets/testimonials/Naveen.webp",
     text: "I was able to complete preparation in class itself, because it was live studying and NO procrastination. Got rid of confusions in the class itself as there were Q&A discussions at the end of every topic.",
   },
   {
     name: "Mercy",
-    img: "/fs/testimonials/Mercy.webp",
+    img: "/fs-assets/testimonials/Mercy.webp",
     text: "Really happy and satisfied with the tutors — the way of teaching here is effective. The concept behind Deep FOCAS is too good and I gained the confidence I always wanted.",
   },
 ];
@@ -499,7 +499,7 @@ export function StickyMobileCTA({ source = "sticky" }) {
 export function Footer() {
   return (
     <footer className="bg-[#0b3d33] px-4 py-8 pb-24 text-center text-sm text-white/60 md:pb-8">
-      <img src="/fs/logo-white.webp" alt="FOCAS Edu" loading="lazy" className="mx-auto mb-4 h-10 w-auto" />
+      <img src="/fs-assets/logo-white.webp" alt="FOCAS Edu" loading="lazy" className="mx-auto mb-4 h-10 w-auto" />
       © {new Date().getFullYear()} FOCAS Edu. All rights reserved.
     </footer>
   );
