@@ -17,6 +17,8 @@ const router = createBrowserRouter([
   { path: "/fs/parents", element: <FsParents /> },
   { path: "/fs/success", element: <FsSuccess /> },
   // /fs/book ends here after paying ₹9 or skipping — same page as /focas.
+  { path: "/fs/students/success", element: <RegistrationSuccess /> },
+  { path: "/fs/parents/success", element: <RegistrationSuccess /> },
   { path: "/success", element: <RegistrationSuccess /> },
   { path: "*", element: <FoundationSchool /> },
 ]);

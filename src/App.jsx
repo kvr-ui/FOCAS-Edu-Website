@@ -57,6 +57,8 @@ const router = createBrowserRouter([
     {path:"/fs/book",element:<FsBook />},
     {path:"/fs/parents",element:<FsParents />},
     {path:"/fs/success",element:<FsSuccess />},
+    {path:"/fs/students/success",element:<RegistrationSuccess />},
+    {path:"/fs/parents/success",element:<RegistrationSuccess />},
     /*  {path:"/description",element:<FOCASLandingPage />}, */
     { path: "*", element: <NotFound /> },
 ], {

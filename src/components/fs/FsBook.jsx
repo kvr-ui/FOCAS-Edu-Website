@@ -21,7 +21,8 @@ import { sendToZohoFlow } from "./FsForm";
  * Flow:
  *   1. Parent picks a date & time for the counselling call.
  *   2. "Pay ₹9 to confirm" → Razorpay (prefilled from the /fs form).
- *   3. Payment verified server-side (or Skip) → /success (FOCAS success page).
+ *   3. Payment verified server-side (or Skip) → /fs/students/success or
+ *      /fs/parents/success (FOCAS success page), by the page the form was on.
  *
  * Uses the same consultation endpoints on the RTI backend as /meet; the amount
  * is fixed server-side and that backend fires the paid Zoho webhook.
@@ -89,6 +90,8 @@ const FsBook = () => {
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState("");
 
+  const successPath = lead.audience ? `/fs/${lead.audience}/success` : "/success";
+
   const slotChosen = Boolean(selectedDay && selectedTime);
   const selectedDayLabel =
     days.find((d) => d.key === selectedDay)?.label || "";
@@ -110,7 +113,7 @@ const FsBook = () => {
   // Skip → the lead was already captured on form submit, so just continue.
   const handleSkip = () => {
     fbq?.("trackCustom", "FsBook_Skip");
-    navigate("/success");
+    navigate(successPath);
   };
 
   const pickTime = (t) => {
@@ -238,7 +241,7 @@ const FsBook = () => {
                 slotTime: selectedTime,
                 slotLabel: slotText,
               });
-              navigate("/success");
+              navigate(successPath);
             } else {
               setError(
                 verifyData.message ||

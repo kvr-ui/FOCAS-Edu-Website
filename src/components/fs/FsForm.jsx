@@ -140,9 +140,11 @@ const FsForm = ({ forStudents = false }) => {
         });
 
       // Carry the form data forward so /fs/book can prefill Razorpay.
+      // `audience` picks the success URL: /fs/students/success or /fs/parents/success.
       const leadData = {
         ...payload,
         name: `${payload.firstName} ${payload.lastName}`.trim(),
+        audience: forStudents ? "students" : "parents",
       };
       try {
         sessionStorage.setItem("focas_lead", JSON.stringify(leadData));
