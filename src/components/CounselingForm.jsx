@@ -77,8 +77,8 @@ const CounselingForm = () => {
     if (values["Last Name"].trim() && /\d/.test(values["Last Name"]))
       e["Last Name"] = "Only letters are allowed.";
     if (!values.phone.trim()) e.phone = "This field is required.";
-    else if (!/^[0-9]{6,15}$/.test(values.phone.trim()))
-      e.phone = "Enter a valid Phone.";
+    else if (!/^[0-9]{10}$/.test(values.phone.trim()))
+      e.phone = "Enter a valid 10-digit phone number.";
     req("CONTACTCF1");
     req("CONTACTCF7");
     req("State");
@@ -198,12 +198,14 @@ const CounselingForm = () => {
               ))}
             </select>
             <input
-              maxLength={20}
+              maxLength={10}
               type="tel"
               inputMode="numeric"
               className="bwf-input bwf-phone"
               value={values.phone}
-              onChange={set("phone")}
+              onChange={(e) =>
+                set("phone")({ target: { value: e.target.value.replace(/\D/g, "").slice(0, 10) } })
+              }
             />
           </Row>
 
