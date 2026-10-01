@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import logo from "../../../public/logo.png";
 import React from "react";
+import { trackLead } from "@/components/bigin/formKit";
 import SuccessStories from "../SuccessStories";
 
 const GREEN = "#1D9E75";
@@ -509,6 +510,8 @@ function RegisterPage({ onClose, campaignPhone }) {
       source,
       campaign,
     };
+
+    trackLead("audit-crash", payload);
 
     setStatus("loading");
 

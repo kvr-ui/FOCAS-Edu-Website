@@ -39,6 +39,39 @@ export function captureUtms() {
   return fromUrl;
 }
 
+// Follow-up dashboard's web-lead endpoint. Forms that don't go through the
+// lead server (FS, counselling, manual, RTI, audit) send it a copy of the lead
+// so every website lead lands there with its UTMs. Unset = tracking off.
+const LEAD_TRACK_URL = import.meta.env.VITE_LEAD_TRACK_URL || "";
+
+// The only fields the dashboard keeps; anything else is dropped there anyway.
+const TRACKED_FIELDS = [
+  "name", "firstName", "lastName", "phone", "email",
+  "caStatus", "attempt", "language", "city", "state",
+];
+
+// Fire-and-forget: never blocks or fails the form. keepalive lets the request
+// finish even though most forms navigate away (or open Razorpay) right after.
+export function trackLead(source, fields = {}) {
+  if (!LEAD_TRACK_URL) return;
+  const body = { source };
+  for (const key of TRACKED_FIELDS) {
+    const value = fields[key];
+    if (value !== undefined && value !== null && value !== "") body[key] = String(value);
+  }
+  Object.assign(body, captureUtms());
+  try {
+    fetch(LEAD_TRACK_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+      keepalive: true,
+    }).catch(() => {});
+  } catch {
+    /* never block the form */
+  }
+}
+
 // Defined at module scope (NOT inside a component) so its identity is stable
 // across renders — otherwise React remounts the inputs on every keystroke and
 // they lose focus after a single character.
