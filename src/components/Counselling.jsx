@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import logo from "../../public/logo.png";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { CA_STATUS_OPTIONS, DIAL_CODES, captureUtms } from "@/components/bigin/formKit";
+import { CA_STATUS_OPTIONS, DIAL_CODES, captureUtms, trackLead } from "@/components/bigin/formKit";
 
 // Counselling bookings are saved on the RTI backend (RTI-Backend/server.js).
 const BACKEND = import.meta.env.VITE_RTI_BACKEND_URL || "http://localhost:8000";
@@ -636,6 +636,8 @@ function RegisterPage({ onClose, campaignPhone }) {
       company:     form.company, // honeypot
       utm:         captureUtms(),
     };
+
+    if (!payload.company) trackLead("counselling", payload);
 
     setStatus("loading");
     try {

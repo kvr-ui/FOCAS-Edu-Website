@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import logo from "../../../public/logo.png";
 import React from "react";
+import { trackLead } from "@/components/bigin/formKit";
 
 const GREEN = "#1D9E75";
 const ORANGE = "#FFA500";
@@ -746,6 +747,8 @@ function RegisterPage({ onClose }) {
       },
 
     };
+
+    trackLead("manual-class", { name, phone: payload.phone, caStatus: payload.groupSelection, city, state });
 
     setStatus("loading");
 

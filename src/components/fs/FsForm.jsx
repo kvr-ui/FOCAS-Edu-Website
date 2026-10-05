@@ -7,6 +7,7 @@ import {
   Honeypot,
   Row,
   captureUtms,
+  trackLead,
 } from "@/components/bigin/formKit";
 
 /**
@@ -124,7 +125,10 @@ const FsForm = ({ forStudents = false }) => {
     try {
       // The lead goes only to the Zoho Flow webhook (skipped for bots that
       // filled the honeypot — they still see the normal next step).
-      if (!payload.company) sendToZohoFlow(payload);
+      if (!payload.company) {
+        sendToZohoFlow(payload);
+        trackLead("foundation-school", payload);
+      }
 
       if (typeof window.fbq === "function") window.fbq("track", "Lead");
       // Tell /success this Lead is already counted so it isn't sent twice.

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import logo from "../../../public/logo.png";
 import React from "react";
+import { trackLead } from "@/components/bigin/formKit";
 
 const GREEN = "#1D9E75";
 const ORANGE = "#FFA500";
@@ -726,6 +727,8 @@ function RegisterPage({ onClose, campaignPhone }) {
       campaign,
       ...(couponApplied && { couponCode: couponInput.trim() }),
     };
+
+    trackLead("rti", payload);
 
     setStatus("loading");
 
