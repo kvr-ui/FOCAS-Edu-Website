@@ -10,6 +10,8 @@ import RegistrationSuccess from "./components/RegistrationSuccess";
 import ExternalApp from "./components/external/ExternalApp";
 import Rti from "./components/rti/Rti";
 import RtiSuccess from "./components/rti/RtiSuccess";
+import CareerGuidance from "./components/career/CareerGuidance";
+import CareerGuidanceSuccess from "./components/career/CareerGuidanceSuccess";
 import Audit from "./components/audit/Audit";
 import AuditSuccess from "./components/audit/AuditSuccess";
 import Manual from "./components/manual/Manual";
@@ -45,6 +47,8 @@ const router = createBrowserRouter([
     {path: "/counselling-success", element: <CounsellingSuccess />},
     {path: "/rti", element: <Rti />},
     {path: "/rti-success", element: <RtiSuccess />},
+    {path: "/career-guidance", element: <CareerGuidance />},
+    {path: "/career-guidance-success", element: <CareerGuidanceSuccess />},
     {path: "/audit", element: <Audit />},
     {path: "/audit-success", element: <AuditSuccess />},
     {path: "/manual", element: <Manual />}, 

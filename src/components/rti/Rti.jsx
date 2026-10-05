@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import logo from "../../../public/logo.png";
 import React from "react";
 import { trackLead } from "@/components/bigin/formKit";
+import VideoCarousel from "@/components/shared/VideoCarousel";
 
 const GREEN = "#1D9E75";
 const ORANGE = "#FFA500";
@@ -551,36 +552,16 @@ function Compare() {
   );
 }
 
+const GALLERY_VIDEOS = [
+  { src: "https://vz-1b4abbd6-5f1.b-cdn.net/aab871ce-29fb-4305-b3b0-93b66237cb2b/playlist.m3u8", poster: "https://vz-1b4abbd6-5f1.b-cdn.net/aab871ce-29fb-4305-b3b0-93b66237cb2b/thumbnail_2dcfa6d5.jpg" },
+  { src: "https://vz-1b4abbd6-5f1.b-cdn.net/6e25a31d-9cb1-4cf5-b90c-09cd488072b0/playlist.m3u8", poster: "https://vz-1b4abbd6-5f1.b-cdn.net/6e25a31d-9cb1-4cf5-b90c-09cd488072b0/thumbnail_185e988f.jpg" },
+  { src: "https://vz-1b4abbd6-5f1.b-cdn.net/1945e8e1-88c8-48af-8728-ef4be26cace2/playlist.m3u8", poster: "https://vz-1b4abbd6-5f1.b-cdn.net/1945e8e1-88c8-48af-8728-ef4be26cace2/thumbnail_e3b573ac.jpg" },
+  { src: "https://vz-1b4abbd6-5f1.b-cdn.net/af30ec55-2c19-48cd-a06a-8c16b4f76e56/playlist.m3u8", poster: "https://vz-1b4abbd6-5f1.b-cdn.net/af30ec55-2c19-48cd-a06a-8c16b4f76e56/thumbnail_7129b5a0.jpg" },
+  { src: "https://vz-1b4abbd6-5f1.b-cdn.net/29c32588-ccb0-4ae0-acd8-9a6570e840af/playlist.m3u8", poster: "https://vz-1b4abbd6-5f1.b-cdn.net/29c32588-ccb0-4ae0-acd8-9a6570e840af/thumbnail_38f87620.jpg" },
+  { src: "https://vz-1b4abbd6-5f1.b-cdn.net/a67d22f5-f1fa-4f2d-9df7-42c6a26488af/playlist.m3u8", poster: "https://vz-1b4abbd6-5f1.b-cdn.net/a67d22f5-f1fa-4f2d-9df7-42c6a26488af/thumbnail_ec588370.jpg" },
+];
+
 function Gallery() {
-  const videos = [
-    "https://vz-1b4abbd6-5f1.b-cdn.net/aab871ce-29fb-4305-b3b0-93b66237cb2b/playlist.m3u8",
-    "https://vz-1b4abbd6-5f1.b-cdn.net/6e25a31d-9cb1-4cf5-b90c-09cd488072b0/playlist.m3u8",
-    "https://vz-1b4abbd6-5f1.b-cdn.net/1945e8e1-88c8-48af-8728-ef4be26cace2/playlist.m3u8",
-    "https://vz-1b4abbd6-5f1.b-cdn.net/af30ec55-2c19-48cd-a06a-8c16b4f76e56/playlist.m3u8",
-    "https://vz-1b4abbd6-5f1.b-cdn.net/29c32588-ccb0-4ae0-acd8-9a6570e840af/playlist.m3u8",
-    "https://vz-1b4abbd6-5f1.b-cdn.net/a67d22f5-f1fa-4f2d-9df7-42c6a26488af/playlist.m3u8"
-  ];
-  const thumbnails = [
-    "https://vz-1b4abbd6-5f1.b-cdn.net/aab871ce-29fb-4305-b3b0-93b66237cb2b/thumbnail_2dcfa6d5.jpg",
-    "https://vz-1b4abbd6-5f1.b-cdn.net/6e25a31d-9cb1-4cf5-b90c-09cd488072b0/thumbnail_185e988f.jpg",
-    "https://vz-1b4abbd6-5f1.b-cdn.net/1945e8e1-88c8-48af-8728-ef4be26cace2/thumbnail_e3b573ac.jpg",
-    "https://vz-1b4abbd6-5f1.b-cdn.net/af30ec55-2c19-48cd-a06a-8c16b4f76e56/thumbnail_7129b5a0.jpg",
-    "https://vz-1b4abbd6-5f1.b-cdn.net/29c32588-ccb0-4ae0-acd8-9a6570e840af/thumbnail_38f87620.jpg",
-    "https://vz-1b4abbd6-5f1.b-cdn.net/a67d22f5-f1fa-4f2d-9df7-42c6a26488af/thumbnail_ec588370.jpg"
-  ];
-
-  const [current, setCurrent] = React.useState(0);
-  const trackRef = React.useRef(null);
-
-  const scrollTo = (index) => {
-    if (trackRef.current) {
-      trackRef.current.children[index]?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
-    }
-  };
-
-  const prev = () => { const n = (current - 1 + videos.length) % videos.length; setCurrent(n); scrollTo(n); };
-  const next = () => { const n = (current + 1) % videos.length; setCurrent(n); scrollTo(n); };
-
   return (
     <section id="gallery" className="py-24 px-6 bg-white">
       <div className="max-w-5xl mx-auto">
@@ -588,29 +569,8 @@ function Gallery() {
           <span className="inline-block px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-4" style={{ background: "#e8f8f2", color: "#0f6e56" }}>Event Highlights</span>
           <h2 className="text-3xl md:text-5xl font-black tracking-tight text-gray-900 mb-3">What RTI Day looks like</h2>
         </Reveal>
-
-        <style>{`
-          .gallery-track { display:flex; overflow-x:auto; gap:16px; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; scrollbar-width:none; padding-bottom:4px; }
-          .gallery-track::-webkit-scrollbar { display:none; }
-          .gallery-slide { flex:0 0 85vw; max-width:400px; scroll-snap-align:center; min-height:550px; }
-          @media (min-width:768px) { .gallery-slide { flex:0 0 calc(40% - 10px); max-width:none; min-height:550px; } }
-          .gallery-nav-btn { width:44px; height:44px; border-radius:50%; border:none; background:#0f6e56; color:white; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background 0.2s,transform 0.15s; }
-          .gallery-nav-btn:hover { background:#0a5240; transform:scale(1.08); }
-          .gallery-nav-btn:active { transform:scale(0.95); }
-        `}</style>
-
         <Reveal>
-          <div ref={trackRef} className="gallery-track">
-            {videos.map((src, i) => (
-              <div key={i} className="gallery-slide rounded-2xl overflow-hidden border border-gray-200 shadow-md flex-shrink-0" style={{ background: "#111" }}>
-                <video src={src} poster={thumbnails[i]} controls className="w-full object-cover block" style={{ aspectRatio: "16/6", minHeight: "550px" }} />
-              </div>
-            ))}
-          </div>
-          <div className="flex justify-center gap-3 mt-5">
-            <button className="gallery-nav-btn" onClick={prev} aria-label="Previous">‹</button>
-            <button className="gallery-nav-btn" onClick={next} aria-label="Next">›</button>
-          </div>
+          <VideoCarousel videos={GALLERY_VIDEOS} />
         </Reveal>
       </div>
     </section>
