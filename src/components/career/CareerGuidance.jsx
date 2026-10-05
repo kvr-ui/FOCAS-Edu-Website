@@ -110,12 +110,13 @@ const FAQS = [
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-// URL-only attribution, same as the RTI page: no utm_source means "direct".
+// First-touch UTMs (captureUtms persists them in localStorage), so a parent who
+// lands from an ad and registers on a later visit is still attributed to it.
 function getAttribution() {
-  const params = new URLSearchParams(window.location.search);
+  const utm = captureUtms();
   return {
-    source: params.get("utm_source") || "direct",
-    campaign: params.get("utm_campaign") || "career_guidance_2026",
+    source: utm.utmSource || "direct",
+    campaign: utm.utmCampaign || "career_guidance_2026",
   };
 }
 
@@ -803,6 +804,7 @@ const CareerGuidance = () => {
 
   useEffect(() => {
     document.title = "Career Guidance Meet | FOCAS Edu";
+    captureUtms(); // remember ad UTMs on landing, not only on submit
     if (window.fbq) window.fbq("track", "ViewContent", { content_name: "Career Guidance Meet 2026" });
     window.dataLayer?.push({ event: "career_guidance_view" });
   }, []);
