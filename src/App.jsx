@@ -5,7 +5,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { useEffect } from "react";
 import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
 import RegistrationSuccess from "./components/RegistrationSuccess";
 import ExternalApp from "./components/external/ExternalApp";
 import Rti from "./components/rti/Rti";
@@ -28,6 +27,7 @@ import FoundationSchool from "./components/fs/FoundationSchool";
 import FsBook from "./components/fs/FsBook";
 import FsSuccess from "./components/fs/FsSuccess";
 import FsParents from "./components/fs/FsParents";
+import LandingRouter from "./landing/LandingRouter";
 //import FOCASLandingPage from "./components/FOCASLandingPage";
 const queryClient = new QueryClient();
 const PrivacyPolicyRedirect = () => {
@@ -64,7 +64,8 @@ const router = createBrowserRouter([
     {path:"/fs/students/success",element:<RegistrationSuccess />},
     {path:"/fs/parents/success",element:<RegistrationSuccess />},
     /*  {path:"/description",element:<FOCASLandingPage />}, */
-    { path: "*", element: <NotFound /> },
+    // Config-driven landing pages (/<slug>, /<slug>-success); NotFound otherwise.
+    { path: "*", element: <LandingRouter /> },
 ], {
     future: {
         v7_startTransition: true,
