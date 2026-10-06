@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
+import { STATES } from "@/data/indiaStatesCities";
 /* ── All your existing SVG Icons (keep same as before) ── */
 const MenuIcon = () => (<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>);
 const XIcon = () => (<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>);
@@ -417,7 +418,7 @@ function VideoModal({ video, onClose }) {
 function EnrollmentModal({ course, onClose }) {
   const [form, setForm] = useState({
     name: "", phoneNumber: "",
-    line1: "", line2: "", city: "", state: "", pincode: "",
+    line1: "", line2: "", city: "", state: "Tamil Nadu", pincode: "",
   });
   const [errors, setErrors] = useState({});
   const [step, setStep] = useState("form"); // "form" | "processing" | "success" | "error"
@@ -649,12 +650,16 @@ function EnrollmentModal({ course, onClose }) {
                       {errors.city && <p className="text-xs text-red-500 mt-1 ml-1">{errors.city}</p>}
                     </div>
                     <div>
-                      <input
+                      <select
                         className={inputClass("state")}
-                        placeholder="State *"
                         value={form.state}
                         onChange={(e) => setForm({ ...form, state: e.target.value })}
-                      />
+                      >
+                        <option value="" disabled>State *</option>
+                        {STATES.map((s) => (
+                          <option key={s} value={s}>{s}</option>
+                        ))}
+                      </select>
                       {errors.state && <p className="text-xs text-red-500 mt-1 ml-1">{errors.state}</p>}
                     </div>
                   </div>
