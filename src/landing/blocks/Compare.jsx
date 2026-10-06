@@ -9,7 +9,7 @@ const valueOf = (row, keys) => {
 
 /**
  * Responsive "others vs us" comparison block.
- * @param {{ section?: { id?: string, eyebrow?: string, title?: string, sub?: string, headings?: string[] | { feature?: string, others?: string, us?: string }, columns?: { feature?: string, others?: string, us?: string }, rows?: Array<{ label?: string, feature?: string, other?: React.ReactNode, others?: React.ReactNode, us?: React.ReactNode, rti?: React.ReactNode }> }, id?: string, eyebrow?: string, title?: string, sub?: string, headings?: string[] | { feature?: string, others?: string, us?: string }, columns?: { feature?: string, others?: string, us?: string }, rows?: Array<object>, onRegister?: () => void }} props
+ * @param {{ section?: { id?: string, eyebrow?: string, title?: string, sub?: string, headings?: string[] | { feature?: string, others?: string, us?: string }, mobileHeadings?: string[] | { feature?: string, others?: string, us?: string }, columns?: { feature?: string, others?: string, us?: string }, rows?: Array<{ label?: string, feature?: string, other?: React.ReactNode, others?: React.ReactNode, us?: React.ReactNode, rti?: React.ReactNode }> }, id?: string, eyebrow?: string, title?: string, sub?: string, headings?: string[] | { feature?: string, others?: string, us?: string }, mobileHeadings?: string[] | { feature?: string, others?: string, us?: string }, columns?: { feature?: string, others?: string, us?: string }, rows?: Array<object>, onRegister?: () => void }} props
  */
 export function Compare({ section, id, ...props }) {
   const config = section ?? { id, ...props };
@@ -19,6 +19,19 @@ export function Compare({ section, id, ...props }) {
     ? headingConfig
     : [headingConfig.feature, headingConfig.others ?? headingConfig.other, headingConfig.us];
   const [featureHeading = "Feature", othersHeading = "Others", usHeading = "Us"] = headings;
+  const mobileHeadingConfig = config.mobileHeadings ?? headings;
+  const mobileHeadings = Array.isArray(mobileHeadingConfig)
+    ? mobileHeadingConfig
+    : [
+        mobileHeadingConfig.feature,
+        mobileHeadingConfig.others ?? mobileHeadingConfig.other,
+        mobileHeadingConfig.us,
+      ];
+  const [
+    mobileFeatureHeading = featureHeading,
+    mobileOthersHeading = othersHeading,
+    mobileUsHeading = usHeading,
+  ] = mobileHeadings;
   if (!config.eyebrow && !config.title && !config.sub && rows.length === 0) return null;
 
   return (
@@ -48,16 +61,16 @@ export function Compare({ section, id, ...props }) {
             <div className="flex flex-col gap-3 md:hidden">
               <div className="grid grid-cols-[minmax(0,1fr)_72px_100px] overflow-hidden rounded-2xl">
                 <div className="bg-slate-200 px-3 py-2.5 text-xs font-black uppercase tracking-wider text-slate-600">
-                  {featureHeading}
+                  {mobileFeatureHeading}
                 </div>
                 <div className="bg-slate-200 px-2 py-2.5 text-center text-xs font-black uppercase tracking-wider text-slate-600">
-                  {othersHeading}
+                  {mobileOthersHeading}
                 </div>
                 <div
                   className="px-2 py-2.5 text-center text-xs font-black uppercase tracking-wider text-white"
                   style={{ background: "var(--lp-accent)" }}
                 >
-                  {usHeading}
+                  {mobileUsHeading}
                 </div>
               </div>
               {rows.map((row, index) => {

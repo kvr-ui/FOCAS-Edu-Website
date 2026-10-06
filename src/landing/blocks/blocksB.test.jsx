@@ -28,12 +28,16 @@ describe("BLOCKS_B", () => {
       <Compare
         id="compare"
         headings={{ feature: "Benefit", others: "Typical", us: "FOCAS" }}
+        mobileHeadings={{ feature: "Feature", others: "Others", us: "₹299 Pack" }}
         rows={[{ label: "Mentoring", others: "No", us: "Yes" }]}
       />,
     ));
-    expect(getAllByText("Benefit")).toHaveLength(2);
-    expect(getAllByText("Typical")).toHaveLength(2);
-    expect(getAllByText("FOCAS")).toHaveLength(2);
+    expect(getAllByText("Feature")).toHaveLength(1);
+    expect(getAllByText("Others")).toHaveLength(1);
+    expect(getAllByText("₹299 Pack")).toHaveLength(1);
+    expect(getAllByText("Benefit")).toHaveLength(1);
+    expect(getAllByText("Typical")).toHaveLength(1);
+    expect(getAllByText("FOCAS")).toHaveLength(1);
   });
 
   it("moves the testimonial carousel one card at a time", () => {

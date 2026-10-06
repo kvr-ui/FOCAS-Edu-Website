@@ -56,7 +56,7 @@ export function Footer({ section, id, ...props }) {
             {logo && <img src={logo} alt={config.logoAlt ?? "FOCAS Edu"} loading="lazy" className="mb-2 h-8 w-auto" />}
             {config.brand && <p className="mt-2 text-xs text-slate-400">{config.brand}</p>}
             {config.product && <p className="text-base font-black text-white sm:text-lg">{config.product}</p>}
-            {config.tagline && <p className="mt-2 text-sm leading-relaxed text-slate-400">{config.tagline}</p>}
+            {config.tagline && <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-slate-400">{config.tagline}</p>}
           </div>
 
           {links.length > 0 && (

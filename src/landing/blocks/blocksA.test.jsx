@@ -38,6 +38,7 @@ describe("BLOCKS_A", () => {
         stats={[{ value: "1:1", label: "Mentoring" }]}
         video="https://video.example/playlist.m3u8"
         mediaCta="Watch and join"
+        revealMedia={false}
         onRegister={onRegister}
       />,
     );
@@ -45,6 +46,8 @@ describe("BLOCKS_A", () => {
     expect(container.querySelector("#home video")?.getAttribute("src")).toBe(
       "https://video.example/playlist.m3u8",
     );
+    expect(container.querySelectorAll("#home video")[1]?.parentElement?.parentElement?.style.opacity).toBe("");
+    expect(container.querySelectorAll("#home video")[1]?.parentElement?.className).toContain("absolute inset-0");
     expect(getByText("A clear plan")).toBeTruthy();
     fireEvent.click(getByRole("button", { name: /register now/i }));
     expect(onRegister).toHaveBeenCalledOnce();

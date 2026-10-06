@@ -11,7 +11,7 @@ function Badge({ badge }) {
 
   return (
     <div
-      className="inline-flex items-center justify-center gap-2 rounded-full border px-4 py-2 text-sm font-bold"
+      className="inline-flex max-w-full items-center justify-center gap-2 rounded-full border px-4 py-2 text-sm font-bold"
       style={{
         background: badge.background ?? `color-mix(in srgb, ${colour ?? "var(--lp-accent-2)"} 9%, white)`,
         borderColor: badge.border ?? `color-mix(in srgb, ${colour ?? "var(--lp-accent-2)"} 30%, white)`,
@@ -22,7 +22,7 @@ function Badge({ badge }) {
         className="h-2 w-2 flex-none rounded-full"
         style={{ background: colour ?? "var(--lp-accent-2)", animation: "ping 1.4s ease infinite" }}
       />
-      <span>
+      <span className="min-w-0 text-center">
         {text}
         {hasText(emphasis) && <strong className={hasText(text) ? "ml-1" : ""}>{emphasis}</strong>}
       </span>
@@ -146,7 +146,7 @@ function MediaPanel({ media, mediaCta, onRegister, mobile = false }) {
   if (!hasText(src)) return null;
 
   return (
-    <div className={`relative w-full overflow-hidden rounded-3xl shadow-2xl ${mobile ? "mb-5 lg:hidden" : "absolute inset-0"}`}>
+    <div className={`w-full overflow-hidden rounded-3xl shadow-2xl ${mobile ? "relative mb-5 lg:hidden" : "absolute inset-0"}`}>
       {kind === "video" ? (
         <video
           src={src}
@@ -218,6 +218,7 @@ function mediaFromConfig(config) {
  * @param {string|object} [props.video] Bunny HLS URL or `{src,poster,controls,autoPlay,muted,loop}`.
  * @param {{type?:"image"|"video",src:string,alt?:string,poster?:string,ctaColor?:string}} [props.media]
  * @param {string} [props.mediaCta] Optional CTA over the media.
+ * @param {boolean} [props.revealMedia=true] Set false when hero media should be visible immediately.
  * @param {() => void} [props.onRegister]
  */
 export function HeroBlock({ section, onRegister, ...props }) {
@@ -290,11 +291,15 @@ export function HeroBlock({ section, onRegister, ...props }) {
         )}
       </Reveal>
 
-      {media && (
+      {media && (config.revealMedia === false ? (
+        <div className="relative hidden h-[560px] w-full max-w-lg flex-shrink-0 lg:block lg:w-[520px] xl:w-[580px]">
+          <MediaPanel media={media} mediaCta={mediaCta} onRegister={onRegister} />
+        </div>
+      ) : (
         <Reveal delay={0.12} className="relative hidden h-[560px] w-full max-w-lg flex-shrink-0 lg:block lg:w-[520px] xl:w-[580px]">
           <MediaPanel media={media} mediaCta={mediaCta} onRegister={onRegister} />
         </Reveal>
-      )}
+      ))}
     </section>
   );
 }
