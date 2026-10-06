@@ -246,10 +246,10 @@ describe("owner-only commands", () => {
     expect(d.deployToProd).not.toHaveBeenCalled();
   });
 
-  it("the default deploy stub replies with a not-implemented message", async () => {
+  it("the default deployToProd reports its failure (here: REPO_DIR missing)", async () => {
     const h = makeHarness();
     await h.send(textUpdate(OWNER_ID, "/deploy some-page"));
-    expect(h.texts().at(-1)).toBe('Deploy of "some-page" failed:\nDeploying "some-page" is not implemented yet (task 11).');
+    expect(h.texts().at(-1)).toBe(`Deploy of "some-page" failed:\nREPO_DIR does not exist or is not a directory: ${h.config.repoDir}`);
   });
 
   it("a failed deploy that was rolled back says so", async () => {
@@ -260,7 +260,7 @@ describe("owner-only commands", () => {
     expect(h.texts().at(-1)).toBe('Deploy of "x" failed:\nog:title missing\nThe previous build was restored automatically.');
   });
 
-  it("owner /rollback reaches rollback (and the default stub replies)", async () => {
+  it("owner /rollback reaches rollback (and the default refuses without a previous build)", async () => {
     const d = deps();
     const h = makeHarness({ deps: d });
     await h.send(textUpdate(OWNER_ID, "/rollback"));
@@ -269,7 +269,7 @@ describe("owner-only commands", () => {
 
     const h2 = makeHarness();
     await h2.send(textUpdate(OWNER_ID, "/rollback"));
-    expect(h2.texts().at(-1)).toBe("Rollback failed:\nRollback is not implemented yet (task 11).");
+    expect(h2.texts().at(-1)).toBe("Rollback failed:\nThere is no previous build to roll back to. Nothing was changed.");
   });
 });
 

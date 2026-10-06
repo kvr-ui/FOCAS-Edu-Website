@@ -98,6 +98,35 @@ In group chats, Telegram's default privacy mode only delivers commands and repli
 bot's own messages. Replying `ok` to a preview works. A bare `ok` that isn't a reply only
 works in a private chat, or after you turn off privacy mode in @BotFather (`/setprivacy`).
 
+## Production deploy and rollback
+
+`ok` / `/deploy <slug>` (owner only, on the job queue) runs, in `REPO_DIR`:
+
+1. `git fetch`, check out `main` (fast-forwarded to `origin/main`), merge `origin/lp/<slug>`
+   (fast-forward, else a merge commit `lp: deploy <slug>`). On a conflict the merge is aborted
+   and nothing else happens.
+2. `git push origin main`.
+3. `npm ci`, only if `package-lock.json` changed in the merge (or `node_modules` is missing),
+   then the build into `dist-new/`:
+   `npx --no-install vite build --outDir dist-new --emptyOutDir && node scripts/gen-landing-meta.mjs --outDir dist-new`
+   (override with `DEPLOY_BUILD_CMD`; `SITE_URL` is passed to it). A failed build sends the
+   last lines of its output and leaves the live site alone.
+4. Swap: `dist-new` is moved to `${WEB_ROOT}-new` (next to `WEB_ROOT`, so the renames are on
+   one filesystem), then `${WEB_ROOT}-prev` is removed, `WEB_ROOT` becomes `${WEB_ROOT}-prev`
+   and `${WEB_ROOT}-new` becomes `WEB_ROOT`.
+5. Verify: `GET SITE_URL/<slug>` must return 200 with an `og:title` equal to the page
+   config's `meta.title`. Otherwise the previous build is restored automatically (the failed
+   one is kept in `${WEB_ROOT}-failed` for inspection) and the failure is reported.
+
+`/rollback` swaps `WEB_ROOT` and `${WEB_ROOT}-prev` (running it again undoes it) and reports
+the commit now live, read from the `.deploy.json` the bot writes into every build. Without a
+`${WEB_ROOT}-prev` it refuses. Every deploy, rollback and auto-rollback is appended to
+`<BOT_STATE_DIR>/deploy-history.json` as `{slug, commit, time, by, action}`.
+
+The bot user needs write access to the parent directory of `WEB_ROOT`, push access to
+`origin`, and a git identity in `REPO_DIR` (if none is set, merge commits are authored as
+"FOCAS LP Bot").
+
 ## Code layout (`src/`)
 
 | File | Role |
@@ -113,7 +142,7 @@ works in a private chat, or after you turn off privacy mode in @BotFather (`/set
 | `types.ts` | `ServiceEnv` (config, state, `report()`) and `PageJob`, shared by the services. |
 | `images.ts` | **Stub**: `intakeImages`, `imageMiddleware` (task 9). |
 | `vercel.ts` | **Stub**: `getPreviewUrl` (task 10). |
-| `deploy.ts` | **Stub**: `deployToProd`, `rollback` (task 11). |
+| `deploy.ts` | `deployToProd` (merge `lp/<slug>` into main, push, build, swap into `WEB_ROOT`, verify, auto-rollback) and `rollback`. |
 | `claude.ts` | **Stub**: `runClaude` (task 16). |
 | `branch.ts` | **Stub**: `branchFlow` (task 16), which calls the image, Claude and Vercel services. |
 
