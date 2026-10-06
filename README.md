@@ -10,6 +10,18 @@ Every pushed git branch gets a Vercel preview of the Vite site (config in `verce
 
 Vercel is for previews only. Production stays on the VPS (nginx), deployed as described above.
 
+## Landing-page meta HTML
+
+`npm run build` runs `scripts/gen-landing-meta.mjs` after Vite. The script validates every
+non-template config in `src/landing-pages/`, then copies `dist/index.html` to
+`dist/<slug>/index.html` and `dist/<slug>-success/index.html` with page-specific title,
+description, Open Graph, Twitter card, and success-page `noindex` metadata. Set `SITE_URL` to
+override the production URL (`https://focasedu.com`), or pass `--outDir <dir>` when invoking the
+script directly after a Vite build into a different directory.
+
+Production nginx must use `try_files $uri $uri/ /index.html;`. This serves the generated file for
+`/<slug>` while all other routes fall through to the SPA.
+
 ### One-time Vercel setup (manual)
 
 1. **Import the project.** In the Vercel dashboard choose Add New > Project and import this GitHub repo. Vercel picks up `vercel.json` (Vite, `npm run build`, `dist`).
