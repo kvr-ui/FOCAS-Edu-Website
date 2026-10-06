@@ -61,7 +61,6 @@ export const RESERVED_ROUTES = Object.freeze([
   "rti",
   "career-guidance",
   "audit",
-  "manual",
   "workout-batch",
   "fs",
   "course",

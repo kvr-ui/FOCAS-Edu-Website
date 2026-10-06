@@ -13,8 +13,6 @@ import CareerGuidance from "./components/career/CareerGuidance";
 import CareerGuidanceSuccess from "./components/career/CareerGuidanceSuccess";
 import Audit from "./components/audit/Audit";
 import AuditSuccess from "./components/audit/AuditSuccess";
-import Manual from "./components/manual/Manual";
-import ManualSuccess from "./components/manual/ManualSuccess";
 import WorkoutBatch from "./components/Workout_batch/WorkoutBatch";
 import WorkoutBatchSuccess from "./components/Workout_batch/Workoutbatchsuccess"
 import CoursePage from "./components/external/CoursePage.jsx";
@@ -51,8 +49,6 @@ const router = createBrowserRouter([
     {path: "/career-guidance-success", element: <CareerGuidanceSuccess />},
     {path: "/audit", element: <Audit />},
     {path: "/audit-success", element: <AuditSuccess />},
-    {path: "/manual", element: <Manual />}, 
-    {path:"/manual-success",element:<ManualSuccess />},
     {path:"/workout-batch",element:<WorkoutBatch />},
     {path:"/workout-batch-success",element:<WorkoutBatchSuccess />},
     { path: "/course/:id", element: <CoursePage /> },

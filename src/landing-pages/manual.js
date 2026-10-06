@@ -1,12 +1,12 @@
 const CTA = "GET YOURS TODAY! — ₹299";
 
 const config = {
-  slug: "manual-v2",
+  slug: "manual",
   meta: {
     title: "FOCAS Manual Pro | Personalized CA Inter Guidance at ₹299",
     description:
       "Get the FOCAS physical manual and a personalized CA tutor session for ₹299, with delivery across India.",
-    ogImage: "/lp/manual-v2/manual-pro-og.png",
+    ogImage: "/lp/manual/manual-pro-og.png",
   },
   theme: {
     accent: "#1D9E75",

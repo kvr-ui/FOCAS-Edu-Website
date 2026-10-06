@@ -63,7 +63,7 @@ describe("exports", () => {
 
   it("reserves every explicit App.jsx route and its -success form", () => {
     for (const r of ["focas", "links", "meet", "payment", "success", "counselling", "rti", "career-guidance",
-      "audit", "manual", "workout-batch", "fs", "course", "privacy-policy"]) {
+      "audit", "workout-batch", "fs", "course", "privacy-policy"]) {
       expect(RESERVED_PATHS).toContain(r);
       expect(RESERVED_PATHS).toContain(`${r}-success`);
     }
@@ -129,8 +129,9 @@ describe("validateConfig: slug", () => {
     expect(errorsFor(() => {}, { filename: "/abs/src/landing-pages/manual-v2.js" })).toEqual([]);
   });
 
-  it("must not collide with the reserved manual route", () => {
-    expect(errorsFor((c) => (c.slug = "manual"))).toEqual(['slug: "manual" collides with an existing route /manual']);
+  it("no longer reserves manual (served by the engine)", () => {
+    expect(RESERVED_PATHS).not.toContain("manual");
+    expect(RESERVED_PATHS).not.toContain("manual-success");
   });
 
   it("must not collide with the reserved rti route", () => {

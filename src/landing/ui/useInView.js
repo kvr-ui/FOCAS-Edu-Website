@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 /**
  * Returns [ref, visible]. `visible` flips to true the first time the element
  * scrolls into view and stays true (the observer disconnects after that).
- * Same behaviour as the hand-written one in src/components/manual/Manual.jsx.
+ * Same behaviour as the hand-written one in the legacy manual page.
  */
 export function useInView(threshold = 0.1) {
   const ref = useRef(null);
