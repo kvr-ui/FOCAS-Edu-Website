@@ -11,12 +11,12 @@
  * Every build dir carries a small `.deploy.json` ({commit, slug, time, by}) so a rollback
  * can tell which commit is live after the swap.
  */
-import { spawn } from "node:child_process";
 import { existsSync, statSync } from "node:fs";
 import { cp, mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { LANDING_PAGES_DIR } from "./pages.js";
+import { gitEnv, run, shell, tail, type RunResult } from "./proc.js";
 import { isValidSlug } from "./slug.js";
 import type { ServiceEnv } from "./types.js";
 
@@ -72,7 +72,6 @@ class DeployError extends Error {}
 
 const REMOTE = "origin";
 const MAIN = "main";
-const OUTPUT_LIMIT = 200_000;
 const BOT_IDENTITY = ["-c", "user.name=FOCAS LP Bot", "-c", "user.email=lp-bot@focasedu.invalid"];
 
 export function createDeployer(opts: DeployOptions = {}): { deployToProd: DeployToProd; rollback: Rollback } {
@@ -375,68 +374,9 @@ async function verifyPage(
 
 // --- processes ----------------------------------------------------------------
 
-interface RunResult {
-  code: number;
-  /** Combined stdout + stderr (last {@link OUTPUT_LIMIT} chars). */
-  output: string;
-}
-
-function gitEnv(): NodeJS.ProcessEnv {
-  return { ...process.env, GIT_TERMINAL_PROMPT: "0", GIT_MERGE_AUTOEDIT: "no", LC_ALL: "C" };
-}
-
 async function resetTo(git: (args: string[]) => Promise<RunResult>, commit: string): Promise<void> {
   const head = await git(["rev-parse", "HEAD"]);
   if (head.output.trim() !== commit) await git(["reset", "--hard", commit]);
 }
 
-function shell(command: string, opts: { cwd: string; timeoutMs?: number; env?: Record<string, string> }) {
-  return run("sh", ["-c", command], { cwd: opts.cwd, timeoutMs: opts.timeoutMs, env: { ...process.env, ...opts.env } });
-}
-
-function run(
-  command: string,
-  args: string[],
-  opts: { cwd: string; env?: NodeJS.ProcessEnv; timeoutMs?: number },
-): Promise<RunResult> {
-  return new Promise((resolve) => {
-    let output = "";
-    let done = false;
-    const append = (d: Buffer) => {
-      output += d.toString();
-      if (output.length > OUTPUT_LIMIT) output = output.slice(-OUTPUT_LIMIT);
-    };
-    const finish = (code: number) => {
-      if (done) return;
-      done = true;
-      if (timer) clearTimeout(timer);
-      resolve({ code, output });
-    };
-    // Own process group, so a timeout also kills e.g. vite started by `sh -c`.
-    const child = spawn(command, args, { cwd: opts.cwd, env: opts.env ?? process.env, stdio: ["ignore", "pipe", "pipe"], detached: true });
-    child.stdout.on("data", append);
-    child.stderr.on("data", append);
-    const timer = opts.timeoutMs
-      ? setTimeout(() => {
-          output += `\n[timed out after ${Math.round(opts.timeoutMs! / 1000)}s]`;
-          try {
-            process.kill(-child.pid!, "SIGKILL");
-          } catch {
-            child.kill("SIGKILL");
-          }
-        }, opts.timeoutMs)
-      : undefined;
-    child.on("error", (err) => {
-      output += `\n${err.message}`;
-      finish(-1);
-    });
-    child.on("close", (code) => finish(code ?? 1));
-  });
-}
-
-/** Last lines of command output, short enough for a Telegram message. */
-export function tail(output: string, lines = 25, maxChars = 2500): string {
-  let t = output.trimEnd().split("\n").slice(-lines).join("\n");
-  if (t.length > maxChars) t = "..." + t.slice(-maxChars);
-  return t || "(no output)";
-}
+export { tail };

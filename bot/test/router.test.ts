@@ -52,16 +52,15 @@ describe("command stubs reply to allowed users", () => {
     }
   });
 
-  it("/newpage with the default stubs reports progress and a (stub) preview", async () => {
+  it("/newpage with the default services reports progress and the branch-flow error", async () => {
+    // testConfig's REPO_DIR does not exist, so the real branch flow fails fast (no git, no Claude).
     const h = makeHarness();
     await h.send(textUpdate(MEMBER_ID, "/newpage CA Inter crash course, May 2026, Rs 4999"));
     const texts = h.texts();
     expect(texts[0]).toBe("New page: ca-inter-crash-course\nStarting...");
     expect(h.calls.some((c) => c.method === "editMessageText")).toBe(true);
-    expect(texts.join("\n")).toContain('Preview for "ca-inter-crash-course"');
-    expect(texts.join("\n")).toContain("(stub)");
-    expect(h.calls.at(-1)!.payload.text).toMatch(/Done\.$/);
-    expect(h.state.getPage(MEMBER_ID, "ca-inter-crash-course")?.branch).toBe("lp/ca-inter-crash-course");
+    expect(texts.join("\n")).toContain('Could not create "ca-inter-crash-course":\nREPO_DIR does not exist');
+    expect(h.state.getPage(MEMBER_ID, "ca-inter-crash-course")).toBeUndefined();
   });
 
   it("/newpage without a brief shows usage", async () => {

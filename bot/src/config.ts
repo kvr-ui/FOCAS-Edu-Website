@@ -14,6 +14,14 @@ export interface Config {
   /** How the owner is named in refusal messages ("Only <ownerName> can deploy"). */
   ownerName: string;
   anthropicApiKey: string;
+  /** Model the Claude runner uses (CLAUDE_MODEL). */
+  claudeModel: string;
+  /** Max agent turns per Claude job (CLAUDE_MAX_TURNS); the job is stopped when exceeded. */
+  claudeMaxTurns: number;
+  /** Max estimated spend in USD per Claude job (CLAUDE_MAX_COST_USD). */
+  claudeMaxCostUsd: number;
+  /** Wall-clock limit per Claude job in ms (CLAUDE_TIMEOUT_MINUTES). */
+  claudeTimeoutMs: number;
   vercelToken: string;
   vercelProjectId: string;
   vercelTeamId?: string;
@@ -41,6 +49,11 @@ export class ConfigError extends Error {
     this.name = "ConfigError";
   }
 }
+
+export const DEFAULT_CLAUDE_MODEL = "claude-sonnet-5-5";
+export const DEFAULT_CLAUDE_MAX_TURNS = 40;
+export const DEFAULT_CLAUDE_MAX_COST_USD = 2;
+export const DEFAULT_CLAUDE_TIMEOUT_MINUTES = 20;
 
 const TOKEN_RE = /^\d+:[A-Za-z0-9_-]{30,}$/;
 const ID_RE = /^-?\d+$/;
@@ -84,6 +97,22 @@ export function loadConfig(env: Env): Config {
   if (ownerId) allowedIds.add(ownerId);
 
   const anthropicApiKey = required("ANTHROPIC_API_KEY");
+  const claudeModel = get("CLAUDE_MODEL") || DEFAULT_CLAUDE_MODEL;
+
+  /** Optional positive number; integer-only when `integer` is set. */
+  const positive = (key: string, fallback: number, integer: boolean): number => {
+    const raw = get(key);
+    if (!raw) return fallback;
+    const n = Number(raw);
+    if (!Number.isFinite(n) || n <= 0 || (integer && !Number.isInteger(n))) {
+      problems.push(`${key} must be a positive ${integer ? "whole number" : "number"}, got "${raw}"`);
+      return fallback;
+    }
+    return n;
+  };
+  const claudeMaxTurns = positive("CLAUDE_MAX_TURNS", DEFAULT_CLAUDE_MAX_TURNS, true);
+  const claudeMaxCostUsd = positive("CLAUDE_MAX_COST_USD", DEFAULT_CLAUDE_MAX_COST_USD, false);
+  const claudeTimeoutMs = positive("CLAUDE_TIMEOUT_MINUTES", DEFAULT_CLAUDE_TIMEOUT_MINUTES, false) * 60_000;
   const vercelToken = required("VERCEL_TOKEN");
   const vercelProjectId = required("VERCEL_PROJECT_ID");
   const vercelTeamId = get("VERCEL_TEAM_ID") || undefined;
@@ -125,6 +154,10 @@ export function loadConfig(env: Env): Config {
     ownerId,
     ownerName: get("TELEGRAM_OWNER_NAME") || "the owner",
     anthropicApiKey,
+    claudeModel,
+    claudeMaxTurns,
+    claudeMaxCostUsd,
+    claudeTimeoutMs,
     vercelToken,
     vercelProjectId,
     vercelTeamId,

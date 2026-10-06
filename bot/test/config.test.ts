@@ -41,6 +41,24 @@ describe("loadConfig", () => {
     expect(c.stateDir).toMatch(/data$/);
   });
 
+  it("defaults and reads the Claude model and caps", () => {
+    const d = loadConfig(validEnv());
+    expect(d).toMatchObject({ claudeModel: "claude-sonnet-5-5", claudeMaxTurns: 40, claudeMaxCostUsd: 2, claudeTimeoutMs: 20 * 60_000 });
+    const c = loadConfig(
+      validEnv({ CLAUDE_MODEL: "claude-opus-5-5", CLAUDE_MAX_TURNS: "25", CLAUDE_MAX_COST_USD: "0.75", CLAUDE_TIMEOUT_MINUTES: "5" }),
+    );
+    expect(c).toMatchObject({ claudeModel: "claude-opus-5-5", claudeMaxTurns: 25, claudeMaxCostUsd: 0.75, claudeTimeoutMs: 5 * 60_000 });
+  });
+
+  it("rejects invalid Claude caps", () => {
+    const problems = problemsOf(validEnv({ CLAUDE_MAX_TURNS: "2.5", CLAUDE_MAX_COST_USD: "-1", CLAUDE_TIMEOUT_MINUTES: "soon" }));
+    expect(problems).toEqual([
+      expect.stringMatching(/^CLAUDE_MAX_TURNS must be a positive whole number/),
+      expect.stringMatching(/^CLAUDE_MAX_COST_USD must be a positive number/),
+      expect.stringMatching(/^CLAUDE_TIMEOUT_MINUTES must be a positive number/),
+    ]);
+  });
+
   it("always allows the owner, even if not in TELEGRAM_ALLOWED_IDS", () => {
     expect(loadConfig(validEnv()).allowedIds.has(999)).toBe(true);
   });

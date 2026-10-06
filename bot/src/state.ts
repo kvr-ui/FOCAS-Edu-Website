@@ -9,6 +9,8 @@ export interface PageState {
   lastPreviewUrl?: string;
   /** Claude Agent SDK session id, so `/edit` resumes the same conversation. */
   claudeSessionId?: string;
+  /** True while Claude's questions for this page are unanswered (the next message continues the session). */
+  awaitingAnswers?: boolean;
   /** Telegram message id of the last preview message; replying to it means "edit this slug". */
   lastMessageId?: number;
   /** ISO time of the last update. */

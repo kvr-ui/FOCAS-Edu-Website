@@ -7,9 +7,10 @@ with the Vercel preview, and, after the owner's `ok`, deploys the page to the pr
 This folder is its own Node package. It is not part of the website build, and the root
 eslint and vitest configs ignore it.
 
-> Status: scaffold (task 5). Access control, commands, queue, state and progress messages
-> work. Image intake (task 9), Vercel previews (task 10), deploy/rollback (task 11) and
-> Claude + git (task 16) are still stubs that reply with "not implemented yet" messages.
+> Status: all services are implemented: access control, queue, state and progress messages,
+> image intake, Claude + git branch flow, Vercel previews, and production deploy/rollback.
+> The automated tests use fakes (Telegram, Claude Agent SDK, Vercel, a throwaway git remote);
+> a live end-to-end run with real Telegram/Anthropic/Vercel is task 18.
 
 ## Requirements
 
@@ -39,7 +40,11 @@ code 1.
 | `TELEGRAM_ALLOWED_IDS` | yes | Comma-separated Telegram user IDs that may use the bot. Anyone else gets **no reply at all**. |
 | `TELEGRAM_OWNER_ID` | yes | The only user who can `ok` / `/deploy` / `/rollback`. Always allowed, even if not listed above. |
 | `TELEGRAM_OWNER_NAME` | no | Name used in refusals ("Only Sandy can deploy."). Default: "the owner". |
-| `ANTHROPIC_API_KEY` | yes | Used by the Claude runner (task 16). |
+| `ANTHROPIC_API_KEY` | yes | API key for the Claude Agent SDK (passed to the Claude Code process the bot starts). |
+| `CLAUDE_MODEL` | no | Model for page jobs. Default: `claude-sonnet-5-5`. |
+| `CLAUDE_MAX_TURNS` | no | Max agent turns per job (whole number). Default: `40`. A job that hits it is stopped and reported; nothing is pushed. |
+| `CLAUDE_MAX_COST_USD` | no | Max estimated spend per job in USD. Default: `2`. Same handling as the turn cap. |
+| `CLAUDE_TIMEOUT_MINUTES` | no | Wall-clock limit per Claude run. Default: `20`. |
 | `VERCEL_TOKEN` | yes | Vercel API token for preview lookups (task 10). |
 | `VERCEL_PROJECT_ID` | yes | Vercel project of this site. |
 | `VERCEL_TEAM_ID` | no | Only when the project belongs to a Vercel team. |
@@ -68,12 +73,16 @@ in task 17.
 ## Test
 
 ```sh
-npm test           # vitest: access control, queue, router, state, config, startup
+npm test           # vitest: router, queue, state, config, images, Claude runner, tool policy,
+                   # branch flow, Vercel, deploy
 npm run typecheck
 ```
 
 The tests drive the real router with fake Telegram updates and record outgoing API calls,
-so they need no token and no network.
+so they need no token and no network. Claude is replaced by a fake `query()`
+(`test/fake-sdk.ts`) that sends its tool calls through the bot's real `canUseTool` callback
+and `PreToolUse` hook, and the git tests run against a throwaway clone with a bare temp
+"origin". No `ANTHROPIC_API_KEY` is needed for the tests.
 
 ## Commands
 
@@ -97,6 +106,50 @@ running, the status message says "You're #N in queue".
 In group chats, Telegram's default privacy mode only delivers commands and replies to the
 bot's own messages. Replying `ok` to a preview works. A bare `ok` that isn't a reply only
 works in a private chat, or after you turn off privacy mode in @BotFather (`/setprivacy`).
+
+## Creating and editing pages
+
+`/newpage <brief>` and `/edit <slug> <instruction>` (or a reply to a preview) run one job on the
+queue. In `REPO_DIR`:
+
+1. The checkout is cleaned first (`git reset --hard`, `git clean -fd`, aborting a leftover
+   rebase/merge), so `REPO_DIR` must be the bot's own checkout. Then `git fetch`.
+   New page: `git checkout -B lp/<slug> origin/main` (refused if `origin/lp/<slug>` already
+   exists). Edit: check out `lp/<slug>` and rebase it on `origin/main`; a rebase conflict
+   stops the job without changes.
+2. Photos sent with the command are saved to `public/lp/<slug>/` (image intake).
+3. Claude runs through the Claude Agent SDK with `cwd` = `REPO_DIR`,
+   `settingSources: ["project"]` (so the committed `.claude/skills/new-landing-page` skill
+   loads), the model from `CLAUDE_MODEL`, the turn/cost/time caps above, and only the tools
+   Read, Glob, Grep, Write, Edit, Bash and Skill. Nothing is pre-approved: every call is
+   checked by `canUseTool` **and** by a `PreToolUse` hook (hooks run before settings
+   allow-rules, so a permissive `.claude/settings.json` in the repo cannot bypass them):
+   - Write/Edit: only `src/landing-pages/<slug>.js` and files under `public/lp/<slug>/`
+     (paths resolved through `..` and symlinks; no dotfiles or `.html`/`.js`/`.svg` under
+     `public/lp`). The config must stay a plain data module (no `import`, `require`,
+     `eval`, `process.*`).
+   - Bash: exactly `node scripts/validate-landing.mjs [<slug>]` or `npm run build`. Anything
+     chained, piped, substituted, redirected or env-prefixed is denied.
+   - Read/Glob/Grep: inside `REPO_DIR` only, not `.env*` or `.git/`. Skill: only
+     `new-landing-page`. Other tools are not available.
+   The Claude session id is stored per page, so `/edit` and replies resume the same
+   conversation (if the stored session is gone, a new one is started and the reply says so).
+4. Guard: if `git status --porcelain` shows any path other than the page's own files, the
+   bot runs `git reset --hard` + `git clean -fd`, lists the paths, and pushes nothing.
+5. If Claude asks questions instead of writing the page, they are sent to Telegram. Reply to
+   that message (or, in a private chat, just send the next message) and the answer continues
+   the same Claude session. Uploaded images are kept in a local, unpushed commit meanwhile.
+6. The bot runs `node scripts/validate-landing.mjs <slug>` and `npm run build` itself
+   (`npm ci` first if `node_modules` is missing or older than `package-lock.json`). On
+   failure nothing is pushed and the last lines of the output are sent. Reply to that message
+   to ask Claude to fix it in the same session.
+7. Commit `lp: <slug> — <short summary>` (only the page's files are staged), push with
+   `--force-with-lease` (the branch is rebased), wait for the Vercel preview of that commit
+   and reply with the page, `/<slug>-success` and `?v=<variant>` links, plus Claude's
+   "Couldn't do" list and any blocked tool calls.
+
+Nothing in this flow touches `main` or production; that is `ok` / `/deploy` below. The bot
+user needs push access to `origin` for `lp/*` branches.
 
 ## Production deploy and rollback
 
@@ -140,13 +193,14 @@ The bot user needs write access to the parent directory of `WEB_ROOT`, push acce
 | `progress.ts` | One status message per job, edited as it advances. |
 | `pages.ts`, `slug.ts` | Listing pages in `REPO_DIR`, deriving and validating slugs. |
 | `types.ts` | `ServiceEnv` (config, state, `report()`) and `PageJob`, shared by the services. |
-| `images.ts` | **Stub**: `intakeImages`, `imageMiddleware` (task 9). |
-| `vercel.ts` | **Stub**: `getPreviewUrl` (task 10). |
+| `images.ts` | `intakeImages`, `imageMiddleware`: photos to `public/lp/<slug>/*.webp`. |
+| `vercel.ts` | `getPreviewUrl` (polls Vercel for the commit's preview) and preview link helpers. |
 | `deploy.ts` | `deployToProd` (merge `lp/<slug>` into main, push, build, swap into `WEB_ROOT`, verify, auto-rollback) and `rollback`. |
-| `claude.ts` | **Stub**: `runClaude` (task 16). |
-| `branch.ts` | **Stub**: `branchFlow` (task 16), which calls the image, Claude and Vercel services. |
+| `claude.ts` | `runClaude` (Claude Agent SDK `query()`, caps, session resume) and `parseSkillOutput`. `createClaudeRunner({ query })` takes a fake SDK in tests. |
+| `policy.ts` | The per-job tool policy: `canUseTool`, the `PreToolUse` hook, the Bash allowlist and the allowed-path rule used by the porcelain guard. |
+| `branch.ts` | `branchFlow`: git checkout/rebase, image intake, Claude, guard, validate/build, commit, push, preview links. `createBranchFlow(deps)` swaps the services in tests. |
+| `proc.ts` | Child-process helpers (run, shell, output tail) shared by `branch.ts` and `deploy.ts`. |
 
-Each stub exports a typed function signature (`IntakeImages`, `GetPreviewUrl`,
-`DeployToProd`, `Rollback`, `RunClaude`, `BranchFlow`) and its result types. To replace a
-stub, change the implementation in that one file and keep the signature. The router doesn't
-need to change.
+Each service exports a typed function signature (`IntakeImages`, `GetPreviewUrl`,
+`DeployToProd`, `Rollback`, `RunClaude`, `BranchFlow`) and its result types, and the router
+receives them through `deps`, so tests can replace any of them.

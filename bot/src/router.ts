@@ -178,14 +178,24 @@ export function createBot(opts: CreateBotOptions): BotApp {
     enqueueJob(ctx, `${kind}:${slug}`, title, async (env, progress) => {
       const result = await deps.branchFlow(slug, job, env);
       if (!result.ok) {
-        if (result.claudeSessionId && state.getPage(chatId, slug)) {
-          state.setPage(chatId, slug, { claudeSessionId: result.claudeSessionId });
-        }
         await progress.finish("Failed.");
-        await ctx.api.sendMessage(chatId, `Could not ${kind === "new" ? "create" : "update"} "${slug}":\n${result.error}`, replyParams(ctx));
+        const hint = result.claudeSessionId ? "\n\nReply to this message to tell Claude what to change or fix." : "";
+        const failMsg = await ctx.api.sendMessage(
+          chatId,
+          `Could not ${kind === "new" ? "create" : "update"} "${slug}":\n${result.error}${hint}`.slice(0, 4096),
+          { ...replyParams(ctx), link_preview_options: { is_disabled: true } },
+        );
+        if (result.claudeSessionId) {
+          // Keep the Claude session so a reply to the failure continues the same conversation.
+          state.setPage(chatId, slug, {
+            claudeSessionId: result.claudeSessionId,
+            awaitingAnswers: false,
+            lastMessageId: failMsg.message_id,
+          });
+        }
         return;
       }
-      const msg = await ctx.api.sendMessage(chatId, formatPreview(slug, result), {
+      const msg = await ctx.api.sendMessage(chatId, formatPreview(slug, result).slice(0, 4096), {
         ...replyParams(ctx),
         link_preview_options: { is_disabled: true },
       });
@@ -193,6 +203,7 @@ export function createBot(opts: CreateBotOptions): BotApp {
         branch: result.branch,
         ...(result.previewUrl ? { lastPreviewUrl: result.previewUrl } : {}),
         ...(result.claudeSessionId ? { claudeSessionId: result.claudeSessionId } : {}),
+        awaitingAnswers: result.questions.length > 0,
         lastMessageId: msg.message_id,
       });
       await progress.finish(result.questions.length ? "Waiting for your answers." : "Done.");
@@ -334,6 +345,12 @@ export function createBot(opts: CreateBotOptions): BotApp {
       return;
     }
     if (ctx.chat.type === "private" && text) {
+      // Claude asked questions in this chat: a plain message is the answer.
+      const lastSlug = state.getLastSlug(ctx.chat.id);
+      if (lastSlug && state.getPage(ctx.chat.id, lastSlug)?.awaitingAnswers) {
+        await startEdit(ctx, lastSlug, text);
+        return;
+      }
       await ctx.reply("I didn't understand that. Send /help to see what I can do.");
     }
   });
