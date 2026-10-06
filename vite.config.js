@@ -29,4 +29,8 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(new URL('.', import.meta.url).pathname, "./src"),
     },
   },
+  test: {
+    // bot/ is a separate Node package with its own vitest config (cd bot && npm test).
+    exclude: ["**/node_modules/**", "**/dist/**", "bot/**"],
+  },
 }));

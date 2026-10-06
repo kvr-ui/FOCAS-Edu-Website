@@ -5,7 +5,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { useEffect } from "react";
 import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
 import RegistrationSuccess from "./components/RegistrationSuccess";
 import ExternalApp from "./components/external/ExternalApp";
 import Rti from "./components/rti/Rti";
@@ -14,8 +13,6 @@ import CareerGuidance from "./components/career/CareerGuidance";
 import CareerGuidanceSuccess from "./components/career/CareerGuidanceSuccess";
 import Audit from "./components/audit/Audit";
 import AuditSuccess from "./components/audit/AuditSuccess";
-import Manual from "./components/manual/Manual";
-import ManualSuccess from "./components/manual/ManualSuccess";
 import WorkoutBatch from "./components/Workout_batch/WorkoutBatch";
 import WorkoutBatchSuccess from "./components/Workout_batch/Workoutbatchsuccess"
 import CoursePage from "./components/external/CoursePage.jsx";
@@ -28,6 +25,7 @@ import FoundationSchool from "./components/fs/FoundationSchool";
 import FsBook from "./components/fs/FsBook";
 import FsSuccess from "./components/fs/FsSuccess";
 import FsParents from "./components/fs/FsParents";
+import LandingRouter from "./landing/LandingRouter";
 //import FOCASLandingPage from "./components/FOCASLandingPage";
 const queryClient = new QueryClient();
 const PrivacyPolicyRedirect = () => {
@@ -51,8 +49,6 @@ const router = createBrowserRouter([
     {path: "/career-guidance-success", element: <CareerGuidanceSuccess />},
     {path: "/audit", element: <Audit />},
     {path: "/audit-success", element: <AuditSuccess />},
-    {path: "/manual", element: <Manual />}, 
-    {path:"/manual-success",element:<ManualSuccess />},
     {path:"/workout-batch",element:<WorkoutBatch />},
     {path:"/workout-batch-success",element:<WorkoutBatchSuccess />},
     { path: "/course/:id", element: <CoursePage /> },
@@ -64,7 +60,8 @@ const router = createBrowserRouter([
     {path:"/fs/students/success",element:<RegistrationSuccess />},
     {path:"/fs/parents/success",element:<RegistrationSuccess />},
     /*  {path:"/description",element:<FOCASLandingPage />}, */
-    { path: "*", element: <NotFound /> },
+    // Config-driven landing pages (/<slug>, /<slug>-success); NotFound otherwise.
+    { path: "*", element: <LandingRouter /> },
 ], {
     future: {
         v7_startTransition: true,

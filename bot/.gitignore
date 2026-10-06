@@ -1,0 +1,5 @@
+node_modules
+dist
+.env
+# JSON state written by the bot (per-chat pages, deploy history)
+data/
