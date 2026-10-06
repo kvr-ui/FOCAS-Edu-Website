@@ -6,7 +6,7 @@ import { CG_CSS, useCareerFonts } from "./theme";
 const WHATSAPP_GROUP_URL = "";
 
 const DETAILS = [
-  { icon: CalendarDays, label: "Date", value: "Sunday, 11th October 2026" },
+  { icon: CalendarDays, label: "Date", value: "Sunday, 18th October 2026" },
   { icon: Clock, label: "Time", value: "10:30 AM – 12:30 PM" },
   { icon: Video, label: "Mode", value: "Online · Google Meet" },
 ];

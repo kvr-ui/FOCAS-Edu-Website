@@ -32,7 +32,7 @@ import { CG_CSS, NAVY, useCareerFonts } from "./theme";
 
 // ─── Content ─────────────────────────────────────────────────────────────────
 
-const EVENT_START = new Date("2026-10-11T10:30:00+05:30");
+const EVENT_START = new Date("2026-10-18T10:30:00+05:30");
 const PRICE_LABEL = "₹99";
 const EVENT_ID = "career-guidance";
 
@@ -50,13 +50,13 @@ const TESTIMONIALS = [
 ];
 
 const EVENT_DETAILS = [
-  { icon: CalendarDays, label: "Date", value: "Sun, 11th Oct 2026" },
+  { icon: CalendarDays, label: "Date", value: "Sun, 18th Oct 2026" },
   { icon: Clock, label: "Time", value: "10:30 AM – 12:30 PM" },
   { icon: Video, label: "Mode · Online", value: "Google Meet" },
 ];
 
 const HIGHLIGHTS = [
-  { icon: Users, text: "Parents welcome to attend with their child" },
+  { icon: Users, text: "Open for Parents & Students" },
   { icon: MessagesSquare, text: "Live Q & A with CA K Venkat Ramanan" },
   { icon: ShieldCheck, text: "Secure online registration" },
 ];
@@ -64,7 +64,7 @@ const HIGHLIGHTS = [
 const WHAT_YOU_GET = [
   "Discover all career possibilities after 12th grade.",
   "What is CA? — a complete understanding of the course.",
-  "How does life during & after CA feel?",
+  "How does life during & after CA look like?",
   "Why CA matters?",
 ];
 
@@ -72,17 +72,17 @@ const AGENDA = [
   { time: "10:30 AM", title: "Welcoming the students & parents" },
   { time: "11:00 AM", title: "What is CA — a brief outlook" },
   { time: "11:30 AM", title: "Life during CA & life after CA" },
-  { time: "12:00 Noon", title: "Q & A" },
+  { time: "12:00 Noon", title: "Live Q & A with CA K Venkat Ramanan" },
 ];
 
 const FAQS = [
   {
     q: "Who can attend this meet?",
-    a: "Students currently in 10th, 11th or 12th standard. Parents are welcome to join along with their child.",
+    a: "Parents & Students currently studying in 10th, 11th & 12th.",
   },
   {
     q: "How do we join the session?",
-    a: "It's fully online on Google Meet. After you register, the Meet link is sent to your WhatsApp before the session.",
+    a: "The meet link is sent to you as a WhatsApp message before the session.",
   },
   {
     q: "Can parents and the student attend together?",
@@ -234,8 +234,7 @@ function Hero({ countdown, onRegister }) {
             <span className="border-b-2 border-[#a87b2a] pb-0.5">10th, 11th and 12th students</span>
           </p>
           <p className="mt-4 max-w-xl text-xl leading-relaxed text-slate-600 sm:text-2xl">
-            Get clarity on the CA journey and the other possibilities available during &amp; after qualification —
-            in a two-hour live session with CA K Venkat Ramanan.
+            Get clarity about the CA journey and other possibilities available.
           </p>
 
           <dl className="cg-card mt-8 grid divide-y divide-[#e7e2d8] sm:grid-cols-3 sm:divide-x sm:divide-y-0">
@@ -313,7 +312,7 @@ function Agenda() {
   return (
     <section className="bg-white py-16 sm:py-24">
       <div className="mx-auto grid max-w-6xl gap-10 px-4 sm:px-6 lg:grid-cols-[1fr_1.6fr]">
-        <SectionHeading label="Agenda for the day" title="How the two hours are planned" sub="Sunday, 11th October · 10:30 AM – 12:30 PM (IST)" />
+        <SectionHeading label="Agenda for the day" title="How the two hours are planned" sub="Sunday, 18th October · 10:30 AM – 12:30 PM (IST)" />
         <Reveal>
           <ol className="divide-y divide-[#e7e2d8] border-y border-[#e7e2d8]">
             {AGENDA.map((item) => (
@@ -460,7 +459,7 @@ function FinalCTA({ ended, onRegister }) {
           <h2 className="cg-display mt-3 text-4xl font-semibold !text-white sm:text-5xl">
             Help your child choose their path with confidence.
           </h2>
-          <p className="mt-3 text-white/75">Sunday, 11th October · 10:30 AM · Online on Google Meet</p>
+          <p className="mt-3 text-white/75">Sunday, 18th October · 10:30 AM · Online on Google Meet</p>
           <RegisterButton ended={ended} onRegister={onRegister} source="final" light className="mt-8 w-full sm:w-auto" />
         </div>
       </Reveal>
@@ -642,7 +641,7 @@ function RegisterModal({ onClose }) {
         amount: order.amount,
         currency: order.currency,
         name: "FOCAS Edu",
-        description: "Career Guidance Meet — 11 Oct",
+        description: "Career Guidance Meet — 18 Oct",
         order_id: order.id,
         prefill: { name: payload.name, contact: phone },
         theme: { color: NAVY },
@@ -720,7 +719,7 @@ function RegisterModal({ onClose }) {
           <X className="h-5 w-5" />
         </button>
         <div className="mb-8 text-center">
-          <p className="cg-label">Sunday · 11th October · 10:30 AM</p>
+          <p className="cg-label">Sunday · 18th October · 10:30 AM</p>
           <h2 id="cg-register-title" className="cg-display mt-3 text-4xl font-semibold">Register for the Career Guidance Meet</h2>
           <p className="mt-2 text-slate-600">Online on Google Meet · {PRICE_LABEL} only</p>
         </div>
