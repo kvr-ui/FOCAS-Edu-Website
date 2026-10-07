@@ -231,7 +231,9 @@ const FsBook = () => {
             if (verifyData.success) {
               firePurchaseTracking(response.razorpay_payment_id, slotText);
               // Paid lead → Zoho Flow webhook, tagged separately from the form lead.
+              // The Flow maps `source` to Bigin's Lead Source, so set both.
               sendToZohoFlow(lead, {
+                source: "FS - PAID",
                 leadSource: "FS - PAID",
                 paymentStatus: "Paid",
                 amount: String(AMOUNT_RUPEES),
