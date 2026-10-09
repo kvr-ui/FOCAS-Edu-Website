@@ -12,7 +12,7 @@ import WorkoutBatchForm from "./WorkoutBatchForm";
    ────────────────────────────────────────────────────────────── */
 const HERO_VIDEO = {
   type: "embed",
-  src: "https://iframe.mediadelivery.net/embed/680244/2beebc97-5608-4eb3-9581-145ec11fd71a?autoplay=true&loop=true&muted=true&preload=true",
+  src: "https://iframe.mediadelivery.net/embed/680244/5e284d12-237f-46cb-aadf-bb0752d7b986?autoplay=true&loop=true&muted=true&preload=true",
 };
 
 const DEMO_MEDIA = [
