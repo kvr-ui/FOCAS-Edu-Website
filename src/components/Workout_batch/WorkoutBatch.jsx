@@ -42,17 +42,17 @@ const NAV_LINKS = [
 ];
 
 const PRICING = [
-  { label: "Per Paper", price: "7,000", note: "Pick the paper you need to practise most." },
+  { label: "Per Paper", price: "7,000", note: "Pick the paper you need to practice most." },
   { label: "G1 / G2 Combo", price: "15,000", note: "All papers in your group, one workout plan.", featured: true },
 ];
 
 const CONTAINS = [
   { n: "01", title: "Personalized Tutor Workout Sessions", desc: "Small-group sessions where a tutor makes you solve, not just listen — and corrects you on the spot." },
-  { n: "02", title: "AI Question Bank", desc: "Curated, exam-relevant questions integrated with AI so you practise exactly where you're weak." },
-  { n: "03", title: "Video Reviewed Test Series", desc: "Every test you write is reviewed on video, so you see precisely where marks were lost." },
+  { n: "02", title: "AI Question Bank", desc: "Curated, exam-relevant questions integrated with AI, so you practice exactly where you're weak." },
+  { n: "03", title: "Video Reviewed Test Series", desc: "Every test you write is evaluated with video, so you know where marks were lost." },
   { n: "04", title: "Weekly Mentorship Sessions", desc: "A weekly check-in to fix your plan, your pace and your mindset before exam day." },
-  { n: "05", title: "Last Attempt Community Access", desc: "Practise alongside students who are serious about making this their final attempt." },
-  { n: "06", title: "Syllabus Coverage Guide", desc: "A day-by-day map to finish a complete workout of the syllabus within one month." },
+  { n: "05", title: "Last Attempt Community Access", desc: "Practice alongside students who are serious about making this their final attempt." },
+  { n: "06", title: "Syllabus Coverage Guide", desc: "A map to finish the workout of a significant portion of the syllabus to make you exam-ready." },
 ];
 
 const COMPARE_ROWS = [
@@ -75,13 +75,13 @@ const TESTIMONIALS = [
 
 const FAQS = [
   { q: "Who is the Last Attempt Workout Batch for?", a: "CA Intermediate students who already know the concepts but need PRACTICE — repeaters and students with pending practice who want to complete a full-fledged workout within a month before the Jan 2027 attempt." },
-  { q: "When does the batch start?", a: "The batch starts soon for the CA Inter January 2027 attempt. Enquire now and our team will share the exact start date and schedule." },
+  { q: "When does the batch start?", a: "The batch starts soon for the CA Inter January 2027 attempt. Book your seat and our team will share the exact start date and schedule." },
   { q: "How much does it cost?", a: "₹7,000 per paper, or ₹15,000 for the G1 / G2 combo covering all papers in your group." },
-  { q: "What is a 'workout session'?", a: "Instead of a lecture, a tutor gives a small group selective questions to solve in class, then reviews and corrects your approach right there — so you leave having practised, not just watched." },
+  { q: "What is a 'workout session'?", a: "Instead of a lecture, a tutor gives a small group selective questions to solve in class, then reviews and corrects your approach right there — so you leave having practiced, not just watched." },
   { q: "What is the AI Question Bank?", a: "A curated bank of exam-relevant questions (RTP, MTP, PYP and more) integrated with AI, so your practice focuses on the areas where you lose the most marks." },
   { q: "How are tests reviewed?", a: "Each test in the series is evaluated and explained on video, showing you exactly where you lost marks and how to write a better answer." },
   { q: "What language are sessions held in?", a: "Sessions are conducted in English and Hindi (हिंदी)." },
-  { q: "How do I enroll?", a: "Tap Enquire Now on this page and fill the quick form. Our team will call you back with the details." },
+  { q: "How do I enroll?", a: "Tap Book your Seat Now! on this page and fill the quick form. Our team will call you back with the details." },
 ];
 
 /* ── Helpers ── */
@@ -158,7 +158,7 @@ function Eyebrow({ children, dark = false }) {
   );
 }
 
-function CTA({ onClick, children = "Enquire Now", variant = "solid", className = "" }) {
+function CTA({ onClick, children = "Book your Seat Now!", variant = "solid", className = "" }) {
   const solid = variant === "solid";
   return (
     <button
@@ -219,7 +219,7 @@ function Navbar({ scrolled, menuOpen, setMenuOpen, onEnrol }) {
             </button>
           ))}
           <button onClick={onEnrol} className="text-xs font-bold px-5 py-2.5 rounded-full uppercase tracking-widest transition-all hover:-translate-y-0.5" style={{ background: MINT, color: INK }}>
-            Enquire Now
+            Book your Seat Now!
           </button>
         </div>
         <button className="md:hidden flex flex-col gap-1.5 p-2" onClick={() => setMenuOpen(o => !o)} aria-label="Menu">
@@ -236,7 +236,7 @@ function Navbar({ scrolled, menuOpen, setMenuOpen, onEnrol }) {
             </button>
           ))}
           <button onClick={() => { setMenuOpen(false); onEnrol(); }} className="mt-3 w-full py-3 rounded-full font-bold text-sm uppercase tracking-widest" style={{ background: MINT, color: INK }}>
-            Enquire Now
+            Book your Seat Now!
           </button>
         </div>
       )}
@@ -254,9 +254,12 @@ function Hero({ onEnrol }) {
 
       <div className="relative max-w-6xl mx-auto grid lg:grid-cols-[1.1fr_0.9fr] gap-10 lg:gap-14 items-center">
         <div className="text-center lg:text-left">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold mb-6" style={{ background: "rgba(255,181,71,.12)", color: AMBER, border: "1px solid rgba(255,181,71,.3)" }}>
-            <span className="w-1.5 h-1.5 rounded-full" style={{ background: AMBER, animation: "wbPing 1.4s ease infinite" }} />
-            Batch starts soon · CA Inter Jan 2027 attempt
+          <div className="flex flex-col items-center lg:items-start gap-2.5 mb-7">
+            <div className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full text-sm md:text-lg font-bold" style={{ background: "rgba(255,181,71,.12)", color: AMBER, border: "1px solid rgba(255,181,71,.35)" }}>
+              <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: AMBER, animation: "wbPing 1.4s ease infinite" }} />
+              Batch starts soon · CA Inter Jan 2027 attempt
+            </div>
+            <span className="text-xs md:text-sm font-black uppercase tracking-[0.2em] text-white">Limited Seats ONLY!</span>
           </div>
 
           <p className="text-sm md:text-base font-semibold tracking-wide text-white/60 mb-3">FOCAS Edu presents</p>
@@ -290,8 +293,6 @@ function Hero({ onEnrol }) {
             <span><b className="text-white">₹7,000</b> per paper</span>
             <span className="text-white/20">|</span>
             <span><b className="text-white">₹15,000</b> G1 / G2 combo</span>
-            <span className="text-white/20 hidden sm:inline">|</span>
-            <span>🌐 English + हिंदी</span>
           </div>
         </div>
 
@@ -314,7 +315,7 @@ function HeroVideo({ onEnrol }) {
           className="absolute bottom-3 left-3 right-3 py-3.5 rounded-2xl font-bold text-sm uppercase tracking-widest backdrop-blur-md transition-colors"
           style={{ background: "rgba(6,20,15,.75)", color: "#fff", border: "1px solid rgba(255,255,255,.15)" }}
         >
-          Enquire Now →
+          Book your Seat Now! →
         </button>
       </div>
     </div>
@@ -322,7 +323,7 @@ function HeroVideo({ onEnrol }) {
 }
 
 function Ticker() {
-  const items = ["Practice like never before", "AI Question Bank", "Video Reviewed Tests", "Weekly Mentorship", "1 Month Full Workout", "Make it your LAST attempt"];
+  const items = ["Practice like never before", "AI Question Bank", "Video Reviewed Tests", "Weekly Mentorship", "Workout all important questions", "Make it your LAST attempt"];
   const all = [...items, ...items];
   return (
     <div className="overflow-hidden py-4" style={{ background: MINT }}>
@@ -330,7 +331,7 @@ function Ticker() {
         {all.map((t, i) => (
           <span key={i} className="flex items-center gap-6 px-6 font-sora font-bold text-sm md:text-base uppercase tracking-wide whitespace-nowrap" style={{ color: INK }}>
             {t}
-            <span aria-hidden="true">✦</span>
+            <span aria-hidden="true" className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: INK }} />
           </span>
         ))}
       </div>
@@ -346,7 +347,7 @@ function Inside({ onEnrol }) {
           <div>
             <Eyebrow>What the batch contains</Eyebrow>
             <h2 className="font-sora font-extrabold text-3xl md:text-5xl tracking-tight text-gray-900 leading-tight">
-              Everything you need to<br className="hidden md:block" /> practise your way to a pass.
+              Everything you need to<br className="hidden md:block" /> practice your way to clear.
             </h2>
           </div>
           <CTA onClick={onEnrol} className="hidden md:inline-flex" />
@@ -402,7 +403,7 @@ function Pricing({ onEnrol }) {
                   className="mt-auto w-full py-4 rounded-full font-bold text-sm uppercase tracking-widest transition-all hover:-translate-y-0.5"
                   style={p.featured ? { background: MINT, color: INK } : { background: INK, color: "#fff" }}
                 >
-                  Enquire Now
+                  Book your Seat Now!
                 </button>
               </div>
             </Reveal>
@@ -452,7 +453,7 @@ function Proof({ onEnrol }) {
           Backed by <span className="font-black text-white">1000+ students</span> who trusted FOCAS to make it their <span className="font-black" style={{ color: INK }}>LAST ATTEMPT</span>.
         </p>
         <button onClick={onEnrol} className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-bold text-sm uppercase tracking-widest transition-all hover:-translate-y-0.5" style={{ background: INK, color: "#fff" }}>
-          Join the batch →
+          Book your Seat Now! →
         </button>
       </Reveal>
     </section>
@@ -715,7 +716,7 @@ export default function WorkoutBatch() {
       <div className={`fixed bottom-5 right-5 md:bottom-7 md:right-7 z-50 transition-all duration-300 ${showFloat && !showEnrol ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3 pointer-events-none"}`}>
         <button onClick={onEnrol} className="flex items-center gap-2 px-5 py-3.5 rounded-full font-bold text-sm uppercase tracking-widest shadow-2xl transition-all hover:-translate-y-0.5" style={{ background: MINT, color: INK }}>
           <span className="w-2 h-2 rounded-full" style={{ background: INK, animation: "wbPing 1.2s ease infinite" }} />
-          Enquire Now
+          Book your Seat Now!
         </button>
       </div>
     </div>
