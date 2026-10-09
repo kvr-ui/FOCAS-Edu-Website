@@ -1,7 +1,7 @@
 import { Play, X, Users, Clock, Zap } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { Dialog, DialogContent, DialogOverlay, } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogOverlay, DialogTitle, } from "@/components/ui/dialog";
 import CounselingForm from "@/components/CounselingForm";
 import thumnail from "../../public/thumnail.jpeg";
 const HeroSection = () => {
@@ -153,6 +153,8 @@ const HeroSection = () => {
       {/* Video Modal - Responsive */}
       <Dialog open={isVideoOpen} onOpenChange={setIsVideoOpen}>
         <DialogContent className="max-w-[95vw] sm:max-w-[90vw] md:max-w-3xl lg:max-w-4xl xl:max-w-5xl p-0 bg-black border-none overflow-hidden z-[100]">
+          <DialogTitle className="sr-only">FOCAS intro video</DialogTitle>
+          <DialogDescription className="sr-only">Watch the FOCAS Edu introduction video.</DialogDescription>
           <div className="relative aspect-video w-full">
             <video src="https://da3m0k666tznr.cloudfront.net/audit/audit.mp4" className="w-full h-full" controls autoPlay playsInline/>
           </div>
@@ -174,12 +176,12 @@ const HeroSection = () => {
               <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 200, damping: 15 }} className="w-16 h-16 bg-gradient-to-br from-primary to-teal-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
                 <Users className="w-8 h-8 text-white"/>
               </motion.div>
-              <h2 className="text-2xl sm:text-3xl font-bold font-sora text-gray-900 mb-2">
+              <DialogTitle className="text-2xl sm:text-3xl font-bold font-sora text-gray-900 mb-2">
                 Enter Details
-              </h2>
-              <p className="text-sm text-gray-600">
+              </DialogTitle>
+              <DialogDescription className="text-sm text-gray-600">
                 Book your 1-on-1 counseling session
-              </p>
+              </DialogDescription>
             </div>
 
             {/* Counseling Form (native Bigin replica) */}
