@@ -26,14 +26,15 @@ import { CG_CSS, NAVY, useCareerFonts } from "./theme";
  * /career-guidance — paid (₹99) online Career Guidance Meet for 10th–12th students.
  * Traffic comes from ads watched mostly by parents, so the tone is calm and
  * professional (see ./theme.jsx).
- * Registration → backend order (/api/attendees/register, event "career-guidance",
- * priced server-side) → Razorpay → server verification → /career-guidance-success.
+ * Registration → lead to Bigin → Razorpay (client-only, no backend) → paid lead
+ * to Bigin → /career-guidance-success.
  */
 
 // ─── Content ─────────────────────────────────────────────────────────────────
 
 const EVENT_START = new Date("2026-10-18T10:30:00+05:30");
-const PRICE_LABEL = "₹99";
+const AMOUNT_RUPEES = 99;
+const PRICE_LABEL = `₹${AMOUNT_RUPEES}`;
 const EVENT_ID = "career-guidance";
 
 // TODO: replace with the new speaker photo once it's shared.
@@ -120,12 +121,6 @@ function getAttribution() {
     source: utm.utmSource || "direct",
     campaign: utm.utmCampaign || "career_guidance_2026",
   };
-}
-
-// Meta's _fbp / _fbc cookies, forwarded so the server-side CAPI event matches this browser.
-function getCookie(name) {
-  const match = document.cookie.match(new RegExp("(?:^|; )" + name + "=([^;]*)"));
-  return match ? decodeURIComponent(match[1]) : undefined;
 }
 
 function useCountdown(target) {
@@ -529,7 +524,6 @@ function RegisterModal({ onClose }) {
     parentName: "",
     dialCode: "+91",
     phone: "",
-    email: "",
     studentClass: "",
     state: "",
     city: "",
@@ -539,8 +533,6 @@ function RegisterModal({ onClose }) {
   const [errors, setErrors] = useState({});
   const [status, setStatus] = useState("idle");
   const [errorMsg, setErrorMsg] = useState("");
-
-  const BACKEND = import.meta.env.VITE_RTI_BACKEND_URL || "http://localhost:8000";
 
   useEffect(() => {
     const onKey = (e) => e.key === "Escape" && status === "idle" && onClose();
@@ -574,8 +566,6 @@ function RegisterModal({ onClose }) {
     if (values.parentName.trim() && /\d/.test(values.parentName)) e.parentName = "Only letters are allowed.";
     if (!values.phone.trim()) e.phone = "This field is required.";
     else if (!/^[0-9]{10}$/.test(values.phone.trim())) e.phone = "Enter a valid 10-digit phone number.";
-    if (!values.email.trim()) e.email = "This field is required.";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email.trim())) e.email = "Enter a valid email address.";
     req("studentClass");
     req("state");
     req("city");
@@ -584,35 +574,25 @@ function RegisterModal({ onClose }) {
     return Object.keys(e).length === 0;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setErrorMsg("");
     if (values.company) return; // honeypot: bots only
     if (!validate()) return;
+    if (typeof window.Razorpay !== "function") {
+      setErrorMsg("Payment library failed to load. Please refresh and try again.");
+      return;
+    }
 
     const { source, campaign } = getAttribution();
     const phone = `${values.dialCode}${values.phone}`;
-    const payload = {
-      event: EVENT_ID,
-      name: values.studentName.trim(),
-      parentName: values.parentName.trim(),
-      phone,
-      email: values.email.trim(),
-      studentClass: values.studentClass,
-      state: values.state,
-      city: values.city,
-      language: values.language,
-      source,
-      campaign,
-    };
 
     // Lead goes to Bigin (via the FS Zoho Flow webhook) before payment, so it
     // isn't lost if the parent skips paying.
     const lead = {
-      firstName: payload.name,
-      lastName: payload.parentName,
+      firstName: values.studentName.trim(),
+      lastName: values.parentName.trim(),
       phone,
-      email: payload.email,
       caStatus: `School - ${values.studentClass}`,
       state: values.state,
       city: values.city,
@@ -621,89 +601,61 @@ function RegisterModal({ onClose }) {
     };
     sendToZohoFlow(lead, ZOHO_LEAD);
     trackLead(EVENT_ID, lead);
-    if (window.fbq) window.fbq("track", "Lead", { content_name: "Career Guidance Meet 2026" });
+    if (window.fbq) {
+      window.fbq("track", "Lead", { content_name: "Career Guidance Meet 2026" });
+      window.fbq("track", "InitiateCheckout", { content_name: "Career Guidance Meet 2026", currency: "INR", value: AMOUNT_RUPEES });
+    }
     window.dataLayer?.push({ event: "career_guidance_register_submit", student_class: values.studentClass });
     setStatus("loading");
 
+    // Client-only (order-less) Razorpay flow, like PaymentPage — no backend.
+    // Auto-capture must be ON in the Razorpay dashboard.
     try {
-      const regRes = await fetch(`${BACKEND}/api/attendees/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      const regData = await regRes.json();
-
-      if (!regRes.ok) {
-        setErrorMsg(regRes.status === 409
-          ? "This number is already registered. Please use a different number or contact support."
-          : regData.message || "Registration failed. Please try again.");
-        setStatus("idle");
-        return;
-      }
-
-      const { attendee, order } = regData;
-      if (window.fbq) window.fbq("track", "InitiateCheckout", { content_name: "Career Guidance Meet 2026", currency: "INR", value: order.amount / 100 });
-
       const rzp = new window.Razorpay({
         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-        amount: order.amount,
-        currency: order.currency,
+        amount: AMOUNT_RUPEES * 100, // paise
+        currency: "INR",
         name: "FOCAS Edu",
         description: "Career Guidance Meet — 18 Oct",
-        order_id: order.id,
-        prefill: { name: payload.name, email: payload.email, contact: phone },
+        prefill: { name: lead.firstName, contact: phone },
+        notes: {
+          event: EVENT_ID,
+          student: lead.firstName,
+          parent: lead.lastName,
+          class: values.studentClass,
+          source,
+          campaign,
+        },
         theme: { color: NAVY },
-        handler: async (response) => {
-          try {
-            const verifyRes = await fetch(`${BACKEND}/api/attendees/payment-success`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                attendeeId: attendee._id,
-                razorpay_order_id: response.razorpay_order_id,
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_signature: response.razorpay_signature,
-                fbp: getCookie("_fbp"),
-                fbc: getCookie("_fbc"),
-              }),
-            });
-            const verifyData = await verifyRes.json();
-
-            if (verifyData.success) {
-              const amount = order.amount / 100;
-              sendToZohoFlow(lead, {
-                ...ZOHO_LEAD_PAID,
-                paymentStatus: "Paid",
-                amount: String(amount),
-                paymentId: response.razorpay_payment_id,
-                orderId: response.razorpay_order_id,
-              });
-              // eventID = Razorpay payment id → dedupes against the server-side CAPI Purchase.
-              if (window.fbq) {
-                window.fbq("track", "Purchase", {
-                  content_name: "Career Guidance Meet 2026",
-                  content_type: "product",
-                  currency: "INR",
-                  value: amount,
-                }, { eventID: response.razorpay_payment_id });
-              }
-              window.dataLayer?.push({ event: "career_guidance_payment_success", value: amount, currency: "INR" });
-              window.location.href = "/career-guidance-success";
-            } else {
-              setErrorMsg(verifyData.message || "Payment verification failed. Please contact support.");
-              setStatus("idle");
-            }
-          } catch {
-            setErrorMsg("We couldn't confirm your payment. If money was deducted, please contact support.");
-            setStatus("idle");
+        handler: (response) => {
+          // Paid lead → Bigin, tagged separately from the form lead.
+          sendToZohoFlow(lead, {
+            ...ZOHO_LEAD_PAID,
+            paymentStatus: "Paid",
+            amount: String(AMOUNT_RUPEES),
+            paymentId: response.razorpay_payment_id,
+          });
+          if (window.fbq) {
+            window.fbq("track", "Purchase", {
+              content_name: "Career Guidance Meet 2026",
+              content_type: "product",
+              currency: "INR",
+              value: AMOUNT_RUPEES,
+            }, { eventID: response.razorpay_payment_id });
           }
+          window.dataLayer?.push({ event: "career_guidance_payment_success", value: AMOUNT_RUPEES, currency: "INR" });
+          window.location.href = "/career-guidance-success";
         },
         modal: { ondismiss: () => setStatus("idle") },
       });
+      rzp.on("payment.failed", (resp) => {
+        setErrorMsg(resp?.error?.description || "Payment failed. Please try again.");
+        setStatus("idle");
+      });
       rzp.open();
     } catch (err) {
-      console.error("Registration error:", err);
-      setErrorMsg("Something went wrong. Please try again.");
+      console.error("Payment error:", err);
+      setErrorMsg("Could not start payment. Please try again.");
       setStatus("idle");
     }
   };
@@ -759,10 +711,6 @@ function RegisterModal({ onClose }) {
                   value={values.phone}
                   onChange={(e) => set("phone")({ target: { value: e.target.value.replace(/\D/g, "").slice(0, 10) } })}
                 />
-              </Row>
-
-              <Row label="Email" name="email" error={errors.email}>
-                <input maxLength={100} type="email" inputMode="email" autoComplete="email" className="bwf-input" value={values.email} onChange={set("email")} />
               </Row>
 
               <Row label="Currently studying in" name="studentClass" error={errors.studentClass}>
