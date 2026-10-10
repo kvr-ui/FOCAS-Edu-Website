@@ -48,7 +48,7 @@ const TESTIMONIALS = [
   { id: "22082c5f-a1fc-45c4-a4e6-0ab0ad6be56f", name: "Sarvajith" },
   { id: "ac0d6605-cb43-497f-80d3-6d457e6c20b0", name: "Elakya" },
   { id: "e0f8779c-5a21-47d3-8ca9-33296d9233bb", name: "Kishore" },
-  { id: "a73ff229-1ed6-41d5-91c6-5f4bfdeeda3c", name: "Akshya" },
+  { id: "a73ff229-1ed6-41d5-91c6-5f4bfdeeda3c", name: "Akshaya" },
 ];
 
 const EVENT_DETAILS = [
