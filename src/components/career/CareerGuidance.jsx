@@ -507,7 +507,8 @@ const LANGUAGE_OPTIONS = ["English", "Tamil", "Hindi"];
 
 // Bigin "Lead Source" values sent through the FS Zoho Flow webhook.
 const ZOHO_LEAD = { source: "Career Guidance", leadSource: "Career Guidance" };
-const ZOHO_LEAD_PAID = { source: "Career Guidance", leadSource: "Career Guidance - PAID" };
+// The Flow maps `source` to Bigin's Lead Source, so set both.
+const ZOHO_LEAD_PAID = { source: "Career Guidance - PAID", leadSource: "Career Guidance - PAID" };
 
 const CG_FORM_CSS = `
 .bwf-scope { font-family: "Plus Jakarta Sans", system-ui, sans-serif; color: #1f2a3d; }
