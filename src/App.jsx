@@ -22,8 +22,10 @@ import CoursePage from "./components/external/CoursePage.jsx";
 import Links from "./components/Links.jsx";
 import MeetSchedule from "./components/MeetSchedule.jsx";
 import PaymentPage from "./components/PaymentPage.jsx";
-import Counselling from "./components/Counselling.jsx";
-import CounsellingSuccess from "./components/CounsellingSuccess.jsx";
+import MentorCounselling from "./components/MentorCounselling.jsx";
+import MentorCounsellingSuccess from "./components/MentorCounsellingSuccess.jsx";
+import Counselling from "./components/counselling/Counselling";
+import CounsellingSuccess from "./components/counselling/CounsellingSuccess";
 import FoundationSchool from "./components/fs/FoundationSchool";
 import FsBook from "./components/fs/FsBook";
 import FsSuccess from "./components/fs/FsSuccess";
@@ -43,6 +45,8 @@ const router = createBrowserRouter([
     { path: "/meet", element: <MeetSchedule /> },
     { path: "/payment", element: <PaymentPage /> },
     { path: "/success", element: <RegistrationSuccess /> },
+    {path: "/mentor-counselling", element: <MentorCounselling />},
+    {path: "/mentor-counselling-success", element: <MentorCounsellingSuccess />},
     {path: "/counselling", element: <Counselling />},
     {path: "/counselling-success", element: <CounsellingSuccess />},
     {path: "/rti", element: <Rti />},
@@ -55,8 +59,8 @@ const router = createBrowserRouter([
     {path:"/manual-success",element:<ManualSuccess />},
     {path:"/workout-batch",element:<WorkoutBatch />},
     {path:"/workout-batch-success",element:<WorkoutBatchSuccess />},
-    { path: "/course/:id", element: <CoursePage /> },
-    { path: "/privacy-policy", element: <PrivacyPolicyRedirect /> },
+    {path: "/course/:id", element: <CoursePage /> },
+    {path: "/privacy-policy", element: <PrivacyPolicyRedirect /> },
     {path:"/fs",element:<FoundationSchool />},
     {path:"/fs/book",element:<FsBook />},
     {path:"/fs/parents",element:<FsParents />},

@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
-import { STATES } from "@/data/indiaStatesCities";
+import { STATE_CITIES, STATES } from "@/data/indiaStatesCities";
 /* ── All your existing SVG Icons (keep same as before) ── */
 const MenuIcon = () => (<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>);
 const XIcon = () => (<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>);
@@ -418,7 +418,7 @@ function VideoModal({ video, onClose }) {
 function EnrollmentModal({ course, onClose }) {
   const [form, setForm] = useState({
     name: "", phoneNumber: "",
-    line1: "", line2: "", city: "", state: "Tamil Nadu", pincode: "",
+    line1: "", line2: "", city: "", otherCity: "", state: "Tamil Nadu", pincode: "",
   });
   const [errors, setErrors] = useState({});
   const [step, setStep] = useState("form"); // "form" | "processing" | "success" | "error"
@@ -432,7 +432,8 @@ function EnrollmentModal({ course, onClose }) {
     if (!form.phoneNumber.trim()) e.phoneNumber = "Phone number is required";
     else if (!/^[6-9]\d{9}$/.test(form.phoneNumber)) e.phoneNumber = "Enter valid 10-digit Indian mobile number";
     if (!form.line1.trim()) e.line1 = "Address line 1 is required";
-    if (!form.city.trim()) e.city = "City is required";
+    if (!form.city) e.city = "City is required";
+    else if (form.city === "Other" && !form.otherCity.trim()) e.city = "Enter your city";
     if (!form.state.trim()) e.state = "State is required";
     if (!form.pincode.trim()) e.pincode = "Pincode is required";
     else if (!/^\d{6}$/.test(form.pincode)) e.pincode = "Enter valid 6-digit pincode";
@@ -507,7 +508,7 @@ function EnrollmentModal({ course, onClose }) {
                 address: {
                   line1: form.line1,
                   line2: form.line2,
-                  city: form.city,
+                  city: form.city === "Other" ? form.otherCity.trim() : form.city,
                   state: form.state,
                   pincode: form.pincode,
                 },
@@ -641,19 +642,11 @@ function EnrollmentModal({ course, onClose }) {
                   />
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <input
-                        className={inputClass("city")}
-                        placeholder="City *"
-                        value={form.city}
-                        onChange={(e) => setForm({ ...form, city: e.target.value })}
-                      />
-                      {errors.city && <p className="text-xs text-red-500 mt-1 ml-1">{errors.city}</p>}
-                    </div>
-                    <div>
                       <select
                         className={inputClass("state")}
                         value={form.state}
-                        onChange={(e) => setForm({ ...form, state: e.target.value })}
+                        // Changing the state resets the dependent city selection.
+                        onChange={(e) => setForm({ ...form, state: e.target.value, city: "", otherCity: "" })}
                       >
                         <option value="" disabled>State *</option>
                         {STATES.map((s) => (
@@ -662,7 +655,29 @@ function EnrollmentModal({ course, onClose }) {
                       </select>
                       {errors.state && <p className="text-xs text-red-500 mt-1 ml-1">{errors.state}</p>}
                     </div>
+                    <div>
+                      <select
+                        className={inputClass("city")}
+                        value={form.city}
+                        disabled={!form.state}
+                        onChange={(e) => setForm({ ...form, city: e.target.value, otherCity: "" })}
+                      >
+                        <option value="" disabled>City *</option>
+                        {(STATE_CITIES[form.state] || []).map((c) => (
+                          <option key={c} value={c}>{c}</option>
+                        ))}
+                      </select>
+                      {errors.city && <p className="text-xs text-red-500 mt-1 ml-1">{errors.city}</p>}
+                    </div>
                   </div>
+                  {form.city === "Other" && (
+                    <input
+                      className={inputClass("city")}
+                      placeholder="Enter your city *"
+                      value={form.otherCity}
+                      onChange={(e) => setForm({ ...form, otherCity: e.target.value })}
+                    />
+                  )}
                   <div>
                     <input
                       className={inputClass("pincode")}

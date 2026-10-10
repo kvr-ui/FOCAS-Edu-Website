@@ -694,7 +694,7 @@ function RegisterPage({ onClose, campaignPhone }) {
         });
       }
 
-      navigate("/counselling-success");
+      navigate("/mentor-counselling-success");
     } catch (err) {
       setErrorMsg(err.message || "Something went wrong. Please try again.");
       setStatus("idle");
@@ -863,7 +863,7 @@ function Footer() {
             <div className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-5">Contact Us</div>
             <ul className="flex flex-col gap-4 text-sm text-slate-400">
               <li className="flex gap-3"><span>📞</span><a href="tel:+916383514285" className="hover:text-[#1D9E75] transition-colors">+91 63835 14285</a></li>
-              <li className="flex gap-3"><span>🌐</span><a href="https://www.focasedu.com/counselling" target="_blank" rel="noopener" className="hover:text-[#1D9E75] transition-colors">www.focasedu.com/counselling</a></li>
+              <li className="flex gap-3"><span>🌐</span><a href="https://www.focasedu.com/mentor-counselling" target="_blank" rel="noopener" className="hover:text-[#1D9E75] transition-colors">www.focasedu.com/mentor-counselling</a></li>
               <li className="flex gap-3">
                 <span>📍</span>
                 <a href="https://share.google/13I896gB9ftR3hOI5" target="_blank" rel="noopener" className="hover:text-[#1D9E75] transition-colors">
@@ -887,7 +887,7 @@ function Footer() {
 }
 
 // ─── Main Component ───────────────────────────────────────────────────────────
-export default function Counselling() {
+export default function MentorCounselling() {
   const [scrolled, setScrolled]           = useState(false);
   const [menuOpen, setMenuOpen]           = useState(false);
   const [showFloat, setShowFloat]         = useState(false);
@@ -903,7 +903,7 @@ export default function Counselling() {
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({
       event: "counselling_page_view",
-      page_path: "/counselling",
+      page_path: "/mentor-counselling",
       page_title: "Free 1:1 Mentor Counselling — FOCAS Edu",
       source,
       campaign,
@@ -912,7 +912,7 @@ export default function Counselling() {
     if (typeof window.gtag === "function") {
       window.gtag("event", "page_view", {
         page_title: "Free 1:1 Mentor Counselling",
-        page_path: "/counselling",
+        page_path: "/mentor-counselling",
       });
     }
     if (typeof window.fbq === "function") {

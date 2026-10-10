@@ -589,7 +589,7 @@ const FOCASLandingPage = () => {
               <div>
                 <h4 style={{ fontWeight: 600, fontSize: "12px", textTransform: "uppercase", letterSpacing: "0.05em", color: "rgba(255,255,255,0.4)", marginBottom: "16px" }}>Contact</h4>
                 <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "12px" }}>
-                  <li><span style={{ fontSize: "14px", color: "rgba(255,255,255,0.7)" }}>hello@focasedu.com</span></li>
+                  <li><span style={{ fontSize: "14px", color: "rgba(255,255,255,0.7)" }}>kvr@focasedu.com</span></li>
                   <li><span style={{ fontSize: "14px", color: "rgba(255,255,255,0.7)" }}>+91 98765 43210</span></li>
                 </ul>
               </div>
