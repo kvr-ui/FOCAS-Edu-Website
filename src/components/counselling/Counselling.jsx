@@ -59,7 +59,7 @@ export const LEXEND = { fontFamily: "'Lexend Deca', sans-serif" };
 
 const CDN = "https://da3m0k666tznr.cloudfront.net";
 const HERO_VIDEO = `${CDN}/audit/audit.mp4`;
-const HERO_POSTER = "/counselling/hero-thumbnail.jpeg";
+const HERO_POSTER = "/counselling-assets/hero-thumbnail.jpeg";
 export const PHONE_DISPLAY = "+91 63835 14285";
 export const PHONE_TEL = "tel:+916383514285";
 
