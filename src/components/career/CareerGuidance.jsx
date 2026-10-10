@@ -529,6 +529,7 @@ function RegisterModal({ onClose }) {
     parentName: "",
     dialCode: "+91",
     phone: "",
+    email: "",
     studentClass: "",
     state: "",
     city: "",
@@ -573,6 +574,8 @@ function RegisterModal({ onClose }) {
     if (values.parentName.trim() && /\d/.test(values.parentName)) e.parentName = "Only letters are allowed.";
     if (!values.phone.trim()) e.phone = "This field is required.";
     else if (!/^[0-9]{10}$/.test(values.phone.trim())) e.phone = "Enter a valid 10-digit phone number.";
+    if (!values.email.trim()) e.email = "This field is required.";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email.trim())) e.email = "Enter a valid email address.";
     req("studentClass");
     req("state");
     req("city");
@@ -594,6 +597,7 @@ function RegisterModal({ onClose }) {
       name: values.studentName.trim(),
       parentName: values.parentName.trim(),
       phone,
+      email: values.email.trim(),
       studentClass: values.studentClass,
       state: values.state,
       city: values.city,
@@ -608,6 +612,7 @@ function RegisterModal({ onClose }) {
       firstName: payload.name,
       lastName: payload.parentName,
       phone,
+      email: payload.email,
       caStatus: `School - ${values.studentClass}`,
       state: values.state,
       city: values.city,
@@ -646,7 +651,7 @@ function RegisterModal({ onClose }) {
         name: "FOCAS Edu",
         description: "Career Guidance Meet — 18 Oct",
         order_id: order.id,
-        prefill: { name: payload.name, contact: phone },
+        prefill: { name: payload.name, email: payload.email, contact: phone },
         theme: { color: NAVY },
         handler: async (response) => {
           try {
@@ -754,6 +759,10 @@ function RegisterModal({ onClose }) {
                   value={values.phone}
                   onChange={(e) => set("phone")({ target: { value: e.target.value.replace(/\D/g, "").slice(0, 10) } })}
                 />
+              </Row>
+
+              <Row label="Email" name="email" error={errors.email}>
+                <input maxLength={100} type="email" inputMode="email" autoComplete="email" className="bwf-input" value={values.email} onChange={set("email")} />
               </Row>
 
               <Row label="Currently studying in" name="studentClass" error={errors.studentClass}>
