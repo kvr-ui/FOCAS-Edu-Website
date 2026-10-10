@@ -62,7 +62,7 @@ const HIGHLIGHTS = [
 ];
 
 const WHAT_YOU_GET = [
-  "Discover all career possibilities after 12th grade.",
+  "Discover the entry route to CA, immediately after 12th",
   "What is CA? — a complete understanding of the course.",
   "How does life during & after CA look like?",
   "Why CA matters?",
@@ -234,7 +234,7 @@ function Hero({ countdown, onRegister }) {
             <span className="border-b-2 border-[#a87b2a] pb-0.5">10th, 11th and 12th students</span>
           </p>
           <p className="mt-4 max-w-xl text-xl leading-relaxed text-slate-600 sm:text-2xl">
-            Get clarity about the CA journey and other possibilities available.
+            Get clarity about CA — the course, the journey and the paths.
           </p>
 
           <dl className="cg-card mt-8 grid divide-y divide-[#e7e2d8] sm:grid-cols-3 sm:divide-x sm:divide-y-0">
