@@ -47,6 +47,8 @@ const BUNNY_LIBRARY = "680244";
 const TESTIMONIALS = [
   { id: "22082c5f-a1fc-45c4-a4e6-0ab0ad6be56f", name: "Sarvajith" },
   { id: "ac0d6605-cb43-497f-80d3-6d457e6c20b0", name: "Elakya" },
+  { id: "e0f8779c-5a21-47d3-8ca9-33296d9233bb", name: "" },
+  { id: "a73ff229-1ed6-41d5-91c6-5f4bfdeeda3c", name: "" },
 ];
 
 const EVENT_DETAILS = [
@@ -374,14 +376,14 @@ function StudentVideos() {
                 <div className="relative overflow-hidden rounded-xl bg-[#13294b]" style={{ aspectRatio: "9 / 16" }}>
                   <iframe
                     src={`https://player.mediadelivery.net/embed/${BUNNY_LIBRARY}/${t.id}?autoplay=true&muted=true&loop=true&preload=true&responsive=true`}
-                    title={`FOCAS Edu testimonial — ${t.name}`}
+                    title={t.name ? `FOCAS Edu testimonial — ${t.name}` : "FOCAS Edu testimonial"}
                     loading="lazy"
                     allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
                     allowFullScreen
                     className="absolute inset-0 h-full w-full border-0"
                   />
                 </div>
-                <figcaption className="cg-display px-3 pb-2 pt-4 text-center text-xl font-semibold">{t.name}</figcaption>
+                {t.name && <figcaption className="cg-display px-3 pb-2 pt-4 text-center text-xl font-semibold">{t.name}</figcaption>}
               </figure>
             ))}
           </div>
