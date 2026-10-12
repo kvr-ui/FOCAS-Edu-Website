@@ -27,7 +27,7 @@ import { CG_CSS, NAVY, useCareerFonts } from "./theme";
  * Traffic comes from ads watched mostly by parents, so the tone is calm and
  * professional (see ./theme.jsx).
  * Registration → backend order (/api/attendees/register, event "career-guidance",
- * priced server-side) → Razorpay → server verification → Bigin lead → /career-guidance-success.
+ * priced server-side) → Razorpay → server verification → /career-guidance-success.
  */
 
 // ─── Content ─────────────────────────────────────────────────────────────────
