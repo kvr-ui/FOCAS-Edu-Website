@@ -2,7 +2,7 @@ import { useEffect } from "react";
 
 const GREEN = "#1D9E75";
 
-export default function CounsellingSuccess() {
+export default function MentorCounsellingSuccess() {
   // Conversion tracking — this page is only ever reached after a successful
   // slot booking, so it doubles as the conversion event for GTM / GA4 / Meta.
   useEffect(() => {
@@ -16,7 +16,7 @@ export default function CounsellingSuccess() {
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({
       event: "counselling_booking_success",
-      page_path: "/counselling-success",
+      page_path: "/mentor-counselling-success",
       page_title: "Free Counselling — Slot Booked",
       ca_level: booking.caStatus,
       ca_route: booking.route,
@@ -86,7 +86,7 @@ export default function CounsellingSuccess() {
               💬 Chat with us on WhatsApp
             </a>
             <a
-              href="/counselling"
+              href="/mentor-counselling"
               className="inline-block px-8 py-3 rounded-full font-bold text-base border-2 border-gray-200 text-gray-600 transition-all hover:bg-gray-50"
             >
               Back to the page
