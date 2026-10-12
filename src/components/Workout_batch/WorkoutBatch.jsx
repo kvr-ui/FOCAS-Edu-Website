@@ -15,8 +15,20 @@ const HERO_VIDEO = {
   src: "https://iframe.mediadelivery.net/embed/680244/5e284d12-237f-46cb-aadf-bb0752d7b986?autoplay=true&loop=true&muted=true&preload=true",
 };
 
+// Cloudinary delivery URL resized and auto-formatted for the gallery.
+const cld = (path) => `https://res.cloudinary.com/dvfybzpcd/image/upload/f_auto,q_auto,w_900/${path}`;
+
+// Videos render in a 16:9 row above the photos; `wide` photos span two columns on desktop.
 const DEMO_MEDIA = [
-  // { type: "image", src: "/lp/workout-batch/session-1.jpg", caption: "Live workout session" },
+  { type: "embed", src: "https://www.youtube-nocookie.com/embed/4tQ_z7xxCA8?rel=0", caption: "Corporate Law · Master Question session" },
+  { type: "embed", src: "https://www.youtube-nocookie.com/embed/pFMnN8fLL6M?rel=0", caption: "Strategic Management · Master Question session" },
+  { type: "image", src: cld("v1791542312/WhatsApp_Image_2026-10-09_at_14.11.57_bgnubh.jpg"), alt: "Students in a workout session" },
+  { type: "image", src: cld("v1791542312/WhatsApp_Image_2026-10-09_at_14.11.36_dhbaif.jpg"), alt: "Students in a workout session" },
+  { type: "image", src: cld("v1791542312/WhatsApp_Image_2026-10-09_at_14.11.50_txuxji.jpg"), alt: "Students in a workout session" },
+  { type: "image", src: cld("v1791542312/WhatsApp_Image_2026-10-09_at_14.11.45_bz6skr.jpg"), alt: "Students in a workout session" },
+  { type: "image", src: cld("v1791542312/WhatsApp_Image_2026-10-09_at_15.43.55_1_y140am.jpg"), alt: "Students in a workout session" },
+  { type: "image", src: cld("v1791542312/WhatsApp_Image_2026-10-09_at_15.43.55_c7nzal.jpg"), alt: "Students in a workout session", wide: true },
+  { type: "image", src: cld("v1791542313/WhatsApp_Image_2026-10-09_at_14.11.13_2_d0tjuz.jpg"), alt: "Students in a workout session", wide: true },
 ];
 
 const VIDEO_TESTIMONIALS = [
@@ -137,7 +149,7 @@ function Media({ item, className = "", autoPlay = false }) {
       />
     );
   }
-  return <img src={item.src} alt={item.caption || ""} loading="lazy" className={`w-full h-full object-cover block ${className}`} />;
+  return <img src={item.src} alt={item.alt || item.caption || ""} loading="lazy" className={`w-full h-full object-cover block ${className}`} />;
 }
 
 function Placeholder({ label, className = "" }) {
@@ -367,6 +379,8 @@ function Inside({ onEnrol }) {
 function Showcase() {
   const items = DEMO_MEDIA.length ? DEMO_MEDIA : SHOW_PLACEHOLDERS ? Array.from({ length: 5 }, (_, i) => ({ placeholder: true, caption: i % 2 ? "Demo video" : "Demo image" })) : [];
   if (!items.length) return null;
+  const videos = items.filter(m => m.type === "embed" || m.type === "video");
+  const photos = items.filter(m => !videos.includes(m));
   return (
     <section id="showcase" className="py-16 md:py-28 px-5 md:px-10" style={{ background: INK }}>
       <div className="max-w-6xl mx-auto">
@@ -374,9 +388,21 @@ function Showcase() {
           <Eyebrow dark>Inside a session</Eyebrow>
           <h2 className="font-sora font-extrabold text-3xl md:text-5xl tracking-tight text-white">How our workout batch looks like</h2>
         </Reveal>
+        {videos.length > 0 && (
+          <div className="grid md:grid-cols-2 gap-3 md:gap-4 mb-3 md:mb-4">
+            {videos.map((m, i) => (
+              <Reveal key={i} delay={i * 0.05}>
+                <div className="rounded-2xl overflow-hidden aspect-video" style={{ background: INK_2 }}>
+                  <Media item={m} />
+                </div>
+                {m.caption && <p className="mt-2 px-1 text-xs font-semibold text-white/60">{m.caption}</p>}
+              </Reveal>
+            ))}
+          </div>
+        )}
         <div className="grid grid-cols-2 md:grid-cols-4 auto-rows-[160px] md:auto-rows-[220px] gap-3 md:gap-4">
-          {items.map((m, i) => (
-            <Reveal key={i} delay={i * 0.05} className={`${i === 0 ? "col-span-2 row-span-2" : ""} rounded-2xl overflow-hidden relative`}>
+          {photos.map((m, i) => (
+            <Reveal key={i} delay={i * 0.05} className={`${i === 0 ? "col-span-2 row-span-2" : m.wide ? "md:col-span-2" : ""} rounded-2xl overflow-hidden relative`}>
               <div className="w-full h-full" style={{ background: INK_2 }}>
                 {m.placeholder ? <Placeholder label={m.caption} /> : <Media item={m} />}
               </div>
