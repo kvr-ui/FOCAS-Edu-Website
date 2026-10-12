@@ -21,6 +21,13 @@ const DEMO_MEDIA = [
 
 const VIDEO_TESTIMONIALS = [
   // { type: "embed", src: "https://iframe.mediadelivery.net/embed/...", name: "Student name", batch: "May 2025" },
+  // Google Drive: { type: "embed", src: "https://drive.google.com/file/d/<FILE_ID>/preview", name: "Student name" }
+  //   (the Drive file must be shared as "Anyone with the link")
+];
+
+// Small student photo tiles in the "Practice like never before" section.
+const PRACTICE_IMAGES = [
+  // { type: "image", src: "/lp/workout-batch/practice-1.jpg", caption: "Student name" },
 ];
 
 const SHOW_PLACEHOLDERS = import.meta.env.DEV;
@@ -35,15 +42,9 @@ const AMBER = "#FFB547";
 /* ── Content ── */
 const NAV_LINKS = [
   { label: "What's Inside", id: "inside" },
-  { label: "Pricing", id: "pricing" },
   { label: "Why Us", id: "different" },
   { label: "Stories", id: "stories" },
   { label: "FAQs", id: "faq" },
-];
-
-const PRICING = [
-  { label: "Per Paper", price: "7,000", note: "Pick the paper you need to practice most." },
-  { label: "G1 / G2 Combo", price: "15,000", note: "All papers in your group, one workout plan.", featured: true },
 ];
 
 const CONTAINS = [
@@ -66,17 +67,16 @@ const COMPARE_ROWS = [
 ];
 
 const TESTIMONIALS = [
-  { name: "Yashika", batch: "2024 Batch", text: "The method of teaching followed by Focas academy is perfect and Trust me I was able to score 82 just by enrolling in their fasttrack then imagine how their regular course would be." },
-  { name: "Naveen", batch: "2023 Batch", text: "I was able to complete preparation in Class itself, because it was live studying and NO procrastination. Got rid of confusions in the class itself as there were discussions of Q&A at the end of every topic. Was able to recall at least 75% in the exams because of the cumulative revisions we did in the class." },
-  { name: "Mercy", batch: "2025 Batch", text: "Really happy and satisfied with the tutors we have is really good, the way of teaching here is enough+only one time oversee that effective. The concept behind deep focas grb is too good and gained confidence which I always wanted for." },
-  { name: "Jagadeesh", batch: "2025 Batch", text: "FOCAS helped me to study at the best possible way. Their tutor session was really helpful for me to get out of vicious circle of audit! I thought of quiting CA because of audit, but because of them, I can able to study it. Thanks FOCAS team!" },
-  { name: "Aravindha Lochanan", batch: "2023 Batch", text: "Best mentorship with coaching for struggling students with last minute pending syllabus and repeaters. Can trust FOCAS for best ever preparation for upcoming attempt. Join FOCAS make it ur last attempt." },
+  { name: "Sabitha", text: "I thought I knew the subjects. The only problem I felt was my presentation. But only after coming here, I understood that I actually know very little." },
+  { name: "Tharun", text: "From my school days, I won't do much writing practice. I'll simply just see the notes repeatedly. Many tutors here told me that I have to do more practice, which is why I'm here." },
+  { name: "Elakya", text: "I learnt that if I don't know some things, I should ensure not to get stuck on them. Practice is required for that." },
+  { name: "Ragavi", text: "Being a self-study student, studying is hard. I realised how important this mentorship is in my journey." },
+  { name: "Yashika", text: "The method of teaching followed by FOCAS is perfect. Trust me, I was able to score 82 just by enrolling in their fast track — then imagine how their regular course would be." },
 ];
 
 const FAQS = [
   { q: "Who is the Last Attempt Workout Batch for?", a: "CA Intermediate students who already know the concepts but need PRACTICE — repeaters and students with pending practice who want to complete a full-fledged workout within a month before the Jan 2027 attempt." },
   { q: "When does the batch start?", a: "The batch starts soon for the CA Inter January 2027 attempt. Book your seat and our team will share the exact start date and schedule." },
-  { q: "How much does it cost?", a: "₹7,000 per paper, or ₹15,000 for the G1 / G2 combo covering all papers in your group." },
   { q: "What is a 'workout session'?", a: "Instead of a lecture, a tutor gives a small group selective questions to solve in class, then reviews and corrects your approach right there — so you leave having practiced, not just watched." },
   { q: "What is the AI Question Bank?", a: "A curated bank of exam-relevant questions (RTP, MTP, PYP and more) integrated with AI, so your practice focuses on the areas where you lose the most marks." },
   { q: "How are tests reviewed?", a: "Each test in the series is evaluated and explained on video, showing you exactly where you lost marks and how to write a better answer." },
@@ -245,7 +245,6 @@ function Navbar({ scrolled, menuOpen, setMenuOpen, onEnrol }) {
 }
 
 function Hero({ onEnrol }) {
-  const scrollPricing = () => document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" });
   return (
     <section id="home" className="relative overflow-hidden px-5 md:px-10 pt-24 md:pt-32 pb-16 md:pb-24" style={{ background: INK }}>
       {/* backdrop */}
@@ -284,15 +283,8 @@ function Hero({ onEnrol }) {
             <HeroVideo onEnrol={onEnrol} />
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start mb-8">
+          <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
             <CTA onClick={onEnrol} />
-            <CTA onClick={scrollPricing} variant="ghost">See Pricing</CTA>
-          </div>
-
-          <div className="flex flex-wrap gap-x-6 gap-y-2 justify-center lg:justify-start text-sm text-white/60">
-            <span><b className="text-white">₹7,000</b> per paper</span>
-            <span className="text-white/20">|</span>
-            <span><b className="text-white">₹15,000</b> G1 / G2 combo</span>
           </div>
         </div>
 
@@ -372,48 +364,6 @@ function Inside({ onEnrol }) {
   );
 }
 
-function Pricing({ onEnrol }) {
-  return (
-    <section id="pricing" className="py-16 md:py-28 px-5 md:px-10" style={{ background: "#F3F7F5" }}>
-      <div className="max-w-4xl mx-auto">
-        <Reveal className="text-center mb-10 md:mb-14">
-          <Eyebrow>Pricing</Eyebrow>
-          <h2 className="font-sora font-extrabold text-3xl md:text-5xl tracking-tight text-gray-900 mb-3">One month. One workout.</h2>
-          <p className="text-gray-500 text-base md:text-lg">Batch starts soon for the CA Inter January 2027 attempt.</p>
-        </Reveal>
-        <div className="grid md:grid-cols-2 gap-5">
-          {PRICING.map((p, i) => (
-            <Reveal key={p.label} delay={i * 0.08}>
-              <div className="relative h-full rounded-3xl p-7 md:p-9 flex flex-col" style={p.featured ? { background: INK, color: "#fff" } : { background: "#fff", border: "1px solid #E5EDEA" }}>
-                {p.featured && (
-                  <span className="absolute top-6 right-6 text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full" style={{ background: AMBER, color: INK }}>Best value</span>
-                )}
-                <p className={`text-sm font-bold uppercase tracking-widest mb-6 ${p.featured ? "text-white/60" : "text-gray-500"}`}>{p.label}</p>
-                <p className="font-sora font-extrabold text-5xl md:text-6xl tracking-tight mb-2">
-                  <span className="text-2xl align-top mr-1" style={{ color: p.featured ? MINT : GREEN }}>₹</span>{p.price}
-                </p>
-                <p className={`text-sm mb-8 ${p.featured ? "text-white/60" : "text-gray-500"}`}>{p.note}</p>
-                <ul className={`text-sm space-y-2.5 mb-8 ${p.featured ? "text-white/80" : "text-gray-600"}`}>
-                  {CONTAINS.map(c => (
-                    <li key={c.n} className="flex gap-2.5"><span style={{ color: p.featured ? MINT : GREEN }}>✓</span>{c.title}</li>
-                  ))}
-                </ul>
-                <button
-                  onClick={onEnrol}
-                  className="mt-auto w-full py-4 rounded-full font-bold text-sm uppercase tracking-widest transition-all hover:-translate-y-0.5"
-                  style={p.featured ? { background: MINT, color: INK } : { background: INK, color: "#fff" }}
-                >
-                  Book your Seat Now!
-                </button>
-              </div>
-            </Reveal>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
 function Showcase() {
   const items = DEMO_MEDIA.length ? DEMO_MEDIA : SHOW_PLACEHOLDERS ? Array.from({ length: 5 }, (_, i) => ({ placeholder: true, caption: i % 2 ? "Demo video" : "Demo image" })) : [];
   if (!items.length) return null;
@@ -442,6 +392,7 @@ function Showcase() {
 }
 
 function Proof({ onEnrol }) {
+  const photos = PRACTICE_IMAGES.length ? PRACTICE_IMAGES : SHOW_PLACEHOLDERS ? Array.from({ length: 8 }, () => ({ placeholder: true })) : [];
   return (
     <section className="relative overflow-hidden py-20 md:py-32 px-5 md:px-10" style={{ background: GREEN }}>
       <div className="absolute inset-0 pointer-events-none opacity-20" style={{ background: "radial-gradient(50% 80% at 50% 0%, #fff, transparent 70%)" }} />
@@ -452,6 +403,15 @@ function Proof({ onEnrol }) {
         <p className="text-white/90 text-lg md:text-xl max-w-2xl mx-auto mb-10">
           Backed by <span className="font-black text-white">1000+ students</span> who trusted FOCAS to make it their <span className="font-black" style={{ color: INK }}>LAST ATTEMPT</span>.
         </p>
+        {photos.length > 0 && (
+          <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 md:gap-3 max-w-3xl mx-auto mb-10">
+            {photos.map((m, i) => (
+              <div key={i} className="aspect-square rounded-xl overflow-hidden" style={{ background: INK_2 }}>
+                {m.placeholder ? <Placeholder label="Student photo" /> : <Media item={m} />}
+              </div>
+            ))}
+          </div>
+        )}
         <button onClick={onEnrol} className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-bold text-sm uppercase tracking-widest transition-all hover:-translate-y-0.5" style={{ background: INK, color: "#fff" }}>
           Book your Seat Now! →
         </button>
@@ -546,7 +506,7 @@ function Stories() {
                 <span className="w-10 h-10 rounded-full flex items-center justify-center font-sora font-bold" style={{ background: GREEN, color: "#fff" }}>{t.name[0]}</span>
                 <span>
                   <span className="block font-bold text-white text-sm">{t.name}</span>
-                  <span className="block text-xs" style={{ color: MINT }}>{t.batch}</span>
+                  {t.batch && <span className="block text-xs" style={{ color: MINT }}>{t.batch}</span>}
                 </span>
               </figcaption>
             </figure>
@@ -703,7 +663,6 @@ export default function WorkoutBatch() {
       <Hero onEnrol={onEnrol} />
       <Ticker />
       <Inside onEnrol={onEnrol} />
-      <Pricing onEnrol={onEnrol} />
       <Showcase />
       <Proof onEnrol={onEnrol} />
       <Different />
