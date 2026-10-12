@@ -27,7 +27,7 @@ import { CG_CSS, NAVY, useCareerFonts } from "./theme";
  * Traffic comes from ads watched mostly by parents, so the tone is calm and
  * professional (see ./theme.jsx).
  * Registration → backend order (/api/attendees/register, event "career-guidance",
- * priced server-side) → Razorpay → server verification → /career-guidance-success.
+ * priced server-side) → Razorpay → server verification → Bigin lead → /career-guidance-success.
  */
 
 // ─── Content ─────────────────────────────────────────────────────────────────
@@ -505,8 +505,7 @@ function StickyMobileCTA({ ended, onRegister }) {
 const CLASS_OPTIONS = ["Class 10", "Class 11", "Class 12"];
 const LANGUAGE_OPTIONS = ["English", "Tamil", "Hindi"];
 
-// Bigin "Lead Source" values sent through the FS Zoho Flow webhook.
-const ZOHO_LEAD = { source: "Career Guidance", leadSource: "Career Guidance" };
+// Bigin "Lead Source" value sent through the FS Zoho Flow webhook.
 const ZOHO_LEAD_PAID = { source: "Career Guidance", leadSource: "Career Guidance - PAID" };
 
 const CG_FORM_CSS = `
@@ -599,8 +598,7 @@ function RegisterModal({ onClose }) {
       campaign,
     };
 
-    // Lead goes to Bigin (via the FS Zoho Flow webhook) before payment, so it
-    // isn't lost if the parent skips paying.
+    // Lead goes to Bigin (via the FS Zoho Flow webhook) only after payment is verified.
     const lead = {
       firstName: payload.name,
       lastName: payload.parentName,
@@ -611,7 +609,6 @@ function RegisterModal({ onClose }) {
       language: values.language,
       utm: captureUtms(),
     };
-    sendToZohoFlow(lead, ZOHO_LEAD);
     trackLead(EVENT_ID, lead);
     if (window.fbq) window.fbq("track", "Lead", { content_name: "Career Guidance Meet 2026" });
     window.dataLayer?.push({ event: "career_guidance_register_submit", student_class: values.studentClass });
