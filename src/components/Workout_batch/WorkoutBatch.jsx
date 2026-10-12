@@ -16,19 +16,24 @@ const HERO_VIDEO = {
 };
 
 // Cloudinary delivery URL resized and auto-formatted for the gallery.
-const cld = (path) => `https://res.cloudinary.com/dvfybzpcd/image/upload/f_auto,q_auto,w_900/${path}`;
+const cld = (path) => `https://res.cloudinary.com/dvfybzpcd/image/upload/f_auto,q_auto,w_1000/${path}`;
 
-// Videos render in a 16:9 row above the photos; `wide` photos span two columns on desktop.
-const DEMO_MEDIA = [
-  { type: "embed", src: "https://www.youtube-nocookie.com/embed/4tQ_z7xxCA8?rel=0", caption: "Corporate Law · Master Question session" },
-  { type: "embed", src: "https://www.youtube-nocookie.com/embed/pFMnN8fLL6M?rel=0", caption: "Strategic Management · Master Question session" },
-  { type: "image", src: cld("v1791542312/WhatsApp_Image_2026-10-09_at_14.11.57_bgnubh.jpg"), alt: "Students in a workout session" },
-  { type: "image", src: cld("v1791542312/WhatsApp_Image_2026-10-09_at_14.11.36_dhbaif.jpg"), alt: "Students in a workout session" },
-  { type: "image", src: cld("v1791542312/WhatsApp_Image_2026-10-09_at_14.11.50_txuxji.jpg"), alt: "Students in a workout session" },
-  { type: "image", src: cld("v1791542312/WhatsApp_Image_2026-10-09_at_14.11.45_bz6skr.jpg"), alt: "Students in a workout session" },
-  { type: "image", src: cld("v1791542312/WhatsApp_Image_2026-10-09_at_15.43.55_1_y140am.jpg"), alt: "Students in a workout session" },
-  { type: "image", src: cld("v1791542312/WhatsApp_Image_2026-10-09_at_15.43.55_c7nzal.jpg"), alt: "Students in a workout session", wide: true },
-  { type: "image", src: cld("v1791542313/WhatsApp_Image_2026-10-09_at_14.11.13_2_d0tjuz.jpg"), alt: "Students in a workout session", wide: true },
+// "How our workout batch looks like": photos in a bento grid, then session videos.
+// `tile` holds the grid placement classes — mobile flows in list order (2 cols),
+// desktop places each photo explicitly on a 4×3 grid with a CTA tile in the last row.
+const DEMO_PHOTOS = [
+  { src: cld("v1791542313/WhatsApp_Image_2026-10-09_at_14.11.13_2_d0tjuz.jpg"), alt: "FOCAS tutors and mentors", tile: "col-span-2 md:col-start-1 md:row-start-1" },
+  { src: cld("v1791542312/WhatsApp_Image_2026-10-09_at_14.11.50_txuxji.jpg"), alt: "Tutor reviewing a student's answers", tile: "col-span-2 md:col-start-3 md:row-start-1" },
+  { src: cld("v1791542312/WhatsApp_Image_2026-10-09_at_15.43.55_1_y140am.jpg"), alt: "Students practising in a workout session", tile: "row-span-2 md:col-start-1 md:row-start-2" },
+  { src: cld("v1791542312/WhatsApp_Image_2026-10-09_at_15.43.55_c7nzal.jpg"), alt: "Small-group workout session in class", tile: "row-span-2 md:col-start-4 md:row-start-2" },
+  { src: cld("v1791542312/WhatsApp_Image_2026-10-09_at_14.11.45_bz6skr.jpg"), alt: "Tutor working through a problem with a student", tile: "col-span-2 md:col-start-2 md:row-start-2" },
+  { src: cld("v1791542312/WhatsApp_Image_2026-10-09_at_14.11.36_dhbaif.jpg"), alt: "FOCAS tutor", tile: "md:col-start-2 md:row-start-3" },
+];
+const CTA_TILE = "md:col-start-3 md:row-start-3";
+
+const DEMO_VIDEOS = [
+  { type: "embed", src: "https://www.youtube-nocookie.com/embed/4tQ_z7xxCA8?rel=0", subject: "Corporate Law", faculty: "CS Shreevidhya" },
+  { type: "embed", src: "https://www.youtube-nocookie.com/embed/pFMnN8fLL6M?rel=0", subject: "Strategic Management", faculty: "Barath Kumar" },
 ];
 
 const VIDEO_TESTIMONIALS = [
@@ -149,7 +154,7 @@ function Media({ item, className = "", autoPlay = false }) {
       />
     );
   }
-  return <img src={item.src} alt={item.alt || item.caption || ""} loading="lazy" className={`w-full h-full object-cover block ${className}`} />;
+  return <img src={item.src} alt={item.caption || ""} loading="lazy" className={`w-full h-full object-cover block ${className}`} />;
 }
 
 function Placeholder({ label, className = "" }) {
@@ -376,42 +381,70 @@ function Inside({ onEnrol }) {
   );
 }
 
-function Showcase() {
-  const items = DEMO_MEDIA.length ? DEMO_MEDIA : SHOW_PLACEHOLDERS ? Array.from({ length: 5 }, (_, i) => ({ placeholder: true, caption: i % 2 ? "Demo video" : "Demo image" })) : [];
-  if (!items.length) return null;
-  const videos = items.filter(m => m.type === "embed" || m.type === "video");
-  const photos = items.filter(m => !videos.includes(m));
+function Showcase({ onEnrol }) {
+  const photos = DEMO_PHOTOS.length ? DEMO_PHOTOS : SHOW_PLACEHOLDERS ? Array.from({ length: 5 }, () => ({ placeholder: true })) : [];
+  if (!photos.length && !DEMO_VIDEOS.length) return null;
   return (
     <section id="showcase" className="py-16 md:py-28 px-5 md:px-10" style={{ background: INK }}>
       <div className="max-w-6xl mx-auto">
         <Reveal className="text-center mb-10 md:mb-14">
           <Eyebrow dark>Inside a session</Eyebrow>
-          <h2 className="font-sora font-extrabold text-3xl md:text-5xl tracking-tight text-white">How our workout batch looks like</h2>
+          <h2 className="font-sora font-extrabold text-3xl md:text-5xl tracking-tight text-white mb-3">How our workout batch looks like</h2>
+          <p className="text-white/60 text-base md:text-lg">Small groups. A tutor at your table. Questions solved, not just watched.</p>
         </Reveal>
-        {videos.length > 0 && (
-          <div className="grid md:grid-cols-2 gap-3 md:gap-4 mb-3 md:mb-4">
-            {videos.map((m, i) => (
-              <Reveal key={i} delay={i * 0.05}>
-                <div className="rounded-2xl overflow-hidden aspect-video" style={{ background: INK_2 }}>
-                  <Media item={m} />
+
+        {photos.length > 0 && (
+          <div className="grid grid-cols-2 md:grid-cols-4 auto-rows-[150px] md:auto-rows-[210px] gap-3 md:gap-4">
+            {photos.map((m, i) => (
+              <Reveal key={i} delay={i * 0.05} className={`${m.tile || ""} group rounded-2xl overflow-hidden relative`}>
+                <div className="w-full h-full" style={{ background: INK_2 }}>
+                  {m.placeholder
+                    ? <Placeholder label="Session photo" />
+                    : <img src={m.src} alt={m.alt} loading="lazy" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />}
                 </div>
-                {m.caption && <p className="mt-2 px-1 text-xs font-semibold text-white/60">{m.caption}</p>}
+                <div className="absolute inset-0 pointer-events-none" style={{ background: "linear-gradient(to top, rgba(6,20,15,.35), transparent 45%)" }} />
               </Reveal>
             ))}
+            <Reveal delay={photos.length * 0.05} className={`${CTA_TILE} rounded-2xl overflow-hidden`}>
+              <button onClick={onEnrol} className="group w-full h-full p-5 md:p-6 flex flex-col justify-between text-left transition-transform hover:-translate-y-0.5" style={{ background: MINT, color: INK }}>
+                <span className="text-[11px] font-bold uppercase tracking-[0.2em]">Limited seats</span>
+                <span className="flex items-end justify-between gap-3">
+                  <span className="font-sora font-extrabold text-base sm:text-xl md:text-2xl leading-tight">Get a seat at the table.</span>
+                  <span className="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center flex-shrink-0 transition-transform group-hover:translate-x-1" style={{ background: INK, color: MINT }}>→</span>
+                </span>
+              </button>
+            </Reveal>
           </div>
         )}
-        <div className="grid grid-cols-2 md:grid-cols-4 auto-rows-[160px] md:auto-rows-[220px] gap-3 md:gap-4">
-          {photos.map((m, i) => (
-            <Reveal key={i} delay={i * 0.05} className={`${i === 0 ? "col-span-2 row-span-2" : m.wide ? "md:col-span-2" : ""} rounded-2xl overflow-hidden relative`}>
-              <div className="w-full h-full" style={{ background: INK_2 }}>
-                {m.placeholder ? <Placeholder label={m.caption} /> : <Media item={m} />}
+
+        {DEMO_VIDEOS.length > 0 && (
+          <div className="mt-14 md:mt-20">
+            <Reveal className="flex items-end justify-between gap-4 mb-6">
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-[0.2em] mb-2" style={{ color: AMBER }}>Watch a session</p>
+                <h3 className="font-sora font-bold text-2xl md:text-3xl text-white">Master Question faculty sessions</h3>
               </div>
-              {m.caption && !m.placeholder && (
-                <span className="absolute left-3 bottom-3 text-xs font-semibold px-3 py-1.5 rounded-full backdrop-blur" style={{ background: "rgba(6,20,15,.6)", color: "#fff" }}>{m.caption}</span>
-              )}
             </Reveal>
-          ))}
-        </div>
+            <div className="grid md:grid-cols-2 gap-5 md:gap-6">
+              {DEMO_VIDEOS.map((v, i) => (
+                <Reveal key={v.src} delay={i * 0.08}>
+                  <div className="rounded-3xl overflow-hidden" style={{ background: INK_2, border: "1px solid rgba(255,255,255,.08)" }}>
+                    <div className="aspect-video">
+                      <Media item={{ ...v, caption: `${v.subject} · Master Question session` }} />
+                    </div>
+                    <div className="px-5 py-4 flex items-center justify-between gap-3">
+                      <div>
+                        <p className="font-bold text-white text-sm md:text-base">{v.subject}</p>
+                        <p className="text-xs text-white/50 mt-0.5">{v.faculty}</p>
+                      </div>
+                      <span className="text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full flex-shrink-0" style={{ background: "rgba(91,227,176,.12)", color: MINT }}>CA Inter</span>
+                    </div>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );
@@ -689,7 +722,7 @@ export default function WorkoutBatch() {
       <Hero onEnrol={onEnrol} />
       <Ticker />
       <Inside onEnrol={onEnrol} />
-      <Showcase />
+      <Showcase onEnrol={onEnrol} />
       <Proof onEnrol={onEnrol} />
       <Different />
       <Stories />
