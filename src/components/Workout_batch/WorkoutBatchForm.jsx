@@ -17,7 +17,7 @@ import {
  *
  * Same setup as the counseling form: posts JSON to our server (server/index.js
  * → /api/workout-batch), which inserts a Bigin Contact and forwards the lead +
- * UTMs to the leads API. Lead_Source is fixed to "Workout Batch" server-side.
+ * UTMs to the leads API. Lead_Source is fixed to "workout-batch" server-side.
  */
 
 const WORKOUT_API = `${LEAD_API_BASE}/api/workout-batch`;
