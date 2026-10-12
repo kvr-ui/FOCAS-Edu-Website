@@ -18,16 +18,14 @@ const HERO_VIDEO = {
 // "How our workout batch looks like": photos in a bento grid, then session videos.
 // Photos are self-hosted in public/lp/workout-batch/ (no CDN dependency).
 // `tile` holds the grid placement classes — mobile flows in list order (2 cols),
-// desktop places each tile explicitly on a 4×3 grid. `{ cta: true }` is the
-// "Get a seat" tile, listed where it should fall on mobile.
+// desktop places each tile explicitly on a 4×3 grid.
 const DEMO_PHOTOS = [
   { src: "/lp/workout-batch/online-meet.webp", alt: "Live online workout session on Google Meet", tile: "col-span-2 md:col-start-1 md:row-start-3" },
   { src: "/lp/workout-batch/session-4.webp", alt: "Students listening in a workout session", tile: "row-span-2 md:col-start-1 md:row-start-1" },
-  { src: "/lp/workout-batch/session-5.webp", alt: "Tutor going through a student's notes", tile: "md:col-start-2 md:row-start-2" },
   { src: "/lp/workout-batch/session-2.webp", alt: "Mentor discussing answers with a student", tile: "md:col-start-3 md:row-start-1" },
-  { src: "/lp/workout-batch/session-1.webp", alt: "Tutor explaining a problem to a student", tile: "col-span-2 md:col-span-1 md:col-start-2 md:row-start-1" },
   { src: "/lp/workout-batch/session-3.webp", alt: "Students working through questions on a laptop", tile: "md:col-start-4 md:row-start-1 md:row-span-2" },
-  { cta: true, tile: "md:col-start-3 md:row-start-2" },
+  { src: "/lp/workout-batch/session-1.webp", alt: "Tutor explaining a problem to a student", tile: "md:col-start-2 md:row-start-1" },
+  { src: "/lp/workout-batch/session-5.webp", alt: "Tutor going through a student's notes", tile: "md:col-span-2 md:col-start-2 md:row-start-2" },
   { src: "/lp/workout-batch/online-class.webp", alt: "Faculty walking through study material in an online class", tile: "col-span-2 md:col-start-3 md:row-start-3" },
 ];
 
@@ -381,7 +379,7 @@ function Inside({ onEnrol }) {
   );
 }
 
-function Showcase({ onEnrol }) {
+function Showcase() {
   const photos = DEMO_PHOTOS.length ? DEMO_PHOTOS : SHOW_PLACEHOLDERS ? Array.from({ length: 5 }, () => ({ placeholder: true })) : [];
   if (!photos.length && !DEMO_VIDEOS.length) return null;
   return (
@@ -395,17 +393,7 @@ function Showcase({ onEnrol }) {
 
         {photos.length > 0 && (
           <div className="grid grid-cols-2 md:grid-cols-4 auto-rows-[150px] md:auto-rows-[240px] gap-3 md:gap-4">
-            {photos.map((m, i) => m.cta ? (
-              <Reveal key={i} delay={i * 0.05} className={`${m.tile} rounded-2xl overflow-hidden`}>
-                <button onClick={onEnrol} className="group w-full h-full p-5 md:p-6 flex flex-col justify-between text-left transition-transform hover:-translate-y-0.5" style={{ background: MINT, color: INK }}>
-                  <span className="text-[11px] font-bold uppercase tracking-[0.2em]">Limited seats</span>
-                  <span className="flex items-end justify-between gap-3">
-                    <span className="font-sora font-extrabold text-base sm:text-xl md:text-2xl leading-tight">Get a seat at the table.</span>
-                    <span className="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center flex-shrink-0 transition-transform group-hover:translate-x-1" style={{ background: INK, color: MINT }}>→</span>
-                  </span>
-                </button>
-              </Reveal>
-            ) : (
+            {photos.map((m, i) => (
               <Reveal key={i} delay={i * 0.05} className={`${m.tile || ""} group rounded-2xl overflow-hidden relative`}>
                 <div className="w-full h-full" style={{ background: INK_2 }}>
                   {m.placeholder
@@ -723,7 +711,7 @@ export default function WorkoutBatch() {
       <Hero onEnrol={onEnrol} />
       <Ticker />
       <Inside onEnrol={onEnrol} />
-      <Showcase onEnrol={onEnrol} />
+      <Showcase />
       <Proof onEnrol={onEnrol} />
       <Different />
       <Stories />
