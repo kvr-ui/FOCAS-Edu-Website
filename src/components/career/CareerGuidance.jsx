@@ -26,8 +26,8 @@ import { CG_CSS, NAVY, useCareerFonts } from "./theme";
  * /career-guidance — paid (₹99) online Career Guidance Meet for 10th–12th students.
  * Traffic comes from ads watched mostly by parents, so the tone is calm and
  * professional (see ./theme.jsx).
- * Registration → lead to Bigin → Razorpay (client-only, no backend) → paid lead
- * to Bigin → /career-guidance-success.
+ * Registration → Razorpay (client-only, no backend) → paid lead to Bigin →
+ * /career-guidance-success. Unpaid form fills are not sent to Bigin.
  */
 
 // ─── Content ─────────────────────────────────────────────────────────────────
@@ -502,8 +502,7 @@ function StickyMobileCTA({ ended, onRegister }) {
 const CLASS_OPTIONS = ["Class 10", "Class 11", "Class 12"];
 const LANGUAGE_OPTIONS = ["English", "Tamil", "Hindi"];
 
-// Bigin "Lead Source" values sent through the FS Zoho Flow webhook.
-const ZOHO_LEAD = { source: "Career Guidance", leadSource: "Career Guidance" };
+// Bigin "Lead Source" value sent through the FS Zoho Flow webhook.
 // The Flow maps `source` to Bigin's Lead Source, so set both.
 const ZOHO_LEAD_PAID = { source: "Career Guidance - PAID", leadSource: "Career Guidance - PAID" };
 
@@ -587,8 +586,7 @@ function RegisterModal({ onClose }) {
     const { source, campaign } = getAttribution();
     const phone = `${values.dialCode}${values.phone}`;
 
-    // Lead goes to Bigin (via the FS Zoho Flow webhook) before payment, so it
-    // isn't lost if the parent skips paying.
+    // Lead goes to Bigin (via the FS Zoho Flow webhook) only after payment succeeds.
     const lead = {
       firstName: values.studentName.trim(),
       lastName: values.parentName.trim(),
@@ -599,7 +597,6 @@ function RegisterModal({ onClose }) {
       language: values.language,
       utm: captureUtms(),
     };
-    sendToZohoFlow(lead, ZOHO_LEAD);
     trackLead(EVENT_ID, lead);
     if (window.fbq) {
       window.fbq("track", "Lead", { content_name: "Career Guidance Meet 2026" });
