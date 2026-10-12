@@ -25,6 +25,7 @@ import PaymentPage from "./components/PaymentPage.jsx";
 import MentorCounselling from "./components/MentorCounselling.jsx";
 import MentorCounsellingSuccess from "./components/MentorCounsellingSuccess.jsx";
 import Counselling from "./components/counselling/Counselling";
+import CounsellingBook from "./components/counselling/CounsellingBook";
 import CounsellingSuccess from "./components/counselling/CounsellingSuccess";
 import FoundationSchool from "./components/fs/FoundationSchool";
 import FsBook from "./components/fs/FsBook";
@@ -48,6 +49,7 @@ const router = createBrowserRouter([
     {path: "/mentor-counselling", element: <MentorCounselling />},
     {path: "/mentor-counselling-success", element: <MentorCounsellingSuccess />},
     {path: "/counselling", element: <Counselling />},
+    {path: "/counselling/book", element: <CounsellingBook />},
     {path: "/counselling-success", element: <CounsellingSuccess />},
     {path: "/rti", element: <Rti />},
     {path: "/rti-success", element: <RtiSuccess />},

@@ -47,8 +47,9 @@ const ZOHO_LEAD = { source: "Counselling", leadSource: "Counselling" };
  * Manrope / Lexend Deca type, card + form styling) replicates the
  * errormakesclever.com offline-fullstack-course page.
  *
- * Every form sends the lead to the Zoho Flow webhook (→ Bigin), then moves on
- * to /counselling-success, where the ad conversions fire.
+ * Every form sends the lead to the Zoho Flow webhook (→ Bigin) and fires the
+ * Meta/GA Lead, then moves on to /counselling/book (slot + ₹9 via Razorpay, or
+ * skip) and finally /counselling-success.
  */
 
 /* eslint-disable react-refresh/only-export-components -- shared with CounsellingSuccess */
@@ -65,15 +66,13 @@ export const PHONE_TEL = "tel:+916383514285";
 
 // EMC's two button styles.
 const BTN_DARK =
-  "bg-gradient-to-b from-[#425673] to-[#1C232D] text-white font-medium rounded-lg hover:from-[#1C232D] hover:to-[#425673] hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300";
-const BTN_BLUE =
-  "bg-gradient-to-b from-blue-600 to-blue-900 text-white font-medium rounded-lg hover:from-blue-700 hover:to-blue-800 hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300";
+  "bg-gradient-to-b from-[#1D9E75] to-[#0f6e56] text-white font-medium rounded-lg hover:from-[#0f6e56] hover:to-[#1D9E75] hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300";
 const AI_BADGE =
-  "inline-block rounded-2xl border border-blue-400/30 bg-gradient-to-br from-blue-500 via-blue-600 to-blue-900 px-4 py-1 font-bold text-white shadow-2xl shadow-blue-500/40";
+  "inline-block rounded-2xl border border-[#1D9E75]/30 bg-gradient-to-br from-[#2bc48f] via-[#1D9E75] to-[#0f6e56] px-4 py-1 font-bold text-white shadow-2xl shadow-[#1D9E75]/40";
 
 const GRID_BG = {
   backgroundImage:
-    "linear-gradient(rgba(49,52,59,.06) 1px, transparent 1px), linear-gradient(90deg, rgba(49,52,59,.06) 1px, transparent 1px)",
+    "linear-gradient(rgba(29,158,117,.07) 1px, transparent 1px), linear-gradient(90deg, rgba(29,158,117,.07) 1px, transparent 1px)",
   backgroundSize: "72px 72px",
   backgroundPosition: "center top",
 };
@@ -137,12 +136,6 @@ const DESIGNED_FOR = [
   },
 ];
 
-const KIT_ITEMS = [
-  ["📚", "Enhanced Study Material", "INCLUDED", "bg-yellow-100 text-yellow-800"],
-  ["🤝", "Exclusive Access to the Last Attempt Community", "INCLUDED", "bg-yellow-100 text-yellow-800"],
-  ["📞", "Get a chance to talk to one of our experts for FREE!", "FREE", "bg-green-100 text-green-800"],
-];
-
 const STORIES = [
   { name: "Gayathri", file: "Gayathri" },
   { name: "Harini Aiswariya", file: "HariniAiswariya" },
@@ -153,12 +146,13 @@ const STORIES = [
 ];
 
 const RESULTS = [
-  { name: "Mathumetha", src: `${CDN}/images/certificate/Mathumetha.jpeg` },
-  { name: "Gowtham", src: `${CDN}/images/certificate/Gowtham.jpeg` },
-  { name: "Kavitha", src: `${CDN}/images/certificate/kavitha.jpeg` },
-  { name: "Manjunath", src: `${CDN}/images/certificate/ManjunathMarksheet.jpeg` },
+  { name: "Anupriya Puthussery", src: "/counselling-assets/results/anupriya.webp" },
+  { name: "Mathu Metha S", src: "/counselling-assets/results/mathu-metha.webp" },
+  { name: "Gowtham K", src: "/counselling-assets/results/gowtham.webp" },
+  { name: "Kwaja Naushath Maraicar K.S", src: "/counselling-assets/results/kwaja-naushath.webp" },
+  { name: "Kavitha P", src: "/counselling-assets/results/kavitha.webp" },
+  { name: "Manjunath J", src: "/counselling-assets/results/manjunath.webp" },
 ];
-
 const BEFORE = [
   "Attempting CA Inter again and again",
   "Buried in 200+ student lecture halls",
@@ -182,10 +176,6 @@ const AFTER = [
 ];
 
 const FAQS = [
-  {
-    q: "What does the Last Attempt Community Starter Kit Include?",
-    a: "The Kit includes exclusive access to the Last Attempt Community and also, a FREE call with one of our experts.",
-  },
   {
     q: "What are Faculty Sessions?",
     a: "Faculty sessions are conceptual lectures designed to help you understand the subject thoroughly. At FOCAS, all faculty lectures are pre-recorded and structured for maximum clarity.",
@@ -242,7 +232,7 @@ const EMPTY_FORM = {
 
 // Ant Design "large" input replica: 40px tall, #d9d9d9 border, 8px radius.
 const fieldCls =
-  "h-10 rounded-lg border border-[#d9d9d9] bg-white px-[11px] text-base text-black/90 outline-none transition placeholder:text-black/25 hover:border-[#4096ff] focus:border-[#1677ff] focus:shadow-[0_0_0_2px_rgba(5,145,255,0.1)] disabled:cursor-not-allowed disabled:bg-black/[0.04] disabled:text-black/25";
+  "h-10 rounded-lg border border-[#d9d9d9] bg-white px-[11px] text-base text-black/90 outline-none transition placeholder:text-black/25 hover:border-[#1D9E75] focus:border-[#1D9E75] focus:shadow-[0_0_0_2px_rgba(29,158,117,0.15)] disabled:cursor-not-allowed disabled:bg-black/[0.04] disabled:text-black/25";
 const inputCls = `w-full ${fieldCls}`;
 
 // Module scope so inputs keep focus across renders (see formKit Row).
@@ -313,22 +303,22 @@ const LeadForm = ({ onSuccess }) => {
 
     setSubmitting(true);
     try {
-      // The lead goes to the Zoho Flow webhook (skipped for bots that filled
-      // the honeypot — they still see the normal success state).
+      // The lead goes to the Zoho Flow webhook before payment, so it isn't lost
+      // if the student skips paying (skipped for bots that filled the honeypot —
+      // they still see the normal next step).
       if (!payload.company) {
         sendToZohoFlow(payload, ZOHO_LEAD);
         trackLead("counselling", payload);
       }
 
-      if (typeof window.gtag === "function")
-        window.gtag("event", "counselling_form_submit", {
-          event_category: "engagement",
-          event_label: "Last Attempt Community Starter Kit",
-        });
+      window.fbq?.("track", "Lead", { content_name: "Counselling Call", content_category: "Counselling" });
+      window.gtag?.("event", "generate_lead", { event_category: "counselling", event_label: "Counselling Call" });
       window.dataLayer?.push({ event: "counselling_form_submit", page_path: "/counselling" });
 
       setValues(EMPTY_FORM);
-      onSuccess?.();
+      // eslint-disable-next-line no-unused-vars
+      const { company, ...lead } = payload;
+      onSuccess?.({ ...lead, name: `${lead.firstName} ${lead.lastName}`.trim() });
     } catch (err) {
       setSubmitError(err.message || "Something went wrong. Please try again.");
     } finally {
@@ -425,7 +415,7 @@ const LeadForm = ({ onSuccess }) => {
       <button
         type="submit"
         disabled={submitting}
-        className="h-10 w-full rounded-lg bg-gradient-to-b from-[#425673] to-[#1C232D] text-base text-white shadow-[0_2px_0_rgba(5,145,255,0.1)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+        className="h-10 w-full rounded-lg bg-gradient-to-b from-[#1D9E75] to-[#0f6e56] text-base text-white shadow-[0_2px_0_rgba(29,158,117,0.15)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
       >
         {submitting ? "Submitting…" : "Request a call back"}
       </button>
@@ -476,12 +466,6 @@ const Modal = ({ open, onClose, children, label }) => {
   );
 };
 
-const ModalIcon = ({ children }) => (
-  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#ffbd3b] shadow-[0_8px_20px_-6px_rgba(255,189,59,0.7)]">
-    {children}
-  </div>
-);
-
 /* ─────────────────────────── Sections ─────────────────────────── */
 
 const Header = ({ onCta }) => (
@@ -492,8 +476,8 @@ const Header = ({ onCta }) => (
       </a>
       <div className="flex h-full items-center gap-2 xl:gap-6">
         <nav className="hidden h-full items-center gap-4 text-[#1c232d] lg:flex">
-          {[["#kit", "Starter Kit"], ["#why", "Why FOCAS"], ["#stories", "Student Stories"], ["#results", "Results"], ["#faq", "FAQs"]].map(([href, label]) => (
-            <a key={href} href={href} className="transition-all duration-300 hover:text-[#ffbd3b]">
+          {[["#why", "Why FOCAS"], ["#stories", "Student Stories"], ["#results", "Results"], ["#faq", "FAQs"]].map(([href, label]) => (
+            <a key={href} href={href} className="transition-all duration-300 hover:text-[#1D9E75]">
               {label}
             </a>
           ))}
@@ -502,7 +486,7 @@ const Header = ({ onCta }) => (
           type="button"
           onClick={onCta}
           className="hidden rounded-md p-2 px-6 font-semibold text-white lg:flex"
-          style={{ background: "linear-gradient(rgb(66, 86, 115), rgb(28, 35, 45))" }}
+          style={{ background: "linear-gradient(#1D9E75, #0f6e56)" }}
         >
           Request a call back
         </button>
@@ -519,22 +503,22 @@ const Header = ({ onCta }) => (
 );
 
 const NumberTile = ({ children }) => (
-  <span className="mx-1 inline-flex h-10 min-w-[2.5rem] items-center justify-center rounded-lg border border-blue-200 bg-white px-2 font-bold text-blue-800 shadow-[0_0_10px_rgba(37,99,235,0.6)] sm:h-12 md:h-14 lg:h-16 lg:px-3">
+  <span className="mx-1 inline-flex h-14 min-w-[3.5rem] items-center justify-center rounded-xl border-2 border-[#bfe9d9] bg-white px-3 text-3xl font-bold text-[#0f6e56] shadow-[0_0_14px_rgba(29,158,117,0.45)] sm:h-16 sm:text-4xl md:h-20 md:text-5xl lg:h-24 lg:px-5 lg:text-6xl">
     {children}
   </span>
 );
 
 const Hero = ({ onCta, onSuccess }) => (
-  <section className="w-full pb-4" style={GRID_BG}>
+  <section className="w-full bg-gradient-to-b from-[#e8f8f2] via-[#f8fffe] to-white pb-4" style={GRID_BG}>
     <div className="container mx-auto mt-10 xl:mt-16">
       <div className="mb-6 flex">
         <div className="group relative overflow-hidden rounded-full">
-          <div className="absolute inset-0 bg-blue-500/40 blur-xl" />
-          <div className="relative flex items-center gap-3 rounded-full border border-blue-300 bg-gradient-to-r from-sky-50 via-white to-indigo-50 px-5 py-3 shadow-[0_10px_30px_rgba(37,99,235,0.16)] backdrop-blur-xl">
-            <div className="flex h-10 w-10 -rotate-6 items-center justify-center rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-lg">
+          <div className="absolute inset-0 bg-[#1D9E75]/30 blur-xl" />
+          <div className="relative flex items-center gap-3 rounded-full border border-[#9fdcc5] bg-gradient-to-r from-[#e8f8f2] via-white to-[#f0fdf8] px-5 py-3 shadow-[0_10px_30px_rgba(29,158,117,0.18)] backdrop-blur-xl">
+            <div className="flex h-10 w-10 -rotate-6 items-center justify-center rounded-full bg-gradient-to-br from-[#1D9E75] to-[#0f6e56] text-white shadow-lg">
               <GraduationCap className="h-5 w-5" />
             </div>
-            <h2 className="text-base font-bold text-blue-700 md:text-lg">Last Attempt Community Starter Kit</h2>
+            <h2 className="text-base font-bold text-[#0f6e56] md:text-lg">Book a Counselling Call Today</h2>
           </div>
         </div>
       </div>
@@ -543,16 +527,16 @@ const Hero = ({ onCta, onSuccess }) => (
         <div className="col-span-12 xl:col-span-8">
           <div className="text-xl font-medium leading-snug text-[#31343B] sm:text-3xl md:text-4xl lg:text-5xl lg:leading-normal">
             1 Tutor for every
-            <span className={`${AI_BADGE} mx-3 text-xl sm:text-3xl md:text-4xl`}>10</span>
+            <span className={`${AI_BADGE} mx-3 px-5 py-2 text-3xl sm:text-4xl md:text-5xl lg:px-6 lg:text-6xl`}>10</span>
             Students
           </div>
           <h1 className="mt-3 text-xl font-medium leading-snug text-[#31343B] md:text-4xl lg:text-5xl lg:leading-normal">
-            <span className="text-3xl font-bold text-blue-800 sm:text-4xl md:text-5xl lg:text-6xl">FOCAS Personalised</span>
+            <span className="text-3xl font-bold text-[#1D9E75] sm:text-4xl md:text-5xl lg:text-6xl">FOCAS Personalized</span>
             <br />
-            <span className="text-3xl font-bold text-blue-800 sm:text-4xl md:text-5xl lg:text-6xl">Classes</span>{" "}
+            <span className="text-3xl font-bold text-[#1D9E75] sm:text-4xl md:text-5xl lg:text-6xl">Tutor Sessions</span>{" "}
             <span className="mr-2">for</span>
           </h1>
-          <div className="mt-3 text-xl font-medium text-[#31343B] md:text-4xl lg:text-5xl">
+          <div className="mt-4 flex flex-wrap items-center gap-y-2 text-xl font-medium text-[#31343B] md:text-4xl lg:text-5xl">
             <NumberTile>Jan</NumberTile>
             <NumberTile>2027</NumberTile>
             <span className="mx-2">Attempt!</span>
@@ -574,22 +558,17 @@ const Hero = ({ onCta, onSuccess }) => (
             </div>
           </div>
 
-          <div className="mt-10 flex w-full flex-col items-center justify-center gap-4 sm:flex-row lg:mt-28">
-            <button type="button" onClick={onCta} className={`${BTN_DARK} relative w-full px-8 py-3`}>
-              <span className="absolute -top-14 left-6 hidden rotate-[-1deg] rounded-md bg-gradient-to-b from-blue-600 to-blue-900 px-3 py-2 text-xs font-medium text-white shadow-lg md:block">
+          <div className="mt-10 flex w-full flex-col items-center gap-4 sm:flex-row lg:mt-28">
+            <button type="button" onClick={onCta} className={`${BTN_DARK} relative w-full px-10 py-3 text-lg sm:w-auto`}>
+              <span className="absolute -top-14 left-6 hidden rotate-[-1deg] rounded-md bg-gradient-to-b from-[#FFA500] to-[#e08900] px-3 py-2 text-xs font-medium text-white shadow-lg md:block">
                 give it a try
                 <br />
                 buddy
               </span>
               <span className="flex items-center justify-center gap-2">
-                Free Counselling Call <Phone className="h-4 w-4" />
+                Book a Counselling Call for just ₹9 <Phone className="h-4 w-4" />
               </span>
             </button>
-            <a href="#kit" className={`${BTN_BLUE} w-full px-8 py-3 text-center`}>
-              <span className="flex items-center justify-center gap-2">
-                Get Starter Kit <span>→</span>
-              </span>
-            </a>
           </div>
         </div>
 
@@ -627,7 +606,7 @@ const ScribbleArrow = () => (
 
 const VideoSection = ({ onCta }) => (
   <div className="relative md:pb-10">
-    <div className="absolute inset-0 z-0 h-[280px] w-full bg-gradient-to-r from-[#6C63FF] via-[#FF6EC7] to-[#FFB347] opacity-80 blur-[80px] md:h-[500px]" />
+    <div className="absolute inset-0 z-0 h-[280px] w-full bg-gradient-to-r from-[#1D9E75] via-[#9fe3c8] to-[#FFD27a] opacity-60 blur-[80px] md:h-[500px]" />
     <div className="container relative z-10 mx-auto w-fit md:px-4">
       <h2 className="my-7 text-center text-2xl font-bold leading-snug text-[#31343B] md:text-4xl lg:leading-normal">
         Confused about your{" "}
@@ -657,7 +636,7 @@ const VideoSection = ({ onCta }) => (
         <button
           type="button"
           onClick={onCta}
-          className="flex items-center justify-center gap-3 rounded-lg bg-gradient-to-b from-[#425673] to-[#1C232D] px-6 py-3 text-white transition-all duration-300 hover:scale-105 md:px-8"
+          className="flex items-center justify-center gap-3 rounded-lg bg-gradient-to-b from-[#1D9E75] to-[#0f6e56] px-6 py-3 text-white transition-all duration-300 hover:scale-105 md:px-8"
         >
           Talk to an Expert
         </button>
@@ -667,10 +646,10 @@ const VideoSection = ({ onCta }) => (
 );
 
 const ScheduleBand = () => (
-  <section className="relative mt-10 overflow-hidden border border-blue-400/20 bg-[linear-gradient(135deg,#111827_0%,#172554_50%,#1d4ed8_100%)] shadow-[0_24px_70px_rgba(30,64,175,0.28)] sm:px-7 sm:py-7 lg:px-8">
-    <div className="pointer-events-none absolute -left-16 -top-24 h-56 w-56 rounded-full bg-blue-500/25 blur-[90px]" />
-    <div className="pointer-events-none absolute -bottom-28 right-0 h-64 w-64 rounded-full bg-cyan-400/20 blur-[100px]" />
-    <div className="pointer-events-none absolute right-1/3 top-1/2 h-40 w-40 -translate-y-1/2 rounded-full bg-indigo-500/15 blur-[80px]" />
+  <section className="relative mt-10 overflow-hidden border border-[#1D9E75]/20 bg-[linear-gradient(135deg,#06241c_0%,#0b3d33_50%,#0f6e56_100%)] shadow-[0_24px_70px_rgba(15,110,86,0.28)] sm:px-7 sm:py-7 lg:px-8">
+    <div className="pointer-events-none absolute -left-16 -top-24 h-56 w-56 rounded-full bg-emerald-500/25 blur-[90px]" />
+    <div className="pointer-events-none absolute -bottom-28 right-0 h-64 w-64 rounded-full bg-emerald-400/20 blur-[100px]" />
+    <div className="pointer-events-none absolute right-1/3 top-1/2 h-40 w-40 -translate-y-1/2 rounded-full bg-[#FFA500]/10 blur-[80px]" />
     <div
       className="pointer-events-none absolute inset-0 opacity-[0.05]"
       style={{
@@ -681,12 +660,12 @@ const ScheduleBand = () => (
     />
     <div className="container relative z-10 mx-auto py-10">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="inline-flex w-fit items-center gap-2 rounded-full border border-blue-300/20 bg-white/10 px-3.5 py-2 backdrop-blur-xl">
+        <div className="inline-flex w-fit items-center gap-2 rounded-full border border-emerald-300/20 bg-white/10 px-3.5 py-2 backdrop-blur-xl">
           <span className="relative flex h-2.5 w-2.5">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan-300 opacity-75" />
-            <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-cyan-300" />
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-300 opacity-75" />
+            <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-300" />
           </span>
-          <span className="text-xs font-bold uppercase tracking-[0.14em] text-blue-50">Live Tutor Sessions</span>
+          <span className="text-xs font-bold uppercase tracking-[0.14em] text-emerald-50">Live Tutor Sessions</span>
         </div>
         <div className="inline-flex w-fit items-center gap-2 rounded-full border border-orange-300/20 bg-orange-400/15 px-3.5 py-2 backdrop-blur-xl">
           <span className="h-2 w-2 rounded-full bg-orange-300" />
@@ -697,8 +676,8 @@ const ScheduleBand = () => (
       <div className="mt-6 grid gap-6 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
         <div>
           <div className="mb-3 flex items-center gap-2">
-            <CalendarDays className="h-4 w-4 text-blue-200" />
-            <span className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-200">Daily Tutor Slots</span>
+            <CalendarDays className="h-4 w-4 text-emerald-200" />
+            <span className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-200">Daily Tutor Slots</span>
           </div>
           <h3 className="max-w-md text-2xl font-bold leading-tight text-white sm:text-3xl">Study along with your tutor every day</h3>
           <p className="mt-3 max-w-md text-sm leading-6 text-slate-300 sm:text-[15px]">
@@ -710,15 +689,15 @@ const ScheduleBand = () => (
           {TUTOR_SLOTS.map(([label, time]) => (
             <article
               key={label}
-              className="group relative overflow-hidden rounded-2xl border border-white/15 bg-white/10 p-4 backdrop-blur-xl transition duration-300 hover:-translate-y-1 hover:border-blue-300/40 hover:bg-white/[0.14] hover:shadow-[0_18px_45px_rgba(0,0,0,0.18)] sm:p-5"
+              className="group relative overflow-hidden rounded-2xl border border-white/15 bg-white/10 p-4 backdrop-blur-xl transition duration-300 hover:-translate-y-1 hover:border-emerald-300/40 hover:bg-white/[0.14] hover:shadow-[0_18px_45px_rgba(0,0,0,0.18)] sm:p-5"
             >
-              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-300/80 to-transparent opacity-0 transition group-hover:opacity-100" />
+              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-300/80 to-transparent opacity-0 transition group-hover:opacity-100" />
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <p className="text-sm font-semibold text-blue-100">{label}</p>
+                  <p className="text-sm font-semibold text-emerald-100">{label}</p>
                   <div className="mt-3 flex items-center gap-2">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-400/15 ring-1 ring-blue-300/20">
-                      <Clock className="h-4 w-4 text-blue-200" />
+                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-400/15 ring-1 ring-emerald-300/20">
+                      <Clock className="h-4 w-4 text-emerald-200" />
                     </div>
                     <p className="whitespace-nowrap text-base font-bold text-white sm:text-lg">{time}</p>
                   </div>
@@ -735,7 +714,7 @@ const ScheduleBand = () => (
       <div className="mt-6 flex flex-wrap gap-x-6 gap-y-3 border-t border-white/10 pt-5">
         {["Dedicated Tutor", "Progress Tracking", "Doubt Clearing"].map((t) => (
           <div key={t} className="flex items-center gap-2">
-            <CheckCircle2 className="h-4 w-4 text-cyan-300" />
+            <CheckCircle2 className="h-4 w-4 text-emerald-300" />
             <span className="text-sm font-medium text-slate-200">{t}</span>
           </div>
         ))}
@@ -750,7 +729,7 @@ const WhyFocas = ({ onCta, onSuccess }) => (
       <h2 className="mb-4 text-3xl font-bold leading-snug text-black lg:text-4xl">
         Why Join FOCAS Edu to make it
         <br className="hidden md:block" />
-        <span className={`${AI_BADGE} ml-2 mt-2 -rotate-2 px-4 py-2.5 text-2xl shadow-xl shadow-blue-500/30 lg:text-4xl`}>
+        <span className={`${AI_BADGE} ml-2 mt-2 -rotate-2 px-4 py-2.5 text-2xl shadow-xl shadow-[#1D9E75]/30 lg:text-4xl`}>
           Your Last Attempt?
         </span>
       </h2>
@@ -773,7 +752,7 @@ const WhyFocas = ({ onCta, onSuccess }) => (
         </div>
       </div>
       <div className="hidden justify-center lg:col-span-5 xl:flex">
-        <div className="w-full rounded-2xl bg-[conic-gradient(from_180deg,#60a5fa,#f472b6,#fbbf24,#34d399,#60a5fa)] p-[2px]">
+        <div className="w-full rounded-2xl bg-[conic-gradient(from_180deg,#1D9E75,#9fe3c8,#FFA500,#2bc48f,#1D9E75)] p-[2px]">
           <div className="rounded-2xl bg-white/90 p-2 backdrop-blur-xl">
             <div className="rounded-xl border border-gray-100 bg-white shadow-lg">
               <div className="p-6">
@@ -785,32 +764,29 @@ const WhyFocas = ({ onCta, onSuccess }) => (
         </div>
       </div>
       <div className="mt-12 flex w-full flex-col items-center justify-center gap-4 sm:flex-row xl:hidden">
-        <button type="button" onClick={onCta} className={`${BTN_DARK} w-full px-8 py-3`}>
+        <button type="button" onClick={onCta} className={`${BTN_DARK} w-full px-10 py-3 text-lg sm:w-auto`}>
           <span className="flex items-center justify-center gap-2">
-            Free Counselling Call <Phone className="h-4 w-4" />
+            Book a Counselling Call for just ₹9 <Phone className="h-4 w-4" />
           </span>
         </button>
-        <a href="#kit" className={`${BTN_BLUE} w-full px-8 py-3 text-center`}>
-          Get Starter Kit →
-        </a>
       </div>
     </div>
   </section>
 );
 
 const DesignedFor = () => (
-  <section className="relative overflow-hidden bg-[#0e0e13] py-20 md:py-24">
+  <section className="relative overflow-hidden bg-[#06241c] py-20 md:py-24">
     <div
       className="pointer-events-none absolute -left-16 -top-20 h-[420px] w-[420px] rounded-full"
-      style={{ background: "radial-gradient(circle, rgba(120,40,140,0.6) 0%, transparent 70%)", filter: "blur(60px)" }}
+      style={{ background: "radial-gradient(circle, rgba(29,158,117,0.45) 0%, transparent 70%)", filter: "blur(60px)" }}
     />
     <div
       className="pointer-events-none absolute -bottom-16 right-[5%] h-[380px] w-[380px] rounded-full"
-      style={{ background: "radial-gradient(circle, rgba(100,20,60,0.55) 0%, transparent 70%)", filter: "blur(60px)" }}
+      style={{ background: "radial-gradient(circle, rgba(255,165,0,0.22) 0%, transparent 70%)", filter: "blur(60px)" }}
     />
     <div
       className="pointer-events-none absolute left-[40%] top-[40%] h-[300px] w-[300px] rounded-full"
-      style={{ background: "radial-gradient(circle, rgba(30,40,100,0.35) 0%, transparent 70%)", filter: "blur(60px)" }}
+      style={{ background: "radial-gradient(circle, rgba(15,110,86,0.4) 0%, transparent 70%)", filter: "blur(60px)" }}
     />
     <div className="container relative z-10 mx-auto">
       <div className="mb-14">
@@ -835,54 +811,16 @@ const DesignedFor = () => (
   </section>
 );
 
-const StarterKit = ({ onCta }) => {
-  const [open, setOpen] = useState(true);
-  return (
-    <section id="kit" className="scroll-mt-20">
-      <div className="container mx-auto mt-10 md:max-w-4xl md:p-6">
-        <div className="mb-10 text-center">
-          <h2 className="mb-4 text-2xl font-bold text-gray-900 md:text-4xl">What you get with the Starter Kit</h2>
-          <p className="mx-auto max-w-2xl text-sm text-gray-600 md:text-lg">
-            What do you get with FOCAS Edu&apos;s Last Attempt Community Starter Kit?
-          </p>
-        </div>
-
-        <div className="mb-12 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
-          <div className="border-b border-gray-100">
-            <button type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open} className="w-full p-4 text-left md:p-6">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3 md:space-x-4">
-                  <ChevronDown className={`h-4 w-4 shrink-0 text-gray-400 transition-transform ${open ? "rotate-180" : ""}`} />
-                  <h3 className="text-sm font-semibold text-gray-900 md:text-lg">Last Attempt Community Starter Kit</h3>
-                </div>
-                <div className="flex items-center gap-1.5 text-xs text-gray-500 md:text-sm">
-                  <BookOpen className="h-4 w-4" /> 3 items
-                </div>
-              </div>
-            </button>
-            {open && (
-              <div className="px-4 pb-4 md:px-6 md:pb-6">
-                {KIT_ITEMS.map(([emoji, title, tag, tagCls]) => (
-                  <div key={title} className="flex items-center justify-between gap-3 py-3 pl-7 md:pl-8">
-                    <div className="flex items-center gap-3">
-                      <span className="text-xl">{emoji}</span>
-                      <span className="text-sm text-gray-700 md:text-base">{title}</span>
-                    </div>
-                    <span className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold md:px-3 md:py-1 md:text-xs ${tagCls}`}>{tag}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-
+const Results = ({ onCta }) => (
+  <section className="scroll-mt-20">
+    <div className="container mx-auto mt-10 md:max-w-4xl md:p-6">
         <div id="results" className="mt-6 flex w-full scroll-mt-24 justify-center px-4 md:px-0">
           <div className="flex w-full flex-col justify-center rounded-2xl border border-gray-200 bg-white p-2 shadow-md">
             <div className="rounded-2xl border border-gray-200 p-3 md:p-4">
               <h2 className="mb-6 px-2 text-center text-xs font-medium tracking-wide text-gray-700 md:mb-8 md:text-base">
                 From Dream to Reality — results of FOCAS students
               </h2>
-              <div className="grid grid-cols-1 items-start gap-4 sm:grid-cols-2 md:gap-6">
+              <div className="grid grid-cols-1 items-start gap-4 sm:grid-cols-2 md:grid-cols-3 md:gap-6">
                 {RESULTS.map((r) => (
                   <a key={r.name} href={r.src} target="_blank" rel="noopener noreferrer" className="group block">
                     <img
@@ -903,21 +841,20 @@ const StarterKit = ({ onCta }) => {
           <button
             type="button"
             onClick={onCta}
-            className="flex items-center justify-center gap-2 rounded-lg bg-gradient-to-b from-[#425673] to-[#1C232D] px-4 py-2 text-sm text-white transition-all duration-300 hover:scale-105 md:gap-3 md:px-8 md:py-3 md:text-base"
+            className="flex items-center justify-center gap-2 rounded-lg bg-gradient-to-b from-[#1D9E75] to-[#0f6e56] px-4 py-2 text-sm text-white transition-all duration-300 hover:scale-105 md:gap-3 md:px-8 md:py-3 md:text-base"
           >
-            Get your Starter Kit today
+            Book a Counselling Call for just ₹9
           </button>
         </div>
       </div>
     </section>
-  );
-};
+);
 
 const Transform = () => {
   const [tab, setTab] = useState("after");
   const list = tab === "after" ? AFTER : BEFORE;
   return (
-    <section className="w-full bg-gradient-to-r from-[#1a1a1a] via-[#1a1a1a] to-[#41312e] py-16 text-white">
+    <section className="w-full bg-gradient-to-r from-[#06241c] via-[#0b3d33] to-[#0f6e56] py-16 text-white">
       <div className="container mx-auto px-4 md:px-6">
         <div className="mb-12 text-center">
           <h2 className="mb-4 text-2xl font-bold md:text-4xl">See How FOCAS Transforms CA Journeys</h2>
@@ -930,7 +867,7 @@ const Transform = () => {
               type="button"
               onClick={() => setTab(key)}
               className={`rounded-xl border px-6 py-2 font-medium transition-all duration-200 ${
-                tab === key ? "border-white bg-white text-black" : "border-gray-600 bg-[#232323] hover:border-white"
+                tab === key ? "border-white bg-white text-black" : "border-gray-600 bg-[#0b3d33] hover:border-white"
               }`}
             >
               {label}
@@ -984,7 +921,7 @@ const StoryCard = ({ name, file }) => {
             className="absolute inset-0 flex items-center justify-center bg-black/10"
           >
             <span className="flex h-14 w-14 items-center justify-center rounded-full bg-white/90 shadow-xl">
-              <Play className="ml-1 h-6 w-6 fill-[#106EE2] text-[#106EE2]" />
+              <Play className="ml-1 h-6 w-6 fill-[#1D9E75] text-[#1D9E75]" />
             </span>
           </button>
         )}
@@ -992,7 +929,7 @@ const StoryCard = ({ name, file }) => {
       <div className="flex flex-col p-5">
         <div className="mb-3 flex space-x-1">
           {Array.from({ length: 5 }).map((_, i) => (
-            <Star key={i} className="h-5 w-5 fill-[#106EE2] text-[#106EE2]" />
+            <Star key={i} className="h-5 w-5 fill-[#FFA500] text-[#FFA500]" />
           ))}
         </div>
         <div className="border-t border-gray-100 pt-3">
@@ -1008,7 +945,7 @@ const Stories = () => {
   const track = useRef(null);
   const scroll = (dir) => track.current?.scrollBy({ left: dir * 300, behavior: "smooth" });
   return (
-    <section id="stories" className="relative scroll-mt-20 bg-[#F6F5F4] pb-10 md:pb-20">
+    <section id="stories" className="relative scroll-mt-20 bg-[#f0fdf8] pb-10 md:pb-20">
       <div className="container mx-auto overflow-hidden px-0 py-8 md:px-4 md:py-16">
         <div className="mb-8 flex flex-col gap-4 px-4 md:flex-row md:items-center md:justify-between md:px-0">
           <h2 className="text-2xl font-bold text-gray-800 md:text-4xl">Inspiring Student Stories</h2>
@@ -1019,7 +956,7 @@ const Stories = () => {
                 type="button"
                 onClick={() => scroll(d)}
                 aria-label={label}
-                className="flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 bg-white transition-colors hover:border-blue-200 hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 sm:h-11 sm:w-11"
+                className="flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 bg-white transition-colors hover:border-[#bfe9d9] hover:bg-[#e8f8f2] focus:outline-none focus:ring-2 focus:ring-[#1D9E75] focus:ring-opacity-50 sm:h-11 sm:w-11"
               >
                 <Icon className="h-5 w-5 text-gray-700" />
               </button>
@@ -1074,7 +1011,7 @@ const Faq = () => {
 };
 
 const StillConfused = ({ onCta }) => (
-  <section className="w-full bg-gray-100 py-16">
+  <section className="w-full bg-[#e8f8f2] py-16">
     <div className="container mx-auto grid grid-cols-1 items-start gap-10 lg:grid-cols-[1.3fr_0.7fr]">
       <div>
         <h2 className="text-2xl font-bold leading-tight text-gray-900 md:text-4xl">
@@ -1091,13 +1028,13 @@ const StillConfused = ({ onCta }) => (
       </div>
       <a
         href={PHONE_TEL}
-        className="flex w-full max-w-md items-center gap-4 rounded-2xl bg-gradient-to-r from-blue-200 via-purple-200 to-yellow-200 p-6 transition-transform duration-300 hover:scale-[1.02] md:p-7 lg:ml-auto"
+        className="flex w-full max-w-md items-center gap-4 rounded-2xl bg-gradient-to-r from-[#c9f0e1] via-[#e8f8f2] to-[#ffe2b0] p-6 transition-transform duration-300 hover:scale-[1.02] md:p-7 lg:ml-auto"
       >
         <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-black">
           <Phone className="h-5 w-5 text-white" />
         </div>
         <div>
-          <p className="text-sm text-gray-700">For any doubts about the Starter Kit</p>
+          <p className="text-sm text-gray-700">For any doubts about counselling</p>
           <p className="mt-1 text-lg font-bold text-gray-900">{PHONE_DISPLAY}</p>
         </div>
       </a>
@@ -1121,9 +1058,6 @@ const FOOTER_COLUMNS = [
       ["Personalised Classes", "/focas"],
       ["Workout Batch", "/workout-batch"],
       ["RTI Day", "/rti"],
-      ["Audit", "/audit"],
-      ["FOCAS Manual", "/manual"],
-      ["Mentor Counselling", "/mentor-counselling"],
       ["Career Guidance", "/career-guidance"],
       ["Foundation for School", "/fs"],
     ],
@@ -1132,7 +1066,6 @@ const FOOTER_COLUMNS = [
     title: "Quick Links",
     links: [
       ["Home", "/"],
-      ["Starter Kit", "#kit"],
       ["Why FOCAS", "#why"],
       ["Student Stories", "#stories"],
       ["Results", "#results"],
@@ -1157,7 +1090,7 @@ const SOCIALS = [
 ];
 
 const Footer = () => (
-  <footer className="w-full bg-[#110D03]" style={LEXEND}>
+  <footer className="w-full bg-[#06241c]" style={LEXEND}>
     <section className="container overflow-hidden">
       <ul className="flex justify-center py-6" style={MANROPE}>
         {"FOCAS EDU".split("").map((ch, i) =>
@@ -1166,7 +1099,7 @@ const Footer = () => (
           ) : (
             <li
               key={i}
-              className="cursor-pointer text-2xl font-extrabold text-[#3F3A2D] transition-colors hover:text-[#ffbd3b] md:text-5xl lg:text-[90px] xl:text-[116px]"
+              className="cursor-pointer text-2xl font-extrabold text-[#1f5446] transition-colors hover:text-[#FFA500] md:text-5xl lg:text-[90px] xl:text-[116px]"
             >
               {ch}
             </li>
@@ -1181,7 +1114,7 @@ const Footer = () => (
             <ul className="space-y-1">
               {links.map(([label, href]) => (
                 <li key={label}>
-                  <a href={href} className="inline-block py-1 text-[#D9D4C7] transition-colors hover:text-[#ffbd3b]">
+                  <a href={href} className="inline-block py-1 text-[#cfe9df] transition-colors hover:text-[#FFA500]">
                     {label}
                   </a>
                 </li>
@@ -1192,31 +1125,31 @@ const Footer = () => (
 
         <div className="col-span-2 flex flex-col gap-3 md:col-span-3 md:flex-row lg:col-span-1 lg:flex-col lg:items-end">
           <div className="flex w-full max-w-[224px] items-center gap-3 rounded-lg border border-white/80 px-4 py-3 text-white">
-            <Award className="h-8 w-8 shrink-0 text-[#ffbd3b]" />
+            <Award className="h-8 w-8 shrink-0 text-[#FFA500]" />
             <div className="text-sm leading-tight">
               <div className="font-semibold">Average Score 50+</div>
-              <div className="text-[#D9D4C7]">FOCAS students</div>
+              <div className="text-[#cfe9df]">FOCAS students</div>
             </div>
           </div>
           <div className="flex w-full max-w-[224px] items-center gap-3 rounded-lg border border-white/80 px-4 py-3 text-white">
-            <Users className="h-8 w-8 shrink-0 text-[#ffbd3b]" />
+            <Users className="h-8 w-8 shrink-0 text-[#FFA500]" />
             <div className="text-sm leading-tight">
               <div className="font-semibold">1,000+ students</div>
-              <div className="text-[#D9D4C7]">already learning</div>
+              <div className="text-[#cfe9df]">already learning</div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="flex flex-col gap-5 border-t border-[#3F3A2D] py-8 text-sm text-[#D9D4C7] md:flex-row md:items-center md:justify-between">
+      <div className="flex flex-col gap-5 border-t border-[#1f5446] py-8 text-sm text-[#cfe9df] md:flex-row md:items-center md:justify-between">
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
           <span>© {new Date().getFullYear()} FOCAS Edu</span>
           <span className="hidden sm:inline">•</span>
-          <a href="/privacy-policy" className="hover:text-[#ffbd3b]">Privacy Policy</a>
+          <a href="/privacy-policy" className="hover:text-[#FFA500]">Privacy Policy</a>
           <span className="hidden sm:inline">•</span>
-          <a href={`mailto:${EMAIL}`} className="hover:text-[#ffbd3b]">{EMAIL}</a>
+          <a href={`mailto:${EMAIL}`} className="hover:text-[#FFA500]">{EMAIL}</a>
           <span className="hidden sm:inline">•</span>
-          <a href={PHONE_TEL} className="hover:text-[#ffbd3b]">{PHONE_DISPLAY}</a>
+          <a href={PHONE_TEL} className="hover:text-[#FFA500]">{PHONE_DISPLAY}</a>
         </div>
         <div className="flex items-center gap-2">
           {SOCIALS.map(([label, href, Icon]) => (
@@ -1226,7 +1159,7 @@ const Footer = () => (
               target="_blank"
               rel="noopener noreferrer"
               aria-label={label}
-              className="flex h-10 w-10 items-center justify-center rounded-full text-white transition-colors hover:text-[#ffbd3b]"
+              className="flex h-10 w-10 items-center justify-center rounded-full text-white transition-colors hover:text-[#FFA500]"
             >
               <Icon className="h-5 w-5" />
             </a>
@@ -1243,6 +1176,8 @@ const Footer = () => (
 const SUBMITTED_KEY = "focas_counselling_submitted";
 // Set on submit, consumed by /counselling-success to fire the ad conversions once.
 export const CONVERSION_KEY = "focas_counselling_conversion";
+// Lead details carried to /counselling/book (router state → sessionStorage fallback).
+export const LEAD_KEY = "focas_counselling_lead";
 
 export default function Counselling() {
   const navigate = useNavigate();
@@ -1250,14 +1185,15 @@ export default function Counselling() {
   const [modal, setModal] = useState(null);
 
   const openForm = () => setModal("form");
-  const showThanks = () => {
+  const showThanks = (lead) => {
     try {
       localStorage.setItem(SUBMITTED_KEY, "1");
       sessionStorage.setItem(CONVERSION_KEY, "1");
+      sessionStorage.setItem(LEAD_KEY, JSON.stringify(lead));
     } catch {
       /* non-fatal */
     }
-    navigate("/counselling-success");
+    navigate("/counselling/book", { state: lead });
   };
   const close = () => setModal(null);
 
@@ -1297,7 +1233,7 @@ export default function Counselling() {
         <ScheduleBand />
         <WhyFocas onCta={openForm} onSuccess={showThanks} />
         <DesignedFor />
-        <StarterKit onCta={openForm} />
+        <Results onCta={openForm} />
         <Transform />
         <Stories />
         <Faq />
@@ -1306,11 +1242,9 @@ export default function Counselling() {
       <Footer />
 
       <Modal open={modal === "form"} onClose={close} label="Request a call back">
-        <ModalIcon>
-          <GraduationCap className="h-8 w-8 text-white" />
-        </ModalIcon>
-        <h3 className="mt-4 text-xl font-bold text-[#1c232d]">Get Free CA Inter Counselling</h3>
-        <p className="mt-1 text-sm text-[#696969]">One quick call with our counselor. Completely free.</p>
+        <img src="/fs-assets/logo.webp" alt="FOCAS Edu" className="h-10 w-auto" />
+        <h3 className="mt-4 text-xl font-bold text-[#1c232d]">Book Your CA Inter Counselling Call</h3>
+        <p className="mt-1 text-sm text-[#696969]">Share your details, then pick a slot and confirm it for just ₹9.</p>
         <LeadForm onSuccess={showThanks} />
       </Modal>
     </div>
