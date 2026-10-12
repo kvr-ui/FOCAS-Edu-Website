@@ -55,20 +55,29 @@ const COMPARE_ROWS = [
   {label:"Class Type", other:"Lecture", wb:"Workout"},
 ];
 
+// Student practice photos. Add one entry per image: { src: "/workout-batch/practice-1.jpg", alt: "..." }.
+// Until images are added, placeholder tiles are shown.
+const PRACTICE_IMAGES = [];
+const PRACTICE_PLACEHOLDER_COUNT = 8;
+
+// Video testimonials hosted on Google Drive. Add { name, driveId } per video —
+// driveId is the part after /file/d/ in the share link. File must be shared as "Anyone with the link".
+// Until videos are added, placeholder tiles are shown.
+const VIDEO_TESTIMONIALS = [];
+const VIDEO_PLACEHOLDER_COUNT = 3;
+
 const TESTIMONIALS = [
-  { name: "Yashika", batch: "2024 Batch", text: "The method of teaching followed by Focas academy is perfect and Trust me I was able to score 82 just by enrolling in their fasttrack then imagine how their regular course would be." },
-  { name: "Naveen", batch: "2023 Batch", text: "I was able to complete preparation in Class itself, because it was live studying and NO procrastination. Got rid of confusions in the class itself as there were discussions of Q&A at the end of every topic. Was able to recall at least 75% in the exams because of the cumulative revisions we did in the class." },
-  { name: "Mercy", batch: "2025 Batch", text: "Really happy and satisfied with the tutors we have is really good, the way of teaching here is enough+only one time oversee that effective. The concept behind deep focas grb is too good and gained confidence which I always wanted for." },
-  { name: "Jagadeesh", batch: "2025 Batch", text: "FOCAS helped me to study at the best possible way. Their tutor session was really helpful for me to get out of vicious circle of audit! I thought of quiting CA because of audit, but because of them, I can able to study it. Thanks FOCAS team!" },
-  { name: "Aravindha Lochanan", batch: "2023 Batch", text: "Best mentorship with coaching for struggling students with last minute pending syllabus and repeaters. Can trust FOCAS for best ever preparation for upcoming attempt. Join FOCAS make it ur last attempt." },
+  { name: "Sabitha", text: "I thought I knew the subjects. The only problem I felt was my presentation. But only after coming here, I understood that I actually know very little." },
+  { name: "Tharun", text: "From my school days, I won't do much writing practice. I'll simply just see the notes repeatedly. Many tutors here told me that I have to do more practice, which is why I'm here." },
+  { name: "Elakya", text: "I learnt that if I don't know some things, I should ensure not to get stuck on them. Practice is required for that." },
+  { name: "Ragavi", text: "Being a self-study student, studying is hard. I realised how important this mentorship is in my journey." },
+  { name: "Yashika", text: "The method of teaching followed by FOCAS is perfect. Trust me, I was able to score 82 just by enrolling in their fast track — then imagine how their regular course would be." },
 ];
 
 const FAQS = [
   { q: "Who is the Workout Batch for?", a: "CA Intermediate students who have pending syllabus or are repeaters and want to complete a full-fledged workout within a month before their exam." },
   { q: "What does 1:10 Personalized Tutor mean?", a: "One tutor gives personalized attention to a batch of ≤10 students, making you work out selective sums in the class to make you exam ready — not a 100-student lecture." },
   { q: "What is The Last Attempt Kit?", a: "It includes Curated Question Banks, Weekly MCQ Marathons, Regular Tests, Tests with Video Evaluations, Syllabus Coverage Guide, and access to the Last Attempt Community." },
-  { q: "What is the G1 / G2 Combo offer?", a: "Enroll for all 3 papers in a group at a discounted combo price — G1 Combo is ₹10,000 and G2 Combo is ₹10,000, saving you ₹5,000 compared to individual paper prices." },
-  { q: "What is the Unit 2D Combo?", a: "A special combo for Group II students appearing for Unit 2D, priced at ₹8,000." },
   { q: "How do I enroll?", a: "Click the Enquire Now button on this page to fill out our quick enrollment form. Our team will get back to you immediately." },
   { q: "Who is conducting the Workout Batch?", a: "FOCAS Edu — an institute that has guided 300+ students in their journey to realizing their CA dreams." },
   { q: "What language are the sessions held in?", a: "Sessions are conducted in both English and Hindi (हिंदी) so every student feels comfortable." },
@@ -230,16 +239,6 @@ function Hero({ onEnrol }) {
         <div className="lg:hidden inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold border border-orange-200 mb-5 w-full justify-center" style={{ background: "#fff8ed", color: ORANGE }}>
           <span className="w-2 h-2 rounded-full" style={{ background: ORANGE, animation: "ping 1.4s ease infinite" }} />
           <span>Now Open for Enrollment. <span style={{ color: ORANGE, fontWeight: 900 }}>CA INTER Batch</span></span>
-        </div>
-
-        {/* Price table */}
-        <div className="flex flex-wrap gap-3 justify-center lg:justify-start mb-5">
-          <div className="inline-grid grid-cols-2 border border-gray-200 rounded-2xl overflow-hidden shadow-sm text-sm font-bold">
-            <div className="px-5 py-3 bg-gray-50 text-gray-500 border-b border-r border-gray-200">Per Paper</div>
-            <div className="px-5 py-3 bg-gray-50 text-gray-500 border-b border-gray-200">G1 / G2 Combo</div>
-            <div className="px-5 py-3 text-gray-900 border-r border-gray-100">₹5,000</div>
-            <div className="px-5 py-3 text-gray-900">₹10,000</div>
-          </div>
         </div>
 
         {/* CTA */}
@@ -439,6 +438,65 @@ function Compare() {
   );
 }
 
+function PracticeSection() {
+  const tiles = PRACTICE_IMAGES.length ? PRACTICE_IMAGES : Array.from({ length: PRACTICE_PLACEHOLDER_COUNT }, () => null);
+  return (
+    <section id="practice" className="py-16 md:py-24 px-6 bg-white">
+      <div className="max-w-5xl mx-auto">
+        <Reveal className="text-center mb-10">
+          <h2 className="text-3xl md:text-5xl font-black tracking-tight text-gray-900 mb-3">Practice like never before</h2>
+          <p className="text-gray-500 text-lg">Our students, working it out in class.</p>
+        </Reveal>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+          {tiles.map((img, i) => (
+            <Reveal key={i} delay={(i % 4) * 0.06}>
+              <div className="aspect-square rounded-2xl overflow-hidden border border-gray-100 shadow-sm bg-gray-50 flex items-center justify-center">
+                {img ? (
+                  <img src={img.src} alt={img.alt || "FOCAS student practising"} loading="lazy" className="w-full h-full object-cover transition-transform duration-300 hover:scale-105" />
+                ) : (
+                  <span className="text-xs font-semibold text-gray-400">Photo coming soon</span>
+                )}
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function VideoTestimonials() {
+  const tiles = VIDEO_TESTIMONIALS.length ? VIDEO_TESTIMONIALS : Array.from({ length: VIDEO_PLACEHOLDER_COUNT }, () => null);
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-12">
+      {tiles.map((v, i) => (
+        <Reveal key={i} delay={i * 0.08}>
+          <div className="rounded-2xl overflow-hidden border border-gray-200 shadow-md bg-white">
+            <div className="aspect-[9/16] bg-gray-900 flex items-center justify-center">
+              {v ? (
+                <iframe
+                  src={`https://drive.google.com/file/d/${v.driveId}/preview`}
+                  title={`${v.name} testimonial`}
+                  allow="autoplay; encrypted-media"
+                  allowFullScreen
+                  loading="lazy"
+                  className="w-full h-full"
+                  style={{ border: "none" }}
+                />
+              ) : (
+                <span className="text-xs font-semibold text-gray-400">Video coming soon</span>
+              )}
+            </div>
+            {v?.name && (
+              <div className="px-5 py-3 border-t border-gray-100 font-black text-gray-900 uppercase tracking-wide text-sm" style={{ background: "#f8fffe" }}>{v.name}</div>
+            )}
+          </div>
+        </Reveal>
+      ))}
+    </div>
+  );
+}
+
 function Testimonials() {
   const [current, setCurrent] = React.useState(0);
   const trackRef = React.useRef(null);
@@ -452,6 +510,7 @@ function Testimonials() {
           <span className="inline-block px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-4" style={{ background: "#e8f8f2", color: "#0f6e56" }}>Student Stories</span>
           <h2 className="text-3xl md:text-5xl font-black tracking-tight text-gray-900 mb-3">What our students say</h2>
         </Reveal>
+        <VideoTestimonials />
         <style>{`.wb-gallery-track{display:flex;overflow-x:auto;gap:16px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:4px}.wb-gallery-track::-webkit-scrollbar{display:none}.wb-gallery-slide{flex:0 0 85vw;max-width:400px;scroll-snap-align:center}@media(min-width:768px){.wb-gallery-slide{flex:0 0 calc(40% - 10px);max-width:none}}.wb-gallery-nav-btn{width:44px;height:44px;border-radius:50%;border:none;background:#0f6e56;color:white;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s,transform .15s}.wb-gallery-nav-btn:hover{background:#0a5240;transform:scale(1.08)}.wb-gallery-nav-btn:active{transform:scale(.95)}`}</style>
         <Reveal>
           <div ref={trackRef} className="wb-gallery-track">
@@ -463,7 +522,7 @@ function Testimonials() {
                 </div>
                 <div className="px-6 py-4 border-t border-gray-100" style={{ background: "#f8fffe" }}>
                   <div className="font-black text-gray-900 uppercase tracking-wide text-sm">{t.name}</div>
-                  <div className="text-xs mt-0.5" style={{ color: GREEN }}>{t.batch}</div>
+                  {t.batch && <div className="text-xs mt-0.5" style={{ color: GREEN }}>{t.batch}</div>}
                 </div>
               </div>
             ))}
@@ -603,6 +662,7 @@ export default function WorkoutBatch() {
       <WhyWorkoutBatch />
       <Curriculum />
       <Compare />
+      <PracticeSection />
       <Testimonials />
       <FAQ />
       <Footer />
