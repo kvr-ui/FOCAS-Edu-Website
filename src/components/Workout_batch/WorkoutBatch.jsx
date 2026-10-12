@@ -20,16 +20,14 @@ const cld = (path) => `https://res.cloudinary.com/dvfybzpcd/image/upload/f_auto,
 
 // "How our workout batch looks like": photos in a bento grid, then session videos.
 // `tile` holds the grid placement classes — mobile flows in list order (2 cols),
-// desktop places each photo explicitly on a 4×3 grid with a CTA tile in the last row.
+// desktop places each photo explicitly on a 4×2 grid with a CTA tile in the last row.
 const DEMO_PHOTOS = [
-  { src: cld("v1791542313/WhatsApp_Image_2026-10-09_at_14.11.13_2_d0tjuz.jpg"), alt: "FOCAS tutors and mentors", tile: "col-span-2 md:col-start-1 md:row-start-1" },
-  { src: cld("v1791542312/WhatsApp_Image_2026-10-09_at_14.11.50_txuxji.jpg"), alt: "Tutor reviewing a student's answers", tile: "col-span-2 md:col-start-3 md:row-start-1" },
-  { src: cld("v1791542312/WhatsApp_Image_2026-10-09_at_15.43.55_1_y140am.jpg"), alt: "Students practising in a workout session", tile: "row-span-2 md:col-start-1 md:row-start-2" },
-  { src: cld("v1791542312/WhatsApp_Image_2026-10-09_at_15.43.55_c7nzal.jpg"), alt: "Small-group workout session in class", tile: "row-span-2 md:col-start-4 md:row-start-2" },
-  { src: cld("v1791542312/WhatsApp_Image_2026-10-09_at_14.11.45_bz6skr.jpg"), alt: "Tutor working through a problem with a student", tile: "col-span-2 md:col-start-2 md:row-start-2" },
-  { src: cld("v1791542312/WhatsApp_Image_2026-10-09_at_14.11.36_dhbaif.jpg"), alt: "FOCAS tutor", tile: "md:col-start-2 md:row-start-3" },
+  { src: cld("v1791542312/WhatsApp_Image_2026-10-09_at_14.11.50_txuxji.jpg"), alt: "Tutor reviewing a student's answers", tile: "col-span-2 md:col-start-2 md:row-start-1" },
+  { src: cld("v1791542312/WhatsApp_Image_2026-10-09_at_15.43.55_1_y140am.jpg"), alt: "Students practising in a workout session", tile: "row-span-2 md:col-start-1 md:row-start-1" },
+  { src: cld("v1791542312/WhatsApp_Image_2026-10-09_at_15.43.55_c7nzal.jpg"), alt: "Small-group workout session in class", tile: "row-span-2 md:col-start-4 md:row-start-1" },
+  { src: cld("v1791542312/WhatsApp_Image_2026-10-09_at_14.11.45_bz6skr.jpg"), alt: "Tutor working through a problem with a student", tile: "md:col-start-2 md:row-start-2" },
 ];
-const CTA_TILE = "md:col-start-3 md:row-start-3";
+const CTA_TILE = "md:col-start-3 md:row-start-2";
 
 const DEMO_VIDEOS = [
   { type: "embed", src: "https://www.youtube-nocookie.com/embed/4tQ_z7xxCA8?rel=0", subject: "Corporate Law", faculty: "CS Shreevidhya" },
@@ -394,7 +392,7 @@ function Showcase({ onEnrol }) {
         </Reveal>
 
         {photos.length > 0 && (
-          <div className="grid grid-cols-2 md:grid-cols-4 auto-rows-[150px] md:auto-rows-[210px] gap-3 md:gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 auto-rows-[150px] md:auto-rows-[240px] gap-3 md:gap-4">
             {photos.map((m, i) => (
               <Reveal key={i} delay={i * 0.05} className={`${m.tile || ""} group rounded-2xl overflow-hidden relative`}>
                 <div className="w-full h-full" style={{ background: INK_2 }}>
