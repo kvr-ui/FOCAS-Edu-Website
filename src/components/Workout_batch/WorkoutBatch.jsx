@@ -401,7 +401,7 @@ function Inside({ onEnrol }) {
 
 function Showcase() {
   const photos = DEMO_PHOTOS.length ? DEMO_PHOTOS : SHOW_PLACEHOLDERS ? Array.from({ length: 5 }, () => ({ placeholder: true })) : [];
-  if (!photos.length && !SESSION_RECORDINGS.length && !DEMO_VIDEOS.length) return null;
+  if (!photos.length && !SESSION_RECORDINGS.length) return null;
   return (
     <section id="showcase" className="py-16 md:py-28 px-5 md:px-10" style={{ background: INK }}>
       <div className="max-w-6xl mx-auto">
@@ -465,34 +465,41 @@ function Showcase() {
           </div>
         )}
 
-        {DEMO_VIDEOS.length > 0 && (
-          <div className="mt-14 md:mt-20">
-            <Reveal className="flex items-end justify-between gap-4 mb-6">
-              <div>
-                <p className="text-[11px] font-bold uppercase tracking-[0.2em] mb-2" style={{ color: AMBER }}>Watch a session</p>
-                <h3 className="font-sora font-bold text-2xl md:text-3xl text-white">Master Question faculty sessions</h3>
+      </div>
+    </section>
+  );
+}
+
+// Master Question faculty videos, shown after "What the batch contains".
+function MasterSessions() {
+  if (!DEMO_VIDEOS.length) return null;
+  return (
+    <section id="master-sessions" className="py-16 md:py-28 px-5 md:px-10" style={{ background: INK }}>
+      <div className="max-w-6xl mx-auto">
+        <Reveal className="flex items-end justify-between gap-4 mb-6">
+          <div>
+            <p className="text-[11px] font-bold uppercase tracking-[0.2em] mb-2" style={{ color: AMBER }}>Watch a session</p>
+            <h3 className="font-sora font-bold text-2xl md:text-3xl text-white">Master Question faculty sessions</h3>
+          </div>
+        </Reveal>
+        <div className="grid md:grid-cols-2 gap-5 md:gap-6">
+          {DEMO_VIDEOS.map((v, i) => (
+            <Reveal key={v.src} delay={i * 0.08}>
+              <div className="rounded-3xl overflow-hidden" style={{ background: INK_2, border: "1px solid rgba(255,255,255,.08)" }}>
+                <div className="aspect-video">
+                  <Media item={{ ...v, caption: `${v.subject} · Master Question session` }} />
+                </div>
+                <div className="px-5 py-4 flex items-center justify-between gap-3">
+                  <div>
+                    <p className="font-bold text-white text-sm md:text-base">{v.subject}</p>
+                    <p className="text-xs text-white/50 mt-0.5">{v.faculty}</p>
+                  </div>
+                  <span className="text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full flex-shrink-0" style={{ background: "rgba(91,227,176,.12)", color: MINT }}>CA Inter</span>
+                </div>
               </div>
             </Reveal>
-            <div className="grid md:grid-cols-2 gap-5 md:gap-6">
-              {DEMO_VIDEOS.map((v, i) => (
-                <Reveal key={v.src} delay={i * 0.08}>
-                  <div className="rounded-3xl overflow-hidden" style={{ background: INK_2, border: "1px solid rgba(255,255,255,.08)" }}>
-                    <div className="aspect-video">
-                      <Media item={{ ...v, caption: `${v.subject} · Master Question session` }} />
-                    </div>
-                    <div className="px-5 py-4 flex items-center justify-between gap-3">
-                      <div>
-                        <p className="font-bold text-white text-sm md:text-base">{v.subject}</p>
-                        <p className="text-xs text-white/50 mt-0.5">{v.faculty}</p>
-                      </div>
-                      <span className="text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full flex-shrink-0" style={{ background: "rgba(91,227,176,.12)", color: MINT }}>CA Inter</span>
-                    </div>
-                  </div>
-                </Reveal>
-              ))}
-            </div>
-          </div>
-        )}
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -781,6 +788,7 @@ export default function WorkoutBatch() {
       <Ticker />
       <Showcase />
       <Inside onEnrol={onEnrol} />
+      <MasterSessions />
       <Proof onEnrol={onEnrol} />
       <Different />
       <Stories />
