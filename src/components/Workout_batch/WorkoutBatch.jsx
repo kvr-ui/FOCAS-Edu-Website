@@ -407,8 +407,7 @@ function Showcase() {
       <div className="max-w-6xl mx-auto">
         <Reveal className="text-center mb-10 md:mb-14">
           <Eyebrow dark>Inside a session</Eyebrow>
-          <h2 className="font-sora font-extrabold text-3xl md:text-5xl tracking-tight text-white mb-3">How our workout batch looks like</h2>
-          <p className="text-white/60 text-base md:text-lg">Small groups. A tutor at your table. Questions solved, not just watched.</p>
+          <h2 className="font-sora font-extrabold text-3xl md:text-5xl tracking-tight text-white">How our workout batch looks like</h2>
         </Reveal>
 
         {ONLINE_PHOTOS.length > 0 && (
