@@ -679,7 +679,7 @@ function FinalCTA({ onEnrol }) {
         <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(50% 120% at 100% 50%, rgba(29,158,117,.45), transparent 70%)" }} />
         <div className="relative">
           <p className="text-sm font-bold uppercase tracking-widest mb-3" style={{ color: AMBER }}>Limited seats · Jan 2027 attempt</p>
-          <h2 className="font-sora font-extrabold text-white text-3xl md:text-4xl tracking-tight">Make this your last attempt.</h2>
+          <h2 className="font-sora font-extrabold text-3xl md:text-4xl tracking-tight" style={{ color: MINT }}>Make this your last attempt.</h2>
         </div>
         <CTA onClick={onEnrol} className="relative flex-shrink-0" />
       </Reveal>
