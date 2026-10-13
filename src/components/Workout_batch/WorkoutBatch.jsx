@@ -75,6 +75,9 @@ const MINT = "#5BE3B0";
 const AMBER = "#FFB547";
 
 /* ── Content ── */
+// Google Doc behind the QR in the Syllabus Coverage Guide card.
+const SYLLABUS_GUIDE_URL = "https://docs.google.com/document/d/1cnf4IvBB1RUlhLWe94eakKPcpcRJCZP7/edit?usp=sharing";
+
 const NAV_LINKS = [
   { label: "What's Inside", id: "inside" },
   { label: "Why Us", id: "different" },
@@ -394,6 +397,23 @@ function Inside({ onEnrol }) {
             </Reveal>
           ))}
         </div>
+
+        <Reveal className="mt-8 md:mt-10">
+          <div className="rounded-3xl p-6 md:p-10 flex flex-col-reverse md:flex-row items-center gap-8 md:gap-12 relative overflow-hidden" style={{ background: INK }}>
+            <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(60% 120% at 100% 50%, rgba(29,158,117,.4), transparent 70%)" }} />
+            <div className="relative flex-1 text-center md:text-left">
+              <p className="text-[11px] font-bold uppercase tracking-[0.2em] mb-3" style={{ color: AMBER }}>06 · Syllabus Coverage Guide</p>
+              <h3 className="font-sora font-extrabold text-2xl md:text-4xl tracking-tight text-white leading-tight mb-3">See exactly what we'll cover in class.</h3>
+              <p className="text-white/70 text-base md:text-lg mb-6">Scan this QR to find the guide to what you will be covering in the classes.</p>
+              <a href={SYLLABUS_GUIDE_URL} target="_blank" rel="noopener" className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-bold text-sm uppercase tracking-widest transition-all hover:-translate-y-0.5" style={{ background: MINT, color: INK }}>
+                Open the guide →
+              </a>
+            </div>
+            <a href={SYLLABUS_GUIDE_URL} target="_blank" rel="noopener" className="relative shrink-0 rounded-2xl bg-white p-3 md:p-4 shadow-xl transition-transform hover:scale-[1.02]" aria-label="Syllabus Coverage Guide QR code">
+              <img src="/lp/workout-batch/syllabus-guide-qr.webp" alt="QR code for the Syllabus Coverage Guide" loading="lazy" className="w-44 h-44 md:w-56 md:h-56 block" />
+            </a>
+          </div>
+        </Reveal>
       </div>
     </section>
   );
