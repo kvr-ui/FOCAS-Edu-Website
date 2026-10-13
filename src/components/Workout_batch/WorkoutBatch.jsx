@@ -53,8 +53,8 @@ const VIDEO_TESTIMONIALS = [
   { type: "embed", src: `${BUNNY_EMBED}4e9bf005-455f-411f-9b5b-ee21fab8eab0`, name: "Vamseedharan" },
   { type: "embed", src: `${BUNNY_EMBED}29a885c7-5eee-4275-bce5-c76007a100a9`, name: "Iyyappan" },
   { type: "embed", src: `${BUNNY_EMBED}5593646e-b695-4039-ac67-fef9af9ea32e`, name: "Samyuktha" },
-  { type: "embed", src: `${BUNNY_EMBED}055f250e-690c-445c-8293-ad6acb0d5e91` },
-  { type: "embed", src: `${BUNNY_EMBED}20bdd4cd-37b8-49dc-a1d7-00e7385eec89` },
+  { type: "embed", src: `${BUNNY_EMBED}055f250e-690c-445c-8293-ad6acb0d5e91`, name: "Rithika" },
+  { type: "embed", src: `${BUNNY_EMBED}20bdd4cd-37b8-49dc-a1d7-00e7385eec89`, name: "Tejashwini" },
   // { type: "embed", src: "https://iframe.mediadelivery.net/embed/...", name: "Student name", batch: "May 2025" },
   // Google Drive: { type: "embed", src: "https://drive.google.com/file/d/<FILE_ID>/preview", name: "Student name" }
   //   (the Drive file must be shared as "Anyone with the link")
