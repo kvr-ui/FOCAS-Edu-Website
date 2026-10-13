@@ -53,6 +53,8 @@ const VIDEO_TESTIMONIALS = [
   { type: "embed", src: `${BUNNY_EMBED}4e9bf005-455f-411f-9b5b-ee21fab8eab0`, name: "Vamseedharan" },
   { type: "embed", src: `${BUNNY_EMBED}29a885c7-5eee-4275-bce5-c76007a100a9`, name: "Iyyappan" },
   { type: "embed", src: `${BUNNY_EMBED}5593646e-b695-4039-ac67-fef9af9ea32e`, name: "Samyuktha" },
+  { type: "embed", src: `${BUNNY_EMBED}055f250e-690c-445c-8293-ad6acb0d5e91` },
+  { type: "embed", src: `${BUNNY_EMBED}20bdd4cd-37b8-49dc-a1d7-00e7385eec89` },
   // { type: "embed", src: "https://iframe.mediadelivery.net/embed/...", name: "Student name", batch: "May 2025" },
   // Google Drive: { type: "embed", src: "https://drive.google.com/file/d/<FILE_ID>/preview", name: "Student name" }
   //   (the Drive file must be shared as "Anyone with the link")
@@ -565,10 +567,15 @@ function Different() {
 
 function VideoStories() {
   const items = VIDEO_TESTIMONIALS.length ? VIDEO_TESTIMONIALS : SHOW_PLACEHOLDERS ? Array.from({ length: 4 }, () => ({ placeholder: true })) : [];
+  const trackRef = useRef(null);
   if (!items.length) return null;
+  const nudge = (dir) => {
+    const el = trackRef.current;
+    if (el) el.scrollBy({ left: dir * el.clientWidth * 0.8, behavior: "smooth" });
+  };
   return (
     <div className="mb-14 md:mb-20">
-      <div className="wb-track wb-track-center">
+      <div ref={trackRef} className="wb-track wb-track-center">
         {items.map((v, i) => (
           <div key={i} className="wb-slide-video">
             <div className="rounded-3xl overflow-hidden aspect-[9/16]" style={{ background: INK_2 }}>
@@ -583,6 +590,13 @@ function VideoStories() {
           </div>
         ))}
       </div>
+      {/* Desktop fits four videos per view; arrows reach the rest. */}
+      {items.length > 4 && (
+        <div className="flex justify-center gap-3 mt-6">
+          <button onClick={() => nudge(-1)} aria-label="Previous video" className="w-11 h-11 rounded-full text-white text-lg transition-colors hover:bg-white/10" style={{ border: "1px solid rgba(255,255,255,.2)" }}>‹</button>
+          <button onClick={() => nudge(1)} aria-label="Next video" className="w-11 h-11 rounded-full text-lg transition-transform hover:scale-105" style={{ background: MINT, color: INK }}>›</button>
+        </div>
+      )}
     </div>
   );
 }
