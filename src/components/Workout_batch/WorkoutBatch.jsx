@@ -95,11 +95,11 @@ const COMPARE_ROWS = [
 ];
 
 const TESTIMONIALS = [
-  { name: "Sabitha", text: "I thought I knew the subjects. The only problem I felt was my presentation. But only after coming here, I understood that I actually know very little." },
+  { name: "Sabitha", img: "/fs-assets/testimonials/Sabitha.webp", text: "I thought I knew the subjects. The only problem I felt was my presentation. But only after coming here, I understood that I actually know very little." },
   { name: "Tharun", text: "From my school days, I won't do much writing practice. I'll simply just see the notes repeatedly. Many tutors here told me that I have to do more practice, which is why I'm here." },
   { name: "Elakya", text: "I learnt that if I don't know some things, I should ensure not to get stuck on them. Practice is required for that." },
-  { name: "Ragavi", text: "Being a self-study student, studying is hard. I realised how important this mentorship is in my journey." },
-  { name: "Yashika", text: "The method of teaching followed by FOCAS is perfect. Trust me, I was able to score 82 just by enrolling in their fast track — then imagine how their regular course would be." },
+  { name: "Ragavi", img: "/fs-assets/testimonials/Ragavi.webp", text: "Being a self-study student, studying is hard. I realised how important this mentorship is in my journey." },
+  { name: "Yashika", img: "/fs-assets/testimonials/Yashika.webp", text: "The method of teaching followed by FOCAS is perfect. Trust me, I was able to score 82 just by enrolling in their fast track — then imagine how their regular course would be." },
 ];
 
 const FAQS = [
@@ -504,9 +504,9 @@ function Proof({ onEnrol }) {
 }
 
 function Mark({ value, highlight }) {
-  if (value === true) return <span className="inline-flex w-7 h-7 rounded-full items-center justify-center text-sm font-black" style={{ background: MINT, color: INK }}>✓</span>;
-  if (value === false) return <span className="inline-flex w-7 h-7 rounded-full items-center justify-center text-sm font-black bg-gray-100 text-gray-400">✕</span>;
-  return <span className={`text-sm font-bold ${highlight ? "" : "text-gray-400"}`} style={highlight ? { color: GREEN } : undefined}>{value}</span>;
+  if (value === true) return <span className="inline-flex w-7 h-7 md:w-8 md:h-8 rounded-full items-center justify-center text-sm md:text-base font-black" style={{ background: MINT, color: INK }}>✓</span>;
+  if (value === false) return <span className="inline-flex w-7 h-7 md:w-8 md:h-8 rounded-full items-center justify-center text-sm md:text-base font-black bg-gray-100 text-gray-400">✕</span>;
+  return <span className={`text-sm md:text-base font-bold ${highlight ? "" : "text-gray-400"}`} style={highlight ? { color: GREEN } : undefined}>{value}</span>;
 }
 
 function Different() {
@@ -521,14 +521,14 @@ function Different() {
         </Reveal>
         <Reveal>
           <div className="rounded-3xl overflow-hidden" style={{ border: "1px solid #E5EDEA" }}>
-            <div className="grid grid-cols-[1fr_88px_108px] md:grid-cols-[1fr_200px_200px] text-[10px] md:text-xs font-bold uppercase tracking-widest">
+            <div className="grid grid-cols-[1fr_88px_108px] md:grid-cols-[1fr_200px_200px] text-[11px] md:text-sm font-bold uppercase tracking-widest">
               <div className="px-4 md:px-7 py-4 text-gray-400 bg-gray-50">Feature</div>
               <div className="px-2 py-4 text-gray-400 bg-gray-50 text-center">Others</div>
               <div className="px-2 py-4 text-center" style={{ background: INK, color: MINT }}>Workout Batch</div>
             </div>
             {COMPARE_ROWS.map((r) => (
               <div key={r.label} className="grid grid-cols-[1fr_88px_108px] md:grid-cols-[1fr_200px_200px] items-center border-t" style={{ borderColor: "#EEF3F1" }}>
-                <div className="px-4 md:px-7 py-4 md:py-5 text-sm font-semibold text-gray-800">{r.label}</div>
+                <div className="px-4 md:px-7 py-4 md:py-6 text-[15px] md:text-lg font-semibold text-gray-800">{r.label}</div>
                 <div className="px-2 py-4 text-center"><Mark value={r.other} /></div>
                 <div className="px-2 py-4 md:py-5 text-center h-full flex items-center justify-center" style={{ background: "#F3FBF8" }}><Mark value={r.wb} highlight /></div>
               </div>
@@ -582,11 +582,6 @@ function VideoStories() {
 }
 
 function Stories() {
-  const trackRef = useRef(null);
-  const nudge = (dir) => {
-    const el = trackRef.current;
-    if (el) el.scrollBy({ left: dir * el.clientWidth * 0.8, behavior: "smooth" });
-  };
   return (
     <section id="stories" className="py-16 md:py-28 px-5 md:px-10" style={{ background: INK }}>
       <div className="max-w-6xl mx-auto">
@@ -597,24 +592,27 @@ function Stories() {
 
         <VideoStories />
 
-        <div ref={trackRef} className="wb-track">
-          {TESTIMONIALS.map((t) => (
-            <figure key={t.name} className="wb-slide-text rounded-3xl p-7 flex flex-col" style={{ background: INK_2, border: "1px solid rgba(255,255,255,.07)" }}>
-              <span className="font-sora text-5xl leading-none mb-2" style={{ color: MINT }}>“</span>
-              <blockquote className="text-sm text-white/75 leading-relaxed flex-1">{t.text}</blockquote>
-              <figcaption className="mt-6 pt-5 flex items-center gap-3" style={{ borderTop: "1px solid rgba(255,255,255,.08)" }}>
-                <span className="w-10 h-10 rounded-full flex items-center justify-center font-sora font-bold" style={{ background: GREEN, color: "#fff" }}>{t.name[0]}</span>
-                <span>
-                  <span className="block font-bold text-white text-sm">{t.name}</span>
-                  {t.batch && <span className="block text-xs" style={{ color: MINT }}>{t.batch}</span>}
-                </span>
-              </figcaption>
-            </figure>
+        {/* Same card layout as the Foundation School testimonials: photo left, quote right. */}
+        <div className="grid md:grid-cols-2 gap-5">
+          {TESTIMONIALS.map((t, i) => (
+            <Reveal key={t.name} delay={i * 0.08} className={i === TESTIMONIALS.length - 1 && TESTIMONIALS.length % 2 ? "md:col-span-2" : ""}>
+              <figure className="h-full rounded-3xl bg-white p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center gap-5 sm:gap-7 shadow-lg">
+                {t.img ? (
+                  <img src={t.img} alt={t.name} loading="lazy" className="w-40 h-40 sm:w-48 sm:h-48 shrink-0 self-center object-contain object-bottom" />
+                ) : (
+                  <span className="w-40 h-40 sm:w-48 sm:h-48 shrink-0 self-center rounded-full flex items-center justify-center font-sora font-bold text-6xl text-white" style={{ background: GREEN }}>{t.name[0]}</span>
+                )}
+                <div className="flex-1 flex flex-col">
+                  <span className="font-sora text-5xl leading-none" style={{ color: GREEN }}>“</span>
+                  <blockquote className="mt-1 text-base md:text-lg leading-relaxed text-gray-700">{t.text}</blockquote>
+                  <figcaption className="mt-4">
+                    <span className="block font-sora font-bold" style={{ color: INK }}>{t.name}</span>
+                    {t.batch && <span className="block text-xs" style={{ color: GREEN }}>{t.batch}</span>}
+                  </figcaption>
+                </div>
+              </figure>
+            </Reveal>
           ))}
-        </div>
-        <div className="flex justify-center gap-3 mt-6">
-          <button onClick={() => nudge(-1)} aria-label="Previous" className="w-11 h-11 rounded-full text-white text-lg transition-colors hover:bg-white/10" style={{ border: "1px solid rgba(255,255,255,.2)" }}>‹</button>
-          <button onClick={() => nudge(1)} aria-label="Next" className="w-11 h-11 rounded-full text-lg transition-transform hover:scale-105" style={{ background: MINT, color: INK }}>›</button>
         </div>
       </div>
     </section>
@@ -678,7 +676,7 @@ function Footer() {
           <div>
             <img src={logo} alt="FOCAS Edu" className="h-8 brightness-0 invert" />
             <p className="text-white font-sora font-bold text-lg mt-4">The Last Attempt Workout Batch</p>
-            <p className="text-sm text-white/50 leading-relaxed mt-2">CA Intermediate · Group I &amp; II<br />English + हिंदी</p>
+            <p className="text-sm text-white/50 leading-relaxed mt-2">CA Intermediate · Group I &amp; II</p>
           </div>
           <div>
             <div className="text-xs font-bold uppercase tracking-widest text-white/40 mb-5">Quick Links</div>
@@ -752,10 +750,9 @@ export default function WorkoutBatch() {
         .wb-track{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:4px}
         .wb-track::-webkit-scrollbar{display:none}
         .wb-track-center>:first-child{margin-left:auto}.wb-track-center>:last-child{margin-right:auto}
-        .wb-slide-text{flex:0 0 85%;scroll-snap-align:start}
         .wb-slide-video{flex:0 0 62%;scroll-snap-align:start}
-        @media(min-width:640px){.wb-slide-text{flex-basis:calc(50% - 8px)}.wb-slide-video{flex-basis:calc(33.333% - 11px)}}
-        @media(min-width:1024px){.wb-slide-text{flex-basis:calc(33.333% - 11px)}.wb-slide-video{flex-basis:calc(25% - 12px)}}
+        @media(min-width:640px){.wb-slide-video{flex-basis:calc(33.333% - 11px)}}
+        @media(min-width:1024px){.wb-slide-video{flex-basis:calc(25% - 12px)}}
       `}</style>
 
       {showEnrol && <EnrolModal onClose={() => setShowEnrol(false)} />}
@@ -763,8 +760,8 @@ export default function WorkoutBatch() {
       <Navbar scrolled={scrolled} menuOpen={menuOpen} setMenuOpen={setMenuOpen} onEnrol={onEnrol} />
       <Hero onEnrol={onEnrol} />
       <Ticker />
-      <Inside onEnrol={onEnrol} />
       <Showcase />
+      <Inside onEnrol={onEnrol} />
       <Proof onEnrol={onEnrol} />
       <Different />
       <Stories />
