@@ -39,7 +39,15 @@ const DEMO_VIDEOS = [
   { type: "embed", src: "https://www.youtube-nocookie.com/embed/pFMnN8fLL6M?rel=0", subject: "Strategic Management", faculty: "Barath Kumar" },
 ];
 
+// Bunny library 680244. Vertical (9:16) videos go in the carousel; set
+// `landscape: true` for 16:9 videos so they get their own row below it.
+const BUNNY_EMBED = "https://iframe.mediadelivery.net/embed/680244/";
 const VIDEO_TESTIMONIALS = [
+  { type: "embed", src: `${BUNNY_EMBED}4e9bf005-455f-411f-9b5b-ee21fab8eab0` },
+  { type: "embed", src: `${BUNNY_EMBED}29a885c7-5eee-4275-bce5-c76007a100a9` },
+  { type: "embed", src: `${BUNNY_EMBED}5593646e-b695-4039-ac67-fef9af9ea32e` },
+  { type: "embed", src: `${BUNNY_EMBED}3137323d-7fbd-4a0d-8abd-e8f1cf1c97d0`, landscape: true },
+  { type: "embed", src: `${BUNNY_EMBED}514590ff-a68a-4499-a9d5-6d1232d8de7a`, landscape: true },
   // { type: "embed", src: "https://iframe.mediadelivery.net/embed/...", name: "Student name", batch: "May 2025" },
   // Google Drive: { type: "embed", src: "https://drive.google.com/file/d/<FILE_ID>/preview", name: "Student name" }
   //   (the Drive file must be shared as "Anyone with the link")
@@ -535,23 +543,40 @@ function Different() {
 function VideoStories() {
   const items = VIDEO_TESTIMONIALS.length ? VIDEO_TESTIMONIALS : SHOW_PLACEHOLDERS ? Array.from({ length: 4 }, () => ({ placeholder: true })) : [];
   if (!items.length) return null;
+  const vertical = items.filter((v) => !v.landscape);
+  const landscape = items.filter((v) => v.landscape);
+  const caption = (v) => v.name && (
+    <div className="mt-3 px-1">
+      <p className="font-bold text-white text-sm">{v.name}</p>
+      {v.batch && <p className="text-xs" style={{ color: MINT }}>{v.batch}</p>}
+    </div>
+  );
   return (
     <div className="mb-14 md:mb-20">
-      <div className="wb-track">
-        {items.map((v, i) => (
-          <div key={i} className="wb-slide-video">
-            <div className="rounded-3xl overflow-hidden aspect-[9/16]" style={{ background: INK_2 }}>
-              {v.placeholder ? <Placeholder label="Testimonial video" /> : <Media item={v} />}
-            </div>
-            {v.name && (
-              <div className="mt-3 px-1">
-                <p className="font-bold text-white text-sm">{v.name}</p>
-                {v.batch && <p className="text-xs" style={{ color: MINT }}>{v.batch}</p>}
+      {vertical.length > 0 && (
+        <div className="wb-track">
+          {vertical.map((v, i) => (
+            <div key={i} className="wb-slide-video">
+              <div className="rounded-3xl overflow-hidden aspect-[9/16]" style={{ background: INK_2 }}>
+                {v.placeholder ? <Placeholder label="Testimonial video" /> : <Media item={v} />}
               </div>
-            )}
-          </div>
-        ))}
-      </div>
+              {caption(v)}
+            </div>
+          ))}
+        </div>
+      )}
+      {landscape.length > 0 && (
+        <div className={`grid md:grid-cols-2 gap-4 md:gap-5 ${vertical.length ? "mt-5 md:mt-6" : ""}`}>
+          {landscape.map((v) => (
+            <div key={v.src}>
+              <div className="rounded-3xl overflow-hidden aspect-video" style={{ background: INK_2 }}>
+                <Media item={v} />
+              </div>
+              {caption(v)}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
