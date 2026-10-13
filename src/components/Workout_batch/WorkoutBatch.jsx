@@ -43,9 +43,9 @@ const DEMO_VIDEOS = [
 // `landscape: true` for 16:9 videos so they get their own row below it.
 const BUNNY_EMBED = "https://iframe.mediadelivery.net/embed/680244/";
 const VIDEO_TESTIMONIALS = [
-  { type: "embed", src: `${BUNNY_EMBED}4e9bf005-455f-411f-9b5b-ee21fab8eab0` },
-  { type: "embed", src: `${BUNNY_EMBED}29a885c7-5eee-4275-bce5-c76007a100a9` },
-  { type: "embed", src: `${BUNNY_EMBED}5593646e-b695-4039-ac67-fef9af9ea32e` },
+  { type: "embed", src: `${BUNNY_EMBED}4e9bf005-455f-411f-9b5b-ee21fab8eab0`, name: "Vamseedharan" },
+  { type: "embed", src: `${BUNNY_EMBED}29a885c7-5eee-4275-bce5-c76007a100a9`, name: "Iyyappan" },
+  { type: "embed", src: `${BUNNY_EMBED}5593646e-b695-4039-ac67-fef9af9ea32e`, name: "Samyuktha" },
   { type: "embed", src: `${BUNNY_EMBED}3137323d-7fbd-4a0d-8abd-e8f1cf1c97d0`, landscape: true },
   { type: "embed", src: `${BUNNY_EMBED}514590ff-a68a-4499-a9d5-6d1232d8de7a`, landscape: true },
   // { type: "embed", src: "https://iframe.mediadelivery.net/embed/...", name: "Student name", batch: "May 2025" },
@@ -554,7 +554,7 @@ function VideoStories() {
   return (
     <div className="mb-14 md:mb-20">
       {vertical.length > 0 && (
-        <div className="wb-track">
+        <div className="wb-track wb-track-center">
           {vertical.map((v, i) => (
             <div key={i} className="wb-slide-video">
               <div className="rounded-3xl overflow-hidden aspect-[9/16]" style={{ background: INK_2 }}>
@@ -751,6 +751,7 @@ export default function WorkoutBatch() {
         @keyframes wbPing{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.8);opacity:.4}}
         .wb-track{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:4px}
         .wb-track::-webkit-scrollbar{display:none}
+        .wb-track-center>:first-child{margin-left:auto}.wb-track-center>:last-child{margin-right:auto}
         .wb-slide-text{flex:0 0 85%;scroll-snap-align:start}
         .wb-slide-video{flex:0 0 62%;scroll-snap-align:start}
         @media(min-width:640px){.wb-slide-text{flex-basis:calc(50% - 8px)}.wb-slide-video{flex-basis:calc(33.333% - 11px)}}
