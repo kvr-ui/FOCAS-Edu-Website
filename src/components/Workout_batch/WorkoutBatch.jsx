@@ -15,18 +15,23 @@ const HERO_VIDEO = {
   src: "https://iframe.mediadelivery.net/embed/680244/5e284d12-237f-46cb-aadf-bb0752d7b986?autoplay=true&loop=true&muted=true&preload=true",
 };
 
-// "How our workout batch looks like": photos in a bento grid, then session videos.
+// "How our workout batch looks like": highlighted online-session shots, then
+// classroom photos in a bento grid, then session videos.
 // Photos are self-hosted in public/lp/workout-batch/ (no CDN dependency).
+const ONLINE_PHOTOS = [
+  { src: "/lp/workout-batch/online-faculty.webp", alt: "CS Shreevidhya teaching FEMA live in an online workout session" },
+  { src: "/lp/workout-batch/online-meet.webp", alt: "Students attending the FOCAS Last Attempt Workout Batch on Google Meet" },
+  { src: "/lp/workout-batch/online-class.webp", alt: "Faculty walking through highlighted study material in an online class" },
+];
+
 // `tile` holds the grid placement classes — mobile flows in list order (2 cols),
-// desktop places each tile explicitly on a 4×3 grid.
+// desktop places each tile explicitly on a 4×2 grid.
 const DEMO_PHOTOS = [
-  { src: "/lp/workout-batch/online-meet.webp", alt: "Live online workout session on Google Meet", tile: "col-span-2 md:col-start-1 md:row-start-3" },
   { src: "/lp/workout-batch/session-4.webp", alt: "Students listening in a workout session", tile: "row-span-2 md:col-start-1 md:row-start-1" },
   { src: "/lp/workout-batch/session-2.webp", alt: "Mentor discussing answers with a student", tile: "md:col-start-3 md:row-start-1" },
   { src: "/lp/workout-batch/session-3.webp", alt: "Students working through questions on a laptop", tile: "md:col-start-4 md:row-start-1 md:row-span-2" },
   { src: "/lp/workout-batch/session-1.webp", alt: "Tutor explaining a problem to a student", tile: "md:col-start-2 md:row-start-1" },
   { src: "/lp/workout-batch/session-5.webp", alt: "Tutor going through a student's notes", tile: "md:col-span-2 md:col-start-2 md:row-start-2" },
-  { src: "/lp/workout-batch/online-class.webp", alt: "Faculty walking through study material in an online class", tile: "col-span-2 md:col-start-3 md:row-start-3" },
 ];
 
 const DEMO_VIDEOS = [
@@ -390,6 +395,28 @@ function Showcase() {
           <h2 className="font-sora font-extrabold text-3xl md:text-5xl tracking-tight text-white mb-3">How our workout batch looks like</h2>
           <p className="text-white/60 text-base md:text-lg">Small groups. A tutor at your table. Questions solved, not just watched.</p>
         </Reveal>
+
+        {ONLINE_PHOTOS.length > 0 && (
+          <div className="mb-10 md:mb-14">
+            <Reveal className="flex items-center gap-2.5 mb-5">
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="absolute inline-flex h-full w-full rounded-full opacity-75 animate-ping" style={{ background: MINT }} />
+                <span className="relative inline-flex h-2.5 w-2.5 rounded-full" style={{ background: MINT }} />
+              </span>
+              <p className="text-[11px] font-bold uppercase tracking-[0.2em]" style={{ color: MINT }}>Live online sessions</p>
+            </Reveal>
+            <div className="grid md:grid-cols-3 gap-4 md:gap-5">
+              {ONLINE_PHOTOS.map((m, i) => (
+                <Reveal key={m.src} delay={i * 0.08}>
+                  <div className="group rounded-2xl overflow-hidden relative aspect-[15/8]" style={{ background: INK_2, boxShadow: "0 0 0 1px rgba(91,227,176,.35), 0 18px 40px -18px rgba(91,227,176,.35)" }}>
+                    <img src={m.src} alt={m.alt} loading="lazy" className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105" />
+                    <span className="absolute top-3 left-3 text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full" style={{ background: "rgba(6,20,15,.75)", color: MINT }}>● Live</span>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        )}
 
         {photos.length > 0 && (
           <div className="grid grid-cols-2 md:grid-cols-4 auto-rows-[150px] md:auto-rows-[240px] gap-3 md:gap-4">
