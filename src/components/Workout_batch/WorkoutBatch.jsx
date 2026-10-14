@@ -45,7 +45,6 @@ const BUNNY_EMBED = "https://iframe.mediadelivery.net/embed/680244/";
 // Recordings of live online workout sessions, shown above the Master Question videos.
 const SESSION_RECORDINGS = [
   { type: "embed", src: `${BUNNY_EMBED}3137323d-7fbd-4a0d-8abd-e8f1cf1c97d0`, caption: "Live online workout session" },
-  { type: "embed", src: `${BUNNY_EMBED}514590ff-a68a-4499-a9d5-6d1232d8de7a`, caption: "Live online workout session" },
   { type: "embed", src: `${BUNNY_EMBED}00f6af8b-2825-4f69-8549-b2cc525662e0`, caption: "Live online workout session" },
 ];
 
