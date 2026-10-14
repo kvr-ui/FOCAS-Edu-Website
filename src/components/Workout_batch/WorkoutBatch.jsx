@@ -77,6 +77,8 @@ const AMBER = "#FFB547";
 
 /* ── Content ── */
 // Google Doc behind the QR in the Syllabus Coverage Guide card.
+// The card shows in dev and beta only — flip to `true` to put it live.
+const SHOW_SYLLABUS_GUIDE = import.meta.env.MODE !== "production";
 const SYLLABUS_GUIDE_URL = "https://docs.google.com/document/d/1cnf4IvBB1RUlhLWe94eakKPcpcRJCZP7/edit?usp=sharing";
 
 const NAV_LINKS = [
@@ -399,6 +401,7 @@ function Inside({ onEnrol }) {
           ))}
         </div>
 
+        {SHOW_SYLLABUS_GUIDE && (
         <Reveal className="mt-8 md:mt-10">
           <div className="rounded-3xl p-6 md:p-10 flex flex-col-reverse md:flex-row items-center gap-8 md:gap-12 relative overflow-hidden" style={{ background: INK }}>
             <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(60% 120% at 100% 50%, rgba(29,158,117,.4), transparent 70%)" }} />
@@ -415,6 +418,7 @@ function Inside({ onEnrol }) {
             </a>
           </div>
         </Reveal>
+        )}
       </div>
     </section>
   );
