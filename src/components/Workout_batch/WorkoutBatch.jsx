@@ -12,7 +12,7 @@ import WorkoutBatchForm from "./WorkoutBatchForm";
    ────────────────────────────────────────────────────────────── */
 const HERO_VIDEO = {
   type: "embed",
-  src: "https://iframe.mediadelivery.net/embed/680244/5e284d12-237f-46cb-aadf-bb0752d7b986?autoplay=true&loop=true&muted=true&preload=true",
+  src: "https://iframe.mediadelivery.net/embed/680244/e35e7f4d-a3b3-4ccf-b9fe-3ae4bdb62937?autoplay=true&loop=true&muted=true&preload=true",
 };
 
 // "How our workout batch looks like": highlighted online-session shots, then
