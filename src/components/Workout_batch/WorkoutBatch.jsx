@@ -46,6 +46,7 @@ const BUNNY_EMBED = "https://iframe.mediadelivery.net/embed/680244/";
 const SESSION_RECORDINGS = [
   { type: "embed", src: `${BUNNY_EMBED}3137323d-7fbd-4a0d-8abd-e8f1cf1c97d0`, caption: "Live online workout session" },
   { type: "embed", src: `${BUNNY_EMBED}514590ff-a68a-4499-a9d5-6d1232d8de7a`, caption: "Live online workout session" },
+  { type: "embed", src: `${BUNNY_EMBED}00f6af8b-2825-4f69-8549-b2cc525662e0`, caption: "Live online workout session" },
 ];
 
 // Vertical (9:16) student testimonial videos.
@@ -473,7 +474,7 @@ function Showcase() {
               <p className="text-[11px] font-bold uppercase tracking-[0.2em] mb-2" style={{ color: MINT }}>Recorded live</p>
               <h3 className="font-sora font-bold text-2xl md:text-3xl text-white">Online workout sessions</h3>
             </Reveal>
-            <div className="grid md:grid-cols-2 gap-5 md:gap-6">
+            <div className={`grid gap-5 md:gap-6 ${SESSION_RECORDINGS.length === 3 ? "md:grid-cols-3" : "md:grid-cols-2"}`}>
               {SESSION_RECORDINGS.map((v, i) => (
                 <Reveal key={v.src} delay={i * 0.08}>
                   <div className="rounded-3xl overflow-hidden aspect-video" style={{ background: INK_2, border: "1px solid rgba(255,255,255,.08)" }}>
