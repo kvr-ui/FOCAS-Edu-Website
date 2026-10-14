@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { STATE_CITIES, STATES } from "@/data/indiaStatesCities";
 import {
   BIGIN_CSS,
-  CA_STATUS_OPTIONS,
   DIAL_CODES,
   Honeypot,
   LEAD_API_BASE,
@@ -22,6 +21,8 @@ import {
 
 const WORKOUT_API = `${LEAD_API_BASE}/api/workout-batch`;
 
+const GROUP_OPTIONS = ["Group 1", "Group 2", "Both Groups", "Unit 2D"];
+
 const WorkoutBatchForm = () => {
   const navigate = useNavigate();
   const [values, setValues] = useState({
@@ -29,7 +30,7 @@ const WorkoutBatchForm = () => {
     "Last Name": "",
     dialCode: "+91",
     phone: "",
-    CA_Status: "",
+    Group: "",
     State: "",
     "Other City": "",
     company: "", // honeypot — must stay empty for real users
@@ -69,7 +70,7 @@ const WorkoutBatchForm = () => {
     if (!values.phone.trim()) e.phone = "This field is required.";
     else if (!/^[0-9]{6,15}$/.test(values.phone.trim()))
       e.phone = "Enter a valid Phone.";
-    req("CA_Status");
+    req("Group");
     req("State");
     req("Other City");
     setErrors(e);
@@ -85,7 +86,8 @@ const WorkoutBatchForm = () => {
       firstName: values["First Name"].trim(),
       lastName: values["Last Name"].trim(),
       phone: `${values.dialCode}${values.phone}`.trim(),
-      caStatus: values.CA_Status,
+      caStatus: "Intermediate", // the batch is CA Inter only
+      attempt: values.Group, // Bigin "Attempt" field
       city: values["Other City"],
       state: values.State,
       company: values.company, // honeypot
@@ -174,17 +176,17 @@ const WorkoutBatchForm = () => {
             />
           </Row>
 
-          <Row label="CA Status  - Foundation - Intermediate - Final" name="CA_Status" error={errors.CA_Status}>
+          <Row label="What Group(s) are you planning to attempt in Jan 2027?" name="Group" error={errors.Group}>
             <select
-              name="CA_Status"
+              name="Group"
               className="bwf-input bwf-select"
-              value={values.CA_Status}
-              onChange={set("CA_Status")}
+              value={values.Group}
+              onChange={set("Group")}
             >
               <option value="" disabled>
                 -Select-
               </option>
-              {CA_STATUS_OPTIONS.map((o) => (
+              {GROUP_OPTIONS.map((o) => (
                 <option key={o} value={o}>
                   {o}
                 </option>

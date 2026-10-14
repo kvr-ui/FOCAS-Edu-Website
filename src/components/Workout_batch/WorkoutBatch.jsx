@@ -120,7 +120,7 @@ const FAQS = [
   { q: "What is a 'workout session'?", a: "Instead of a lecture, a tutor gives a small group selective questions to solve in class, then reviews and corrects your approach right there — so you leave having practiced, not just watched." },
   { q: "What is the AI Question Bank?", a: "A curated bank of exam-relevant questions (RTP, MTP, PYP and more) integrated with AI, so your practice focuses on the areas where you lose the most marks." },
   { q: "How are tests reviewed?", a: "Each test in the series is evaluated and explained on video, showing you exactly where you lost marks and how to write a better answer." },
-  { q: "What language are sessions held in?", a: "Sessions are conducted in English and Hindi (हिंदी)." },
+  { q: "What language are sessions held in?", a: "Sessions are held in English." },
   { q: "How do I enroll?", a: "Tap Book your Seat Now! on this page and fill the quick form. Our team will call you back with the details." },
 ];
 
