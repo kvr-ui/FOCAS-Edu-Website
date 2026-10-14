@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
-  ArrowRight,
   Calendar,
   CheckCircle,
   Clock,
@@ -22,6 +21,7 @@ import {
   MANROPE,
   PHONE_DISPLAY,
   PHONE_TEL,
+  SUBMITTED_KEY,
 } from "./Counselling";
 
 /**
@@ -30,8 +30,10 @@ import {
  *
  *   1. Student picks a date & time for the counselling call.
  *   2. "Pay ₹9 to confirm" → Razorpay (prefilled from the /counselling form).
- *   3. Payment verified server-side (or Skip) → /counselling-success.
+ *   3. Payment verified server-side → Zoho Flow webhook (→ Bigin) →
+ *      /counselling-success.
  *
+ * Payment is mandatory — there is no skip, so only paid students reach Bigin.
  * Uses the consultation endpoints on the RTI backend; the ₹9 amount is fixed
  * server-side, and that backend also sends the paid booking (WhatsApp
  * confirmation + its own Zoho Flow webhook).
@@ -111,12 +113,6 @@ export default function CounsellingBook() {
 
   const goToSuccess = () => navigate("/counselling-success", { replace: true });
 
-  // Skip → the lead was already captured on form submit, so just continue.
-  const handleSkip = () => {
-    window.fbq?.("trackCustom", "CounsellingBook_Skip");
-    goToSuccess();
-  };
-
   const pickTime = (t) => {
     setSelectedTime(t);
     window.fbq?.("trackCustom", "CounsellingBook_SlotPicked");
@@ -142,6 +138,7 @@ export default function CounsellingBook() {
     try {
       sessionStorage.setItem(SLOT_KEY, JSON.stringify({ slot: slotText, payment_id: paymentId }));
       sessionStorage.setItem(CONVERSION_KEY, "1");
+      localStorage.setItem(SUBMITTED_KEY, "1");
     } catch {
       /* ignore */
     }
@@ -217,7 +214,8 @@ export default function CounsellingBook() {
             const verifyData = await verifyRes.json().catch(() => ({}));
             if (verifyData.success) {
               firePurchaseTracking(response.razorpay_payment_id, slotText);
-              // Paid lead → Zoho Flow webhook, tagged separately from the form lead.
+              // Paid booking → Zoho Flow webhook (→ Bigin). This is the only
+              // place a /counselling lead reaches Bigin.
               // The Flow maps `source` to Bigin's Lead Source, so set both.
               sendToZohoFlow(lead, {
                 source: "Counselling - PAID",
@@ -267,13 +265,6 @@ export default function CounsellingBook() {
           <a href="/counselling">
             <img src="/fs-assets/logo.webp" alt="FOCAS Edu" className="h-8 w-auto sm:h-10" />
           </a>
-          <button
-            type="button"
-            onClick={handleSkip}
-            className="flex items-center gap-1.5 rounded-full border border-[#0f6e56]/20 bg-[#e8f8f2] px-4 py-1.5 text-sm font-semibold text-[#0f6e56] transition-colors hover:bg-[#d3f1e5]"
-          >
-            Skip for now <ArrowRight className="h-4 w-4" />
-          </button>
         </div>
       </header>
 
@@ -386,14 +377,6 @@ export default function CounsellingBook() {
                   <ShieldCheck className="h-3.5 w-3.5 text-[#1D9E75]" />
                   100% secure payment via Razorpay
                 </p>
-
-                <button
-                  type="button"
-                  onClick={handleSkip}
-                  className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-xl border border-[#0f6e56]/20 bg-[#e8f8f2] px-4 py-3 text-sm font-semibold text-[#0f6e56] transition-colors hover:bg-[#d3f1e5]"
-                >
-                  Skip for now <ArrowRight className="h-4 w-4" />
-                </button>
               </div>
             </div>
           ) : (

@@ -34,11 +34,6 @@ import {
   captureUtms,
   trackLead,
 } from "@/components/bigin/formKit";
-import { sendToZohoFlow } from "@/components/fs/FsForm";
-
-// Bigin "Lead Source" values sent through the FS Zoho Flow webhook.
-// The Flow maps `source` to Bigin's Lead Source, so set both.
-const ZOHO_LEAD = { source: "Counselling", leadSource: "Counselling" };
 
 /**
  * /counselling — "Last Attempt Community Starter Kit" counselling landing page.
@@ -47,9 +42,9 @@ const ZOHO_LEAD = { source: "Counselling", leadSource: "Counselling" };
  * Manrope / Lexend Deca type, card + form styling) replicates the
  * errormakesclever.com offline-fullstack-course page.
  *
- * Every form sends the lead to the Zoho Flow webhook (→ Bigin) and fires the
- * Meta/GA Lead, then moves on to /counselling/book (slot + ₹9 via Razorpay, or
- * skip) and finally /counselling-success.
+ * Every form fires the Meta/GA Lead and moves on to /counselling/book, where the
+ * ₹9 Razorpay payment is mandatory. Only a paid booking is sent to the Zoho Flow
+ * webhook (→ Bigin), then the student lands on /counselling-success.
  */
 
 /* eslint-disable react-refresh/only-export-components -- shared with CounsellingSuccess */
@@ -60,7 +55,7 @@ export const LEXEND = { fontFamily: "'Lexend Deca', sans-serif" };
 
 const CDN = "https://da3m0k666tznr.cloudfront.net";
 const HERO_VIDEO = `${CDN}/audit/audit.mp4`;
-const HERO_POSTER = "/counselling-assets/hero-thumbnail.jpeg";
+const HERO_POSTER = "/counselling-assets/hero-poster.jpg";
 export const PHONE_DISPLAY = "+91 63835 14285";
 export const PHONE_TEL = "tel:+916383514285";
 
@@ -303,13 +298,10 @@ const LeadForm = ({ onSuccess }) => {
 
     setSubmitting(true);
     try {
-      // The lead goes to the Zoho Flow webhook before payment, so it isn't lost
-      // if the student skips paying (skipped for bots that filled the honeypot —
-      // they still see the normal next step).
-      if (!payload.company) {
-        sendToZohoFlow(payload, ZOHO_LEAD);
-        trackLead("counselling", payload);
-      }
+      // Bigin only gets the lead once the ₹9 is paid (/counselling/book). The
+      // follow-up dashboard still gets every form fill, so unpaid leads can be
+      // chased (skipped for bots that filled the honeypot).
+      if (!payload.company) trackLead("counselling", payload);
 
       window.fbq?.("track", "Lead", { content_name: "Counselling Call", content_category: "Counselling" });
       window.gtag?.("event", "generate_lead", { event_category: "counselling", event_label: "Counselling Call" });
@@ -1172,8 +1164,8 @@ const Footer = () => (
 
 /* ─────────────────────────── Page ─────────────────────────── */
 
-// Set once the visitor submits the form, so the popup stops auto-opening for them.
-const SUBMITTED_KEY = "focas_counselling_submitted";
+// Set once the visitor pays (/counselling/book), so the popup stops auto-opening for them.
+export const SUBMITTED_KEY = "focas_counselling_submitted";
 // Set on submit, consumed by /counselling-success to fire the ad conversions once.
 export const CONVERSION_KEY = "focas_counselling_conversion";
 // Lead details carried to /counselling/book (router state → sessionStorage fallback).
@@ -1187,8 +1179,6 @@ export default function Counselling() {
   const openForm = () => setModal("form");
   const showThanks = (lead) => {
     try {
-      localStorage.setItem(SUBMITTED_KEY, "1");
-      sessionStorage.setItem(CONVERSION_KEY, "1");
       sessionStorage.setItem(LEAD_KEY, JSON.stringify(lead));
     } catch {
       /* non-fatal */
