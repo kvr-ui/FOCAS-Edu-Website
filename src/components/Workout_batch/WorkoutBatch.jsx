@@ -15,18 +15,23 @@ const HERO_VIDEO = {
   src: "https://iframe.mediadelivery.net/embed/680244/5e284d12-237f-46cb-aadf-bb0752d7b986?autoplay=true&loop=true&muted=true&preload=true",
 };
 
-// "How our workout batch looks like": photos in a bento grid, then session videos.
+// "How our workout batch looks like": highlighted online-session shots, then
+// classroom photos in a bento grid, then session videos.
 // Photos are self-hosted in public/lp/workout-batch/ (no CDN dependency).
+const ONLINE_PHOTOS = [
+  { src: "/lp/workout-batch/online-faculty.webp", alt: "CS Shreevidhya teaching FEMA live in an online workout session" },
+  { src: "/lp/workout-batch/online-meet.webp", alt: "Students attending the FOCAS Last Attempt Workout Batch on Google Meet" },
+  { src: "/lp/workout-batch/online-class.webp", alt: "Faculty walking through highlighted study material in an online class" },
+];
+
 // `tile` holds the grid placement classes — mobile flows in list order (2 cols),
-// desktop places each tile explicitly on a 4×3 grid.
+// desktop places each tile explicitly on a 4×2 grid.
 const DEMO_PHOTOS = [
-  { src: "/lp/workout-batch/online-meet.webp", alt: "Live online workout session on Google Meet", tile: "col-span-2 md:col-start-1 md:row-start-3" },
   { src: "/lp/workout-batch/session-4.webp", alt: "Students listening in a workout session", tile: "row-span-2 md:col-start-1 md:row-start-1" },
   { src: "/lp/workout-batch/session-2.webp", alt: "Mentor discussing answers with a student", tile: "md:col-start-3 md:row-start-1" },
   { src: "/lp/workout-batch/session-3.webp", alt: "Students working through questions on a laptop", tile: "md:col-start-4 md:row-start-1 md:row-span-2" },
   { src: "/lp/workout-batch/session-1.webp", alt: "Tutor explaining a problem to a student", tile: "md:col-start-2 md:row-start-1" },
   { src: "/lp/workout-batch/session-5.webp", alt: "Tutor going through a student's notes", tile: "md:col-span-2 md:col-start-2 md:row-start-2" },
-  { src: "/lp/workout-batch/online-class.webp", alt: "Faculty walking through study material in an online class", tile: "col-span-2 md:col-start-3 md:row-start-3" },
 ];
 
 const DEMO_VIDEOS = [
@@ -34,7 +39,22 @@ const DEMO_VIDEOS = [
   { type: "embed", src: "https://www.youtube-nocookie.com/embed/pFMnN8fLL6M?rel=0", subject: "Strategic Management", faculty: "Barath Kumar" },
 ];
 
+// Bunny library 680244.
+const BUNNY_EMBED = "https://iframe.mediadelivery.net/embed/680244/";
+
+// Recordings of live online workout sessions, shown above the Master Question videos.
+const SESSION_RECORDINGS = [
+  { type: "embed", src: `${BUNNY_EMBED}3137323d-7fbd-4a0d-8abd-e8f1cf1c97d0`, caption: "Live online workout session" },
+  { type: "embed", src: `${BUNNY_EMBED}00f6af8b-2825-4f69-8549-b2cc525662e0`, caption: "Live online workout session" },
+];
+
+// Vertical (9:16) student testimonial videos.
 const VIDEO_TESTIMONIALS = [
+  { type: "embed", src: `${BUNNY_EMBED}4e9bf005-455f-411f-9b5b-ee21fab8eab0`, name: "Vamseedharan" },
+  { type: "embed", src: `${BUNNY_EMBED}29a885c7-5eee-4275-bce5-c76007a100a9`, name: "Iyyappan" },
+  { type: "embed", src: `${BUNNY_EMBED}5593646e-b695-4039-ac67-fef9af9ea32e`, name: "Samyuktha" },
+  { type: "embed", src: `${BUNNY_EMBED}055f250e-690c-445c-8293-ad6acb0d5e91`, name: "Rithika" },
+  { type: "embed", src: `${BUNNY_EMBED}20bdd4cd-37b8-49dc-a1d7-00e7385eec89`, name: "Tejashwini" },
   // { type: "embed", src: "https://iframe.mediadelivery.net/embed/...", name: "Student name", batch: "May 2025" },
   // Google Drive: { type: "embed", src: "https://drive.google.com/file/d/<FILE_ID>/preview", name: "Student name" }
   //   (the Drive file must be shared as "Anyone with the link")
@@ -55,6 +75,11 @@ const MINT = "#5BE3B0";
 const AMBER = "#FFB547";
 
 /* ── Content ── */
+// Google Doc behind the QR in the Syllabus Coverage Guide card.
+// The card shows in dev and beta only — flip to `true` to put it live.
+const SHOW_SYLLABUS_GUIDE = import.meta.env.MODE !== "production";
+const SYLLABUS_GUIDE_URL = "https://docs.google.com/document/d/1cnf4IvBB1RUlhLWe94eakKPcpcRJCZP7/edit?usp=sharing";
+
 const NAV_LINKS = [
   { label: "What's Inside", id: "inside" },
   { label: "Why Us", id: "different" },
@@ -82,11 +107,11 @@ const COMPARE_ROWS = [
 ];
 
 const TESTIMONIALS = [
-  { name: "Sabitha", text: "I thought I knew the subjects. The only problem I felt was my presentation. But only after coming here, I understood that I actually know very little." },
-  { name: "Tharun", text: "From my school days, I won't do much writing practice. I'll simply just see the notes repeatedly. Many tutors here told me that I have to do more practice, which is why I'm here." },
-  { name: "Elakya", text: "I learnt that if I don't know some things, I should ensure not to get stuck on them. Practice is required for that." },
-  { name: "Ragavi", text: "Being a self-study student, studying is hard. I realised how important this mentorship is in my journey." },
-  { name: "Yashika", text: "The method of teaching followed by FOCAS is perfect. Trust me, I was able to score 82 just by enrolling in their fast track — then imagine how their regular course would be." },
+  { name: "Sabitha", img: "/fs-assets/testimonials/Sabitha.webp", text: "I thought I knew the subjects. The only problem I felt was my presentation. But only after coming here, I understood that I actually know very little." },
+  { name: "Tharun", img: "/fs-assets/testimonials/Tharun.webp", text: "From my school days, I won't do much writing practice. I'll simply just see the notes repeatedly. Many tutors here told me that I have to do more practice, which is why I'm here." },
+  { name: "Elakya", img: "/fs-assets/testimonials/Elakya.webp", text: "I learnt that if I don't know some things, I should ensure not to get stuck on them. Practice is required for that." },
+  { name: "Ragavi", img: "/fs-assets/testimonials/Ragavi.webp", text: "Being a self-study student, studying is hard. I realised how important this mentorship is in my journey." },
+  { name: "Yashika", img: "/fs-assets/testimonials/Yashika.webp", text: "The method of teaching followed by FOCAS is perfect. Trust me, I was able to score 82 just by enrolling in their fast track — then imagine how their regular course would be." },
 ];
 
 const FAQS = [
@@ -95,7 +120,7 @@ const FAQS = [
   { q: "What is a 'workout session'?", a: "Instead of a lecture, a tutor gives a small group selective questions to solve in class, then reviews and corrects your approach right there — so you leave having practiced, not just watched." },
   { q: "What is the AI Question Bank?", a: "A curated bank of exam-relevant questions (RTP, MTP, PYP and more) integrated with AI, so your practice focuses on the areas where you lose the most marks." },
   { q: "How are tests reviewed?", a: "Each test in the series is evaluated and explained on video, showing you exactly where you lost marks and how to write a better answer." },
-  { q: "What language are sessions held in?", a: "Sessions are conducted in English and Hindi (हिंदी)." },
+  { q: "What language are sessions held in?", a: "Sessions are held in English." },
   { q: "How do I enroll?", a: "Tap Book your Seat Now! on this page and fill the quick form. Our team will call you back with the details." },
 ];
 
@@ -374,6 +399,25 @@ function Inside({ onEnrol }) {
             </Reveal>
           ))}
         </div>
+
+        {SHOW_SYLLABUS_GUIDE && (
+        <Reveal className="mt-8 md:mt-10">
+          <div className="rounded-3xl p-6 md:p-10 flex flex-col-reverse md:flex-row items-center gap-8 md:gap-12 relative overflow-hidden" style={{ background: INK }}>
+            <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(60% 120% at 100% 50%, rgba(29,158,117,.4), transparent 70%)" }} />
+            <div className="relative flex-1 text-center md:text-left">
+              <p className="text-[11px] font-bold uppercase tracking-[0.2em] mb-3" style={{ color: AMBER }}>06 · Syllabus Coverage Guide</p>
+              <h3 className="font-sora font-extrabold text-2xl md:text-4xl tracking-tight text-white leading-tight mb-3">See exactly what we'll cover in class.</h3>
+              <p className="text-white/70 text-base md:text-lg mb-6">Scan this QR to find the guide to what you will be covering in the classes.</p>
+              <a href={SYLLABUS_GUIDE_URL} target="_blank" rel="noopener" className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-bold text-sm uppercase tracking-widest transition-all hover:-translate-y-0.5" style={{ background: MINT, color: INK }}>
+                Open the guide →
+              </a>
+            </div>
+            <a href={SYLLABUS_GUIDE_URL} target="_blank" rel="noopener" className="relative shrink-0 rounded-2xl bg-white p-3 md:p-4 shadow-xl transition-transform hover:scale-[1.02]" aria-label="Syllabus Coverage Guide QR code">
+              <img src="/lp/workout-batch/syllabus-guide-qr.webp" alt="QR code for the Syllabus Coverage Guide" loading="lazy" className="w-44 h-44 md:w-56 md:h-56 block" />
+            </a>
+          </div>
+        </Reveal>
+        )}
       </div>
     </section>
   );
@@ -381,15 +425,36 @@ function Inside({ onEnrol }) {
 
 function Showcase() {
   const photos = DEMO_PHOTOS.length ? DEMO_PHOTOS : SHOW_PLACEHOLDERS ? Array.from({ length: 5 }, () => ({ placeholder: true })) : [];
-  if (!photos.length && !DEMO_VIDEOS.length) return null;
+  if (!photos.length && !SESSION_RECORDINGS.length) return null;
   return (
     <section id="showcase" className="py-16 md:py-28 px-5 md:px-10" style={{ background: INK }}>
       <div className="max-w-6xl mx-auto">
         <Reveal className="text-center mb-10 md:mb-14">
           <Eyebrow dark>Inside a session</Eyebrow>
-          <h2 className="font-sora font-extrabold text-3xl md:text-5xl tracking-tight text-white mb-3">How our workout batch looks like</h2>
-          <p className="text-white/60 text-base md:text-lg">Small groups. A tutor at your table. Questions solved, not just watched.</p>
+          <h2 className="font-sora font-extrabold text-3xl md:text-5xl tracking-tight text-white">How our workout batch looks like</h2>
         </Reveal>
+
+        {ONLINE_PHOTOS.length > 0 && (
+          <div className="mb-10 md:mb-14">
+            <Reveal className="flex items-center gap-2.5 mb-5">
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="absolute inline-flex h-full w-full rounded-full opacity-75 animate-ping" style={{ background: MINT }} />
+                <span className="relative inline-flex h-2.5 w-2.5 rounded-full" style={{ background: MINT }} />
+              </span>
+              <p className="text-[11px] font-bold uppercase tracking-[0.2em]" style={{ color: MINT }}>Live online sessions</p>
+            </Reveal>
+            <div className="grid md:grid-cols-3 gap-4 md:gap-5">
+              {ONLINE_PHOTOS.map((m, i) => (
+                <Reveal key={m.src} delay={i * 0.08}>
+                  <div className="group rounded-2xl overflow-hidden relative aspect-[15/8]" style={{ background: INK_2, boxShadow: "0 0 0 1px rgba(91,227,176,.35), 0 18px 40px -18px rgba(91,227,176,.35)" }}>
+                    <img src={m.src} alt={m.alt} loading="lazy" className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105" />
+                    <span className="absolute top-3 left-3 text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full" style={{ background: "rgba(6,20,15,.75)", color: MINT }}>● Live</span>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        )}
 
         {photos.length > 0 && (
           <div className="grid grid-cols-2 md:grid-cols-4 auto-rows-[150px] md:auto-rows-[240px] gap-3 md:gap-4">
@@ -406,34 +471,59 @@ function Showcase() {
           </div>
         )}
 
-        {DEMO_VIDEOS.length > 0 && (
+        {SESSION_RECORDINGS.length > 0 && (
           <div className="mt-14 md:mt-20">
-            <Reveal className="flex items-end justify-between gap-4 mb-6">
-              <div>
-                <p className="text-[11px] font-bold uppercase tracking-[0.2em] mb-2" style={{ color: AMBER }}>Watch a session</p>
-                <h3 className="font-sora font-bold text-2xl md:text-3xl text-white">Master Question faculty sessions</h3>
-              </div>
+            <Reveal className="mb-6">
+              <p className="text-[11px] font-bold uppercase tracking-[0.2em] mb-2" style={{ color: MINT }}>Recorded live</p>
+              <h3 className="font-sora font-bold text-2xl md:text-3xl text-white">Online workout sessions</h3>
             </Reveal>
-            <div className="grid md:grid-cols-2 gap-5 md:gap-6">
-              {DEMO_VIDEOS.map((v, i) => (
+            <div className={`grid gap-5 md:gap-6 ${SESSION_RECORDINGS.length === 3 ? "md:grid-cols-3" : "md:grid-cols-2"}`}>
+              {SESSION_RECORDINGS.map((v, i) => (
                 <Reveal key={v.src} delay={i * 0.08}>
-                  <div className="rounded-3xl overflow-hidden" style={{ background: INK_2, border: "1px solid rgba(255,255,255,.08)" }}>
-                    <div className="aspect-video">
-                      <Media item={{ ...v, caption: `${v.subject} · Master Question session` }} />
-                    </div>
-                    <div className="px-5 py-4 flex items-center justify-between gap-3">
-                      <div>
-                        <p className="font-bold text-white text-sm md:text-base">{v.subject}</p>
-                        <p className="text-xs text-white/50 mt-0.5">{v.faculty}</p>
-                      </div>
-                      <span className="text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full flex-shrink-0" style={{ background: "rgba(91,227,176,.12)", color: MINT }}>CA Inter</span>
-                    </div>
+                  <div className="rounded-3xl overflow-hidden aspect-video" style={{ background: INK_2, border: "1px solid rgba(255,255,255,.08)" }}>
+                    <Media item={v} />
                   </div>
                 </Reveal>
               ))}
             </div>
           </div>
         )}
+
+      </div>
+    </section>
+  );
+}
+
+// Master Question faculty videos, shown after "What the batch contains".
+function MasterSessions() {
+  if (!DEMO_VIDEOS.length) return null;
+  return (
+    <section id="master-sessions" className="py-16 md:py-28 px-5 md:px-10" style={{ background: INK }}>
+      <div className="max-w-6xl mx-auto">
+        <Reveal className="flex items-end justify-between gap-4 mb-6">
+          <div>
+            <p className="text-[11px] font-bold uppercase tracking-[0.2em] mb-2" style={{ color: AMBER }}>Watch a session</p>
+            <h3 className="font-sora font-bold text-2xl md:text-3xl text-white">Master Question faculty sessions</h3>
+          </div>
+        </Reveal>
+        <div className="grid md:grid-cols-2 gap-5 md:gap-6">
+          {DEMO_VIDEOS.map((v, i) => (
+            <Reveal key={v.src} delay={i * 0.08}>
+              <div className="rounded-3xl overflow-hidden" style={{ background: INK_2, border: "1px solid rgba(255,255,255,.08)" }}>
+                <div className="aspect-video">
+                  <Media item={{ ...v, caption: `${v.subject} · Master Question session` }} />
+                </div>
+                <div className="px-5 py-4 flex items-center justify-between gap-3">
+                  <div>
+                    <p className="font-bold text-white text-sm md:text-base">{v.subject}</p>
+                    <p className="text-xs text-white/50 mt-0.5">{v.faculty}</p>
+                  </div>
+                  <span className="text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full flex-shrink-0" style={{ background: "rgba(91,227,176,.12)", color: MINT }}>CA Inter</span>
+                </div>
+              </div>
+            </Reveal>
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -469,9 +559,9 @@ function Proof({ onEnrol }) {
 }
 
 function Mark({ value, highlight }) {
-  if (value === true) return <span className="inline-flex w-7 h-7 rounded-full items-center justify-center text-sm font-black" style={{ background: MINT, color: INK }}>✓</span>;
-  if (value === false) return <span className="inline-flex w-7 h-7 rounded-full items-center justify-center text-sm font-black bg-gray-100 text-gray-400">✕</span>;
-  return <span className={`text-sm font-bold ${highlight ? "" : "text-gray-400"}`} style={highlight ? { color: GREEN } : undefined}>{value}</span>;
+  if (value === true) return <span className="inline-flex w-7 h-7 md:w-8 md:h-8 rounded-full items-center justify-center text-sm md:text-base font-black" style={{ background: MINT, color: INK }}>✓</span>;
+  if (value === false) return <span className="inline-flex w-7 h-7 md:w-8 md:h-8 rounded-full items-center justify-center text-sm md:text-base font-black bg-gray-100 text-gray-400">✕</span>;
+  return <span className={`text-sm md:text-base font-bold ${highlight ? "" : "text-gray-400"}`} style={highlight ? { color: GREEN } : undefined}>{value}</span>;
 }
 
 function Different() {
@@ -486,14 +576,14 @@ function Different() {
         </Reveal>
         <Reveal>
           <div className="rounded-3xl overflow-hidden" style={{ border: "1px solid #E5EDEA" }}>
-            <div className="grid grid-cols-[1fr_88px_108px] md:grid-cols-[1fr_200px_200px] text-[10px] md:text-xs font-bold uppercase tracking-widest">
+            <div className="grid grid-cols-[1fr_88px_108px] md:grid-cols-[1fr_200px_200px] text-[11px] md:text-sm font-bold uppercase tracking-widest">
               <div className="px-4 md:px-7 py-4 text-gray-400 bg-gray-50">Feature</div>
               <div className="px-2 py-4 text-gray-400 bg-gray-50 text-center">Others</div>
               <div className="px-2 py-4 text-center" style={{ background: INK, color: MINT }}>Workout Batch</div>
             </div>
             {COMPARE_ROWS.map((r) => (
               <div key={r.label} className="grid grid-cols-[1fr_88px_108px] md:grid-cols-[1fr_200px_200px] items-center border-t" style={{ borderColor: "#EEF3F1" }}>
-                <div className="px-4 md:px-7 py-4 md:py-5 text-sm font-semibold text-gray-800">{r.label}</div>
+                <div className="px-4 md:px-7 py-4 md:py-6 text-[15px] md:text-lg font-semibold text-gray-800">{r.label}</div>
                 <div className="px-2 py-4 text-center"><Mark value={r.other} /></div>
                 <div className="px-2 py-4 md:py-5 text-center h-full flex items-center justify-center" style={{ background: "#F3FBF8" }}><Mark value={r.wb} highlight /></div>
               </div>
@@ -507,10 +597,15 @@ function Different() {
 
 function VideoStories() {
   const items = VIDEO_TESTIMONIALS.length ? VIDEO_TESTIMONIALS : SHOW_PLACEHOLDERS ? Array.from({ length: 4 }, () => ({ placeholder: true })) : [];
+  const trackRef = useRef(null);
   if (!items.length) return null;
+  const nudge = (dir) => {
+    const el = trackRef.current;
+    if (el) el.scrollBy({ left: dir * el.clientWidth * 0.8, behavior: "smooth" });
+  };
   return (
     <div className="mb-14 md:mb-20">
-      <div className="wb-track">
+      <div ref={trackRef} className="wb-track wb-track-center">
         {items.map((v, i) => (
           <div key={i} className="wb-slide-video">
             <div className="rounded-3xl overflow-hidden aspect-[9/16]" style={{ background: INK_2 }}>
@@ -525,16 +620,18 @@ function VideoStories() {
           </div>
         ))}
       </div>
+      {/* Desktop fits four videos per view; arrows reach the rest. */}
+      {items.length > 4 && (
+        <div className="flex justify-center gap-3 mt-6">
+          <button onClick={() => nudge(-1)} aria-label="Previous video" className="w-11 h-11 rounded-full text-white text-lg transition-colors hover:bg-white/10" style={{ border: "1px solid rgba(255,255,255,.2)" }}>‹</button>
+          <button onClick={() => nudge(1)} aria-label="Next video" className="w-11 h-11 rounded-full text-lg transition-transform hover:scale-105" style={{ background: MINT, color: INK }}>›</button>
+        </div>
+      )}
     </div>
   );
 }
 
 function Stories() {
-  const trackRef = useRef(null);
-  const nudge = (dir) => {
-    const el = trackRef.current;
-    if (el) el.scrollBy({ left: dir * el.clientWidth * 0.8, behavior: "smooth" });
-  };
   return (
     <section id="stories" className="py-16 md:py-28 px-5 md:px-10" style={{ background: INK }}>
       <div className="max-w-6xl mx-auto">
@@ -545,24 +642,27 @@ function Stories() {
 
         <VideoStories />
 
-        <div ref={trackRef} className="wb-track">
-          {TESTIMONIALS.map((t) => (
-            <figure key={t.name} className="wb-slide-text rounded-3xl p-7 flex flex-col" style={{ background: INK_2, border: "1px solid rgba(255,255,255,.07)" }}>
-              <span className="font-sora text-5xl leading-none mb-2" style={{ color: MINT }}>“</span>
-              <blockquote className="text-sm text-white/75 leading-relaxed flex-1">{t.text}</blockquote>
-              <figcaption className="mt-6 pt-5 flex items-center gap-3" style={{ borderTop: "1px solid rgba(255,255,255,.08)" }}>
-                <span className="w-10 h-10 rounded-full flex items-center justify-center font-sora font-bold" style={{ background: GREEN, color: "#fff" }}>{t.name[0]}</span>
-                <span>
-                  <span className="block font-bold text-white text-sm">{t.name}</span>
-                  {t.batch && <span className="block text-xs" style={{ color: MINT }}>{t.batch}</span>}
-                </span>
-              </figcaption>
-            </figure>
+        {/* Same card layout as the Foundation School testimonials: photo left, quote right. */}
+        <div className="grid md:grid-cols-2 gap-5">
+          {TESTIMONIALS.map((t, i) => (
+            <Reveal key={t.name} delay={i * 0.08} className={i === TESTIMONIALS.length - 1 && TESTIMONIALS.length % 2 ? "md:col-span-2" : ""}>
+              <figure className="h-full rounded-3xl bg-white p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center gap-5 sm:gap-7 shadow-lg">
+                {t.img ? (
+                  <img src={t.img} alt={t.name} loading="lazy" className="w-40 h-40 sm:w-48 sm:h-48 shrink-0 self-center object-contain object-bottom" />
+                ) : (
+                  <span className="w-40 h-40 sm:w-48 sm:h-48 shrink-0 self-center rounded-full flex items-center justify-center font-sora font-bold text-6xl text-white" style={{ background: GREEN }}>{t.name[0]}</span>
+                )}
+                <div className="flex-1 flex flex-col">
+                  <span className="font-sora text-5xl leading-none" style={{ color: GREEN }}>“</span>
+                  <blockquote className="mt-1 text-base md:text-lg leading-relaxed text-gray-700">{t.text}</blockquote>
+                  <figcaption className="mt-4">
+                    <span className="block font-sora font-bold" style={{ color: INK }}>{t.name}</span>
+                    {t.batch && <span className="block text-xs" style={{ color: GREEN }}>{t.batch}</span>}
+                  </figcaption>
+                </div>
+              </figure>
+            </Reveal>
           ))}
-        </div>
-        <div className="flex justify-center gap-3 mt-6">
-          <button onClick={() => nudge(-1)} aria-label="Previous" className="w-11 h-11 rounded-full text-white text-lg transition-colors hover:bg-white/10" style={{ border: "1px solid rgba(255,255,255,.2)" }}>‹</button>
-          <button onClick={() => nudge(1)} aria-label="Next" className="w-11 h-11 rounded-full text-lg transition-transform hover:scale-105" style={{ background: MINT, color: INK }}>›</button>
         </div>
       </div>
     </section>
@@ -609,7 +709,7 @@ function FinalCTA({ onEnrol }) {
         <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(50% 120% at 100% 50%, rgba(29,158,117,.45), transparent 70%)" }} />
         <div className="relative">
           <p className="text-sm font-bold uppercase tracking-widest mb-3" style={{ color: AMBER }}>Limited seats · Jan 2027 attempt</p>
-          <h2 className="font-sora font-extrabold text-white text-3xl md:text-4xl tracking-tight">Make this your last attempt.</h2>
+          <h2 className="font-sora font-extrabold text-3xl md:text-4xl tracking-tight" style={{ color: MINT }}>Make this your last attempt.</h2>
         </div>
         <CTA onClick={onEnrol} className="relative flex-shrink-0" />
       </Reveal>
@@ -626,7 +726,7 @@ function Footer() {
           <div>
             <img src={logo} alt="FOCAS Edu" className="h-8 brightness-0 invert" />
             <p className="text-white font-sora font-bold text-lg mt-4">The Last Attempt Workout Batch</p>
-            <p className="text-sm text-white/50 leading-relaxed mt-2">CA Intermediate · Group I &amp; II<br />English + हिंदी</p>
+            <p className="text-sm text-white/50 leading-relaxed mt-2">CA Intermediate · Group I &amp; II</p>
           </div>
           <div>
             <div className="text-xs font-bold uppercase tracking-widest text-white/40 mb-5">Quick Links</div>
@@ -699,10 +799,10 @@ export default function WorkoutBatch() {
         @keyframes wbPing{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.8);opacity:.4}}
         .wb-track{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:4px}
         .wb-track::-webkit-scrollbar{display:none}
-        .wb-slide-text{flex:0 0 85%;scroll-snap-align:start}
+        .wb-track-center>:first-child{margin-left:auto}.wb-track-center>:last-child{margin-right:auto}
         .wb-slide-video{flex:0 0 62%;scroll-snap-align:start}
-        @media(min-width:640px){.wb-slide-text{flex-basis:calc(50% - 8px)}.wb-slide-video{flex-basis:calc(33.333% - 11px)}}
-        @media(min-width:1024px){.wb-slide-text{flex-basis:calc(33.333% - 11px)}.wb-slide-video{flex-basis:calc(25% - 12px)}}
+        @media(min-width:640px){.wb-slide-video{flex-basis:calc(33.333% - 11px)}}
+        @media(min-width:1024px){.wb-slide-video{flex-basis:calc(25% - 12px)}}
       `}</style>
 
       {showEnrol && <EnrolModal onClose={() => setShowEnrol(false)} />}
@@ -710,8 +810,9 @@ export default function WorkoutBatch() {
       <Navbar scrolled={scrolled} menuOpen={menuOpen} setMenuOpen={setMenuOpen} onEnrol={onEnrol} />
       <Hero onEnrol={onEnrol} />
       <Ticker />
-      <Inside onEnrol={onEnrol} />
       <Showcase />
+      <Inside onEnrol={onEnrol} />
+      <MasterSessions />
       <Proof onEnrol={onEnrol} />
       <Different />
       <Stories />
