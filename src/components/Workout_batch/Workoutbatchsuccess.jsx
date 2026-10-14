@@ -76,9 +76,9 @@ export default function WorkoutBatchSuccess() {
             </div>
 
             <div className="bg-green-50 border border-green-200 rounded-2xl p-4 md:p-5">
-              <p className="text-xs md:text-sm font-semibold text-green-800">🗣️ Languages</p>
+              <p className="text-xs md:text-sm font-semibold text-green-800">🗣️ Language</p>
               <p className="text-lg md:text-xl font-black text-gray-900 mt-1">
-                English + हिंदी
+                English
               </p>
             </div>
           </div>
