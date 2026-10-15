@@ -75,8 +75,8 @@ const AMBER = "#FFB547";
 
 /* ── Content ── */
 // Google Doc behind the QR in the Syllabus Coverage Guide card.
-// The card shows in dev and beta only — flip to `true` to put it live.
-const SHOW_SYLLABUS_GUIDE = import.meta.env.MODE !== "production";
+// Set to `false` to hide the card.
+const SHOW_SYLLABUS_GUIDE = true;
 const SYLLABUS_GUIDE_URL = "https://docs.google.com/document/d/1cnf4IvBB1RUlhLWe94eakKPcpcRJCZP7/edit?usp=sharing";
 
 const NAV_LINKS = [
