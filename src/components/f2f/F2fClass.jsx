@@ -24,7 +24,7 @@ import {
 } from "lucide-react";
 import { FONTS_HREF, LEXEND, MANROPE, PHONE_DISPLAY, PHONE_TEL } from "@/components/counselling/Counselling";
 import { sendToZohoFlow } from "@/components/fs/FsForm";
-import { CA_STATUS_OPTIONS, DIAL_CODES, Honeypot, captureUtms, trackLead } from "@/components/bigin/formKit";
+import { DIAL_CODES, Honeypot, captureUtms, trackLead } from "@/components/bigin/formKit";
 
 /**
  * /f2f-class — Face to Face offline / live / hybrid Regular Batch for CA Inter
@@ -50,13 +50,12 @@ export const PRIVACY_HREF = "/privacy-policy";
 
 // Meta advanced matching: re-calling init with user data attaches it (hashed by
 // the pixel) to this and later events, so Lead/Purchase match more people.
-const setMetaUserData = ({ firstName, lastName, phone }) =>
+const setMetaUserData = ({ firstName, lastName, phone, city }) =>
   window.fbq?.("init", META_PIXEL_ID, {
     fn: firstName.toLowerCase(),
     ln: lastName.toLowerCase(),
     ph: phone.replace(/\D/g, ""),
-    ct: "chennai",
-    st: "tamil nadu",
+    ct: city.toLowerCase().replace(/[^a-z]/g, ""),
     country: "in",
   });
 
@@ -177,7 +176,12 @@ const TESTIMONIALS = [
 ];
 
 const GROUP_OPTIONS = ["Group 1", "Group 2", "Both Groups"];
-const SLOT_OPTIONS = ["Morning (6 AM – 8 AM)", "Afternoon (3 PM – 8 PM)"];
+const FOUNDATION_STATUS_OPTIONS = [
+  "Cleared CA Foundation – Sep 2026",
+  "Appeared for CA Foundation – Sep 2026",
+  "Cleared CA Foundation – Earlier Attempt",
+  "Direct Entry",
+];
 
 /* ─────────────────────────── Lead form ─────────────────────────── */
 
@@ -188,9 +192,19 @@ const EMPTY_FORM = {
   phone: "",
   caStatus: "",
   group: "",
-  slot: "",
+  city: "",
   company: "", // honeypot — must stay empty for real users
 };
+
+// Letters with single spaces, dots, apostrophes or hyphens between them.
+const NAME_RE = /^[A-Za-z]+(?:[ .'-]+[A-Za-z]+)*\.?$/;
+// "  priya  DHARSHINI " → "Priya Dharshini" — Bigin and the WhatsApp greeting read it as typed.
+const titleCase = (s) =>
+  s
+    .trim()
+    .replace(/\s+/g, " ")
+    .toLowerCase()
+    .replace(/(^|[ .'-])([a-z])/g, (_, sep, ch) => sep + ch.toUpperCase());
 
 const fieldCls =
   "h-10 rounded-lg border border-[#d9d9d9] bg-white px-[11px] text-base text-black/90 outline-none transition placeholder:text-black/25 hover:border-[#1D9E75] focus:border-[#1D9E75] focus:shadow-[0_0_0_2px_rgba(29,158,117,0.15)]";
@@ -221,17 +235,22 @@ const LeadForm = () => {
 
   const validate = () => {
     const e = {};
-    const name = (k, label) => {
+    const name = (k, label, min) => {
       const v = values[k].trim();
       if (!v) e[k] = `Please enter your ${label}.`;
-      else if (/\d/.test(v)) e[k] = "Only letters are allowed.";
+      else if (!NAME_RE.test(v)) e[k] = "Use letters only.";
+      else if (v.replace(/[^A-Za-z]/g, "").length < min) e[k] = `Enter your full ${label}.`;
+      else if (/^(.)\1+$/i.test(v.replace(/[^A-Za-z]/g, ""))) e[k] = `Enter a valid ${label}.`;
     };
-    name("firstName", "first name");
-    name("lastName", "last name");
+    name("firstName", "first name", 2);
+    name("lastName", "last name", 1); // initials like "K" are common
     if (!/^[0-9]{10}$/.test(values.phone.trim())) e.phone = "Enter a 10 digit phone number.";
-    if (!values.caStatus) e.caStatus = "Please select your CA status.";
+    else if (values.dialCode === "+91" && !/^[6-9]/.test(values.phone)) e.phone = "Enter a valid Indian mobile number.";
+    if (!values.caStatus) e.caStatus = "Please select your CA Foundation status.";
     if (!values.group) e.group = "Please select a group.";
-    if (!values.slot) e.slot = "Please select a timing.";
+    const city = values.city.trim();
+    if (!city) e.city = "Please enter your city.";
+    else if (!NAME_RE.test(city) || city.replace(/[^A-Za-z]/g, "").length < 3) e.city = "Enter a valid city name.";
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -242,15 +261,13 @@ const LeadForm = () => {
     setSubmitting(true);
 
     const payload = {
-      firstName: values.firstName.trim(),
-      lastName: values.lastName.trim(),
+      firstName: titleCase(values.firstName),
+      lastName: titleCase(values.lastName),
       phone: `${values.dialCode}${values.phone}`.trim(),
       caStatus: values.caStatus,
       attempt: "Sept 2027",
       group: values.group,
-      slot: values.slot,
-      city: "Chennai",
-      state: "Tamil Nadu",
+      city: titleCase(values.city),
       company: values.company, // honeypot
       utm: captureUtms(),
     };
@@ -292,10 +309,10 @@ const LeadForm = () => {
 
       <div className="grid grid-cols-2 gap-3">
         <Field label="First Name" error={errors.firstName}>
-          <input className={inputCls} maxLength={40} placeholder="Enter first name" value={values.firstName} onChange={set("firstName")} />
+          <input className={inputCls} maxLength={40} autoComplete="given-name" placeholder="Enter first name" value={values.firstName} onChange={set("firstName")} />
         </Field>
         <Field label="Last Name" error={errors.lastName}>
-          <input className={inputCls} maxLength={80} placeholder="Enter last name" value={values.lastName} onChange={set("lastName")} />
+          <input className={inputCls} maxLength={80} autoComplete="family-name" placeholder="Enter last name" value={values.lastName} onChange={set("lastName")} />
         </Field>
       </div>
 
@@ -325,15 +342,16 @@ const LeadForm = () => {
         </div>
       </Field>
 
+      <Field label="CA Foundation Status" error={errors.caStatus}>
+        <select className={inputCls} value={values.caStatus} onChange={set("caStatus")}>
+          <option value="" disabled>Select your status</option>
+          {FOUNDATION_STATUS_OPTIONS.map((o) => (
+            <option key={o} value={o}>{o}</option>
+          ))}
+        </select>
+      </Field>
+
       <div className="grid grid-cols-2 gap-3">
-        <Field label="CA Status" error={errors.caStatus}>
-          <select className={inputCls} value={values.caStatus} onChange={set("caStatus")}>
-            <option value="" disabled>Select</option>
-            {CA_STATUS_OPTIONS.map((o) => (
-              <option key={o} value={o}>{o}</option>
-            ))}
-          </select>
-        </Field>
         <Field label="Group" error={errors.group}>
           <select className={inputCls} value={values.group} onChange={set("group")}>
             <option value="" disabled>Select</option>
@@ -342,16 +360,17 @@ const LeadForm = () => {
             ))}
           </select>
         </Field>
+        <Field label="City" error={errors.city}>
+          <input
+            className={inputCls}
+            maxLength={50}
+            autoComplete="address-level2"
+            placeholder="Enter your city"
+            value={values.city}
+            onChange={set("city")}
+          />
+        </Field>
       </div>
-
-      <Field label="Preferred Timing" error={errors.slot}>
-        <select className={inputCls} value={values.slot} onChange={set("slot")}>
-          <option value="" disabled>Select your timing</option>
-          {SLOT_OPTIONS.map((o) => (
-            <option key={o} value={o}>{o}</option>
-          ))}
-        </select>
-      </Field>
 
       <button
         type="submit"

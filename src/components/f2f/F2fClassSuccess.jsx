@@ -83,7 +83,8 @@ export default function F2fClassSuccess() {
       event: "f2f_class_success",
       page_path: "/f2f-class-success",
       group: lead?.group || "",
-      slot: lead?.slot || "",
+      ca_status: lead?.caStatus || "",
+      city: lead?.city || "",
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -108,7 +109,7 @@ export default function F2fClassSuccess() {
         {lead?.group && (
           <div className="mt-5 flex flex-wrap justify-center gap-2 text-xs font-semibold">
             <span className="rounded-full bg-[#e8f8f2] px-3 py-1 text-[#0f6e56]">{lead.group}</span>
-            {lead.slot && <span className="rounded-full bg-[#fff4e0] px-3 py-1 text-[#9a5b00]">{lead.slot}</span>}
+            {lead.city && <span className="rounded-full bg-[#fff4e0] px-3 py-1 text-[#9a5b00]">{lead.city}</span>}
           </div>
         )}
 
