@@ -31,6 +31,8 @@ import FoundationSchool from "./components/fs/FoundationSchool";
 import FsBook from "./components/fs/FsBook";
 import FsSuccess from "./components/fs/FsSuccess";
 import FsParents from "./components/fs/FsParents";
+import F2fClass from "./components/f2f/F2fClass";
+import F2fClassSuccess from "./components/f2f/F2fClassSuccess";
 //import FOCASLandingPage from "./components/FOCASLandingPage";
 const queryClient = new QueryClient();
 const PrivacyPolicyRedirect = () => {
@@ -51,6 +53,8 @@ const router = createBrowserRouter([
     {path: "/counselling", element: <Counselling />},
     {path: "/counselling/book", element: <CounsellingBook />},
     {path: "/counselling-success", element: <CounsellingSuccess />},
+    {path: "/f2f-class", element: <F2fClass />},
+    {path: "/f2f-class-success", element: <F2fClassSuccess />},
     {path: "/rti", element: <Rti />},
     {path: "/rti-success", element: <RtiSuccess />},
     {path: "/career-guidance", element: <CareerGuidance />},
