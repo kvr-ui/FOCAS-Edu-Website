@@ -129,11 +129,13 @@ const TIMINGS = [
   { label: "Afternoon", time: "03:00 PM - 08:00 PM", tag: "Class" },
 ];
 
-const PRICING = [
-  { name: "Group 1", price: "40,000", note: "All Group 1 papers" },
-  { name: "Both Groups", price: "75,000", note: "Group 1 + Group 2", featured: true, save: "Save ₹5,000" },
-  { name: "Group 2", price: "40,000", note: "All Group 2 papers" },
-];
+const PRICING = {
+  name: "CA Intermediate Sep 2027",
+  note: "Group 1 + Group 2",
+  mrp: "80,000",
+  price: "75,000",
+  save: "Save ₹5,000",
+};
 
 const PRICE_INCLUDES = [
   "Face to face tutor sessions (1 : 10)",
@@ -175,10 +177,8 @@ const TESTIMONIALS = [
   },
 ];
 
-const GROUP_OPTIONS = ["Group 1", "Group 2", "Both Groups"];
 const FOUNDATION_STATUS_OPTIONS = [
   "Cleared CA Foundation – Sep 2026",
-  "Appeared for CA Foundation – Sep 2026",
   "Cleared CA Foundation – Earlier Attempt",
   "Direct Entry",
 ];
@@ -191,7 +191,6 @@ const EMPTY_FORM = {
   dialCode: "+91",
   phone: "",
   caStatus: "",
-  group: "",
   city: "",
   company: "", // honeypot — must stay empty for real users
 };
@@ -246,8 +245,7 @@ const LeadForm = () => {
     name("lastName", "last name", 1); // initials like "K" are common
     if (!/^[0-9]{10}$/.test(values.phone.trim())) e.phone = "Enter a 10 digit phone number.";
     else if (values.dialCode === "+91" && !/^[6-9]/.test(values.phone)) e.phone = "Enter a valid Indian mobile number.";
-    if (!values.caStatus) e.caStatus = "Please select your CA Foundation status.";
-    if (!values.group) e.group = "Please select a group.";
+    if (!values.caStatus) e.caStatus = "Please select your status.";
     const city = values.city.trim();
     if (!city) e.city = "Please enter your city.";
     else if (!NAME_RE.test(city) || city.replace(/[^A-Za-z]/g, "").length < 3) e.city = "Enter a valid city name.";
@@ -266,7 +264,7 @@ const LeadForm = () => {
       phone: `${values.dialCode}${values.phone}`.trim(),
       caStatus: values.caStatus,
       attempt: "Sept 2027",
-      group: values.group,
+      group: "Both Groups", // only one course on offer; kept so Zoho/analytics still get a value
       city: titleCase(values.city),
       company: values.company, // honeypot
       utm: captureUtms(),
@@ -342,7 +340,7 @@ const LeadForm = () => {
         </div>
       </Field>
 
-      <Field label="CA Foundation Status" error={errors.caStatus}>
+      <Field label="Status" error={errors.caStatus}>
         <select className={inputCls} value={values.caStatus} onChange={set("caStatus")}>
           <option value="" disabled>Select your status</option>
           {FOUNDATION_STATUS_OPTIONS.map((o) => (
@@ -351,26 +349,16 @@ const LeadForm = () => {
         </select>
       </Field>
 
-      <div className="grid grid-cols-2 gap-3">
-        <Field label="Group" error={errors.group}>
-          <select className={inputCls} value={values.group} onChange={set("group")}>
-            <option value="" disabled>Select</option>
-            {GROUP_OPTIONS.map((o) => (
-              <option key={o} value={o}>{o}</option>
-            ))}
-          </select>
-        </Field>
-        <Field label="City" error={errors.city}>
-          <input
-            className={inputCls}
-            maxLength={50}
-            autoComplete="address-level2"
-            placeholder="Enter your city"
-            value={values.city}
-            onChange={set("city")}
-          />
-        </Field>
-      </div>
+      <Field label="City" error={errors.city}>
+        <input
+          className={inputCls}
+          maxLength={50}
+          autoComplete="address-level2"
+          placeholder="Enter your city"
+          value={values.city}
+          onChange={set("city")}
+        />
+      </Field>
 
       <button
         type="submit"
@@ -762,44 +750,30 @@ const Pricing = ({ onCta }) => (
         <h2 className="mb-3 text-2xl font-bold text-gray-900 lg:text-4xl">Course Fees</h2>
         <p className="text-base text-gray-600 lg:text-lg">Regular Batch · CA Inter Sep 2027 · Mylapore, Chennai</p>
       </div>
-      <div className="mx-auto grid max-w-5xl grid-cols-1 items-stretch gap-6 md:grid-cols-3">
-        {PRICING.map(({ name, price, note, featured, save }) => (
-          <div
-            key={name}
-            className={
-              featured
-                ? "rounded-2xl bg-[conic-gradient(from_180deg,#1D9E75,#9fe3c8,#FFA500,#2bc48f,#1D9E75)] p-[2px] md:-my-4"
-                : "rounded-2xl border border-gray-200"
-            }
-          >
-            <div className={`relative flex h-full flex-col rounded-2xl bg-white p-7 ${featured ? "shadow-xl md:py-11" : ""}`}>
-              {save && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-b from-[#FFA500] to-[#e08900] px-3 py-1 text-xs font-bold text-white shadow">
-                  {save}
-                </span>
-              )}
-              <h3 className="text-lg font-bold text-gray-900">{name}</h3>
-              <p className="text-sm text-gray-500">{note}</p>
-              <p className="mt-5 text-4xl font-extrabold text-[#0f6e56]">
-                ₹{price}
-              </p>
-              <ul className="mt-6 flex-1 space-y-2">
-                {PRICE_INCLUDES.map((t) => (
-                  <li key={t} className="flex items-start gap-2 text-sm text-gray-700">
-                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-green-600" strokeWidth={3} /> {t}
-                  </li>
-                ))}
-              </ul>
-              <button
-                type="button"
-                onClick={onCta}
-                className={`mt-7 w-full py-2.5 ${featured ? BTN_DARK : "rounded-lg border border-[#1D9E75] font-medium text-[#0f6e56] transition hover:bg-[#e8f8f2]"}`}
-              >
-                Reserve my seat
-              </button>
-            </div>
+      <div className="mx-auto max-w-4xl rounded-2xl bg-[conic-gradient(from_180deg,#1D9E75,#9fe3c8,#FFA500,#2bc48f,#1D9E75)] p-[2px]">
+        <div className="relative grid gap-8 rounded-2xl bg-white p-7 shadow-xl sm:p-10 md:grid-cols-2 md:items-center">
+          <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-b from-[#FFA500] to-[#e08900] px-3 py-1 text-xs font-bold text-white shadow">
+            {PRICING.save}
+          </span>
+          <div className="text-center md:text-left">
+            <h3 className="text-xl font-bold uppercase tracking-wide text-gray-900 lg:text-2xl">{PRICING.name}</h3>
+            <p className="text-sm text-gray-500">{PRICING.note}</p>
+            <p className="mt-5 flex items-baseline justify-center gap-3 md:justify-start">
+              <span className="text-2xl font-semibold text-gray-400 line-through decoration-2">₹{PRICING.mrp}</span>
+              <span className="text-5xl font-extrabold text-[#0f6e56]">₹{PRICING.price}</span>
+            </p>
+            <button type="button" onClick={onCta} className={`mt-7 w-full py-3 md:max-w-xs ${BTN_DARK}`}>
+              Reserve my seat
+            </button>
           </div>
-        ))}
+          <ul className="space-y-3 border-t border-gray-100 pt-6 md:border-l md:border-t-0 md:pl-8 md:pt-0">
+            {PRICE_INCLUDES.map((t) => (
+              <li key={t} className="flex items-start gap-2 text-sm text-gray-700 lg:text-base">
+                <Check className="mt-0.5 h-4 w-4 shrink-0 text-green-600" strokeWidth={3} /> {t}
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   </section>
