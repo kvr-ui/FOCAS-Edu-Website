@@ -179,7 +179,6 @@ const TESTIMONIALS = [
 
 const FOUNDATION_STATUS_OPTIONS = [
   "Cleared CA Foundation – Sep 2026",
-  "Appeared for CA Foundation – Sep 2026",
   "Cleared CA Foundation – Earlier Attempt",
   "Direct Entry",
 ];
@@ -246,7 +245,7 @@ const LeadForm = () => {
     name("lastName", "last name", 1); // initials like "K" are common
     if (!/^[0-9]{10}$/.test(values.phone.trim())) e.phone = "Enter a 10 digit phone number.";
     else if (values.dialCode === "+91" && !/^[6-9]/.test(values.phone)) e.phone = "Enter a valid Indian mobile number.";
-    if (!values.caStatus) e.caStatus = "Please select your CA Foundation status.";
+    if (!values.caStatus) e.caStatus = "Please select your status.";
     const city = values.city.trim();
     if (!city) e.city = "Please enter your city.";
     else if (!NAME_RE.test(city) || city.replace(/[^A-Za-z]/g, "").length < 3) e.city = "Enter a valid city name.";
@@ -341,7 +340,7 @@ const LeadForm = () => {
         </div>
       </Field>
 
-      <Field label="CA Foundation Status" error={errors.caStatus}>
+      <Field label="Status" error={errors.caStatus}>
         <select className={inputCls} value={values.caStatus} onChange={set("caStatus")}>
           <option value="" disabled>Select your status</option>
           {FOUNDATION_STATUS_OPTIONS.map((o) => (
