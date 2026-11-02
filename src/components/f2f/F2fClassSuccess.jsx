@@ -23,7 +23,7 @@ const MAP_LINK = `https://www.google.com/maps/search/?api=1&query=${encodeURICom
 
 const STEPS = [
   { icon: PhoneCall, text: "Our admissions team will call you shortly with the batch details." },
-  { icon: MapPin, text: "Visit the FOCAS Mylapore centre and meet your tutor before you join." },
+  { icon: MapPin, text: "Call us to book an appointment to visit us at the FOCAS Mylapore centre." },
   { icon: CalendarDays, text: "Batch starts December 16, 2026 — only 10 students per tutor." },
   { icon: MessageCircle, text: "Keep WhatsApp handy — we'll share the details there." },
 ];
