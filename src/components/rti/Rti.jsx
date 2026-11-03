@@ -552,9 +552,9 @@ function Compare() {
   );
 }
 
-// Event-day photos from RTI Day (Aug 2026), resized for web in public/rti/gallery.
+// Event-day photos from RTI Day (Aug 2026), resized for web in public/rti-assets/gallery.
 const GALLERY_IMAGES = Array.from({ length: 13 }, (_, i) => ({
-  src: `/rti/gallery/rti-day-${String(i + 1).padStart(2, "0")}.jpg`,
+  src: `/rti-assets/gallery/rti-day-${String(i + 1).padStart(2, "0")}.jpg`,
   alt: "RTI Day — CA Mentors reviewing exam papers with students",
 }));
 
