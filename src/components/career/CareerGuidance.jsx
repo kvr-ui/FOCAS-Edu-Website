@@ -32,7 +32,7 @@ import { CG_CSS, NAVY, useCareerFonts } from "./theme";
 
 // ─── Content ─────────────────────────────────────────────────────────────────
 
-const EVENT_START = new Date("2026-10-18T10:30:00+05:30");
+const EVENT_START = new Date("2026-11-22T10:30:00+05:30");
 const AMOUNT_RUPEES = 99;
 const PRICE_LABEL = `₹${AMOUNT_RUPEES}`;
 const EVENT_ID = "career-guidance";
@@ -53,7 +53,7 @@ const TESTIMONIALS = [
 ];
 
 const EVENT_DETAILS = [
-  { icon: CalendarDays, label: "Date", value: "Sun, 18th Oct 2026" },
+  { icon: CalendarDays, label: "Date", value: "Sun, 22nd Nov 2026" },
   { icon: Clock, label: "Time", value: "10:30 AM – 12:30 PM" },
   { icon: Video, label: "Mode · Online", value: "Google Meet" },
 ];
@@ -309,7 +309,7 @@ function Agenda() {
   return (
     <section className="bg-white py-16 sm:py-24">
       <div className="mx-auto grid max-w-6xl gap-10 px-4 sm:px-6 lg:grid-cols-[1fr_1.6fr]">
-        <SectionHeading label="Agenda for the day" title="How the two hours are planned" sub="Sunday, 18th October · 10:30 AM – 12:30 PM (IST)" />
+        <SectionHeading label="Agenda for the day" title="How the two hours are planned" sub="Sunday, 22nd November · 10:30 AM – 12:30 PM (IST)" />
         <Reveal>
           <ol className="divide-y divide-[#e7e2d8] border-y border-[#e7e2d8]">
             {AGENDA.map((item) => (
@@ -456,7 +456,7 @@ function FinalCTA({ ended, onRegister }) {
           <h2 className="cg-display mt-3 text-4xl font-semibold !text-white sm:text-5xl">
             Help your child choose their path with confidence.
           </h2>
-          <p className="mt-3 text-white/75">Sunday, 18th October · 10:30 AM · Online on Google Meet</p>
+          <p className="mt-3 text-white/75">Sunday, 22nd November · 10:30 AM · Online on Google Meet</p>
           <RegisterButton ended={ended} onRegister={onRegister} source="final" light className="mt-8 w-full sm:w-auto" />
         </div>
       </Reveal>
@@ -613,7 +613,7 @@ function RegisterModal({ onClose }) {
         amount: AMOUNT_RUPEES * 100, // paise
         currency: "INR",
         name: "FOCAS Edu",
-        description: "Career Guidance Meet — 18 Oct",
+        description: "Career Guidance Meet — 22 Nov",
         prefill: { name: lead.firstName, contact: phone },
         notes: {
           event: EVENT_ID,
@@ -676,7 +676,7 @@ function RegisterModal({ onClose }) {
           <X className="h-5 w-5" />
         </button>
         <div className="mb-8 text-center">
-          <p className="cg-label">Sunday · 18th October · 10:30 AM</p>
+          <p className="cg-label">Sunday · 22nd November · 10:30 AM</p>
           <h2 id="cg-register-title" className="cg-display mt-3 text-4xl font-semibold">Register for the Career Guidance Meet</h2>
           <p className="mt-2 text-slate-600">Online on Google Meet · {PRICE_LABEL} only</p>
         </div>
