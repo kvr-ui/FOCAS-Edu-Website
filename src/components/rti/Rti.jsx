@@ -49,7 +49,7 @@ const SCHEDULE = [
   { time: "10:30 AM", emoji: "📄", label: "Personalized exam paper review & performance feedback at dedicated booths with CA Mentors (1:1) commences" },
   { time: "1:00 PM",  emoji: "🍽️", label: "Lunch Break" },
   { time: "2:00 PM",  emoji: "📊", label: "Paper review and performance feedback continues (1:1)" },
-  { time: "4:00 PM",  emoji: "🚀", label: "Sep 2026 Strategy Session — Expert Panel led by CA K Venkat Ramanan" },
+  { time: "4:00 PM",  emoji: "🚀", label: "Jan 2027 Strategy Session — Expert Panel led by CA K Venkat Ramanan" },
   { time: "5:30 PM",  emoji: "🏆", label: "Q&A with the Expert Panel" },
 ];
 
@@ -58,19 +58,19 @@ const COMPARE_ROWS = [
   { label: "CA Mentor Performance Feedback", other: "❌", rti: "✅" },
   { label: "Score & Gap Analysis", other: "❌", rti: "✅" },
   { label: "Attempt-specific Action Plan", other: "❌", rti: "✅" },
-  { label: "Guidance & Strategy for Sep 26", other: "Generic", rti: "PERSONALIZED" },
+  { label: "Guidance & Strategy for Jan 27", other: "Generic", rti: "PERSONALIZED" },
   { label: "Access to Expert CA Mentors", other: "❌", rti: "✅" },
   { label: "Post-event Study Resources", other: "✅", rti: "✅" },
 ];
 
 const FAQS = [
-  { q: "Who is this event for?", a: "CA Inter students who appeared in the May 2026 attempt and are targeting Sep 2026. This event helps you understand the reason behind your result being UNSUCCESSFUL." },
-  { q: "What is RTI Day?", a: "RTI stands for Right To Information Act, through which you can apply for your exam answer sheets. RTI Day is a full-day event where CA Mentors personally review your exam paper, give performance feedback and help you strategize for Sep 26." },
-  { q: "What is the entry fee?", a: "₹499 per group (reduced from ₹799). ₹999 if you opt for both groups (reduced from ₹1499). For a full day of mentoring, personalized guidance and feedback. Have a coupon code? Apply it at checkout for an extra discount." },
+  { q: "Who is this event for?", a: "CA Inter students who appeared in the Sep 2026 attempt and are targeting Jan 2027. This event helps you understand the reason behind your result being UNSUCCESSFUL." },
+  { q: "What is RTI Day?", a: "RTI stands for Right To Information Act, through which you can apply for your exam answer sheets. RTI Day is a full-day event where CA Mentors personally review your exam paper, give performance feedback and help you strategize for Jan 27." },
+  { q: "What is the Entry fee?", a: "₹99 per group. ₹199 for both groups. For a full day of mentoring, personalized guidance and feedback." },
   { q: "Do I need to submit my exam papers beforehand?", a: "Yes. You will be sent a link for uploading your evaluated answer sheets, which will be the basis of our assessment." },
   { q: "What language will the event be held in?", a: "Primarily in English and Tamil. A bilingual approach is adopted to make the students feel comfortable." },
   { q: "Who is conducting the event?", a: "The event is being brought to you by FOCAS Edu — an institute which has guided 300+ students in their journey to realizing their CA dreams." },
-  { q: "Where is the venue exactly?", a: "Bharathiya Vidhya Bhavan , Mylapore Chennai. Here's the Google Maps link: https://share.google/13I896gB9ftR3hOI5" },
+  { q: "Where is the venue exactly?", a: "#11, First Floor, TSV Kovil Street, Alamelumanga Puram, Sankara Puram, Mylapore, Chennai" },
   { q: "How do I register?", a: "Simply click on Register Now, pay the fee, and that's it. You're enrolled!" },
 ];
 
@@ -181,7 +181,7 @@ function Navbar({ scrolled, menuOpen, setMenuOpen, onRegister }) {
 }
 
 function Ticker() {
-  const items = ["Chennai — 2nd August", "FOCAS Edu", "RTI Day 2026", "Restart. Transform. Succeed.", "Exclusive for CA INTER Sep 26 students", "Expert CA Mentors"];
+  const items = ["Chennai — 6th December, 2026", "FOCAS Edu", "RTI Day 2026", "Restart. Transform. Succeed.", "Exclusive for Jan 27 students", "Expert CA Mentors"];
   const all = [...items, ...items];
   return (
     <div className="overflow-hidden py-3" style={{ background: GREEN }}>
@@ -210,7 +210,7 @@ function Hero({ onRegister }) {
           style={{ background: "#fff8ed", color: ORANGE }}
         >
           <span className="w-2 h-2 rounded-full" style={{ background: ORANGE, animation: "ping 1.4s ease infinite" }} />
-          <span>Now Open for Registration. <span style={{ color: ORANGE, fontWeight: 900 }}>CA INTER Sep 26</span></span>
+          <span>Now Open for Registration. <span style={{ color: ORANGE, fontWeight: 900 }}>CA Inter Jan 27</span></span>
         </div>
 
         <h1 className="mt-4 lg:mt-0 text-3xl md:text-5xl lg:text-6xl font-black leading-[1.1] tracking-tight text-gray-900 mb-3">
@@ -229,7 +229,7 @@ function Hero({ onRegister }) {
         </p>
 
         <p className="text-base md:text-lg font-bold mb-4 max-w-lg mx-auto lg:mx-0" style={{ color: GREEN }}>
-          Make Sep 2026 your last attempt.
+          Make Jan 2027 your last attempt.
         </p>
 
         <div className="lg:hidden w-full rounded-3xl overflow-hidden shadow-2xl relative mb-5">
@@ -259,22 +259,21 @@ function Hero({ onRegister }) {
           style={{ background: "#fff8ed", color: ORANGE }}
         >
           <span className="w-2 h-2 rounded-full" style={{ background: ORANGE, animation: "ping 1.4s ease infinite" }} />
-          <span>Now Open for Registration. <span style={{ color: ORANGE, fontWeight: 900 }}>CA INTER Sep 26</span></span>
+          <span>Now Open for Registration. <span style={{ color: ORANGE, fontWeight: 900 }}>CA Inter Jan 27</span></span>
         </div>
 
         <div className="flex flex-wrap items-center gap-2 justify-center lg:justify-start mb-3">
           <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-black uppercase tracking-wider text-white" style={{ background: ORANGE }}>
             🔥 Price Dropped
           </span>
-          <span className="text-xs font-semibold text-gray-500">+ extra off with a coupon at checkout</span>
         </div>
 
         <div className="flex flex-wrap gap-3 justify-center lg:justify-start mb-5">
           <div className="inline-grid grid-cols-2 border border-gray-200 rounded-2xl overflow-hidden shadow-sm text-sm font-bold">
             <div className="px-5 py-3 bg-gray-50 text-gray-500 border-b border-r border-gray-200">Group 1 or 2</div>
             <div className="px-5 py-3 bg-gray-50 text-gray-500 border-b border-gray-200">Both Groups</div>
-            <div className="px-5 py-3 text-gray-900 border-r border-gray-100"><span className="text-gray-400 font-semibold mr-1.5" style={{ textDecoration: "line-through" }}>₹799</span>₹499 / group</div>
-            <div className="px-5 py-3 text-gray-900"><span className="text-gray-400 font-semibold mr-1.5" style={{ textDecoration: "line-through" }}>₹1499</span>₹999</div>
+            <div className="px-5 py-3 text-gray-900 border-r border-gray-100"><span className="text-gray-400 font-semibold mr-1.5" style={{ textDecoration: "line-through" }}>₹499</span>₹99 / group</div>
+            <div className="px-5 py-3 text-gray-900"><span className="text-gray-400 font-semibold mr-1.5" style={{ textDecoration: "line-through" }}>₹999</span>₹199</div>
           </div>
         </div>
 
@@ -284,7 +283,7 @@ function Hero({ onRegister }) {
             className="flex items-center gap-2 px-7 py-4 rounded-full text-white font-bold text-base shadow-lg transition-all hover:scale-105 hover:shadow-xl"
             style={{ background: GREEN }}
           >
-            Register Now — ₹499/Group <span>→</span>
+            Register Now — ₹99/Group <span>→</span>
           </button>
         </div>
 
@@ -293,18 +292,18 @@ function Hero({ onRegister }) {
             className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white shadow-sm"
             style={{ background: GREEN }}
           >
-            📅 2nd August, Sunday
+            📅 6th December, Sunday
           </span>
           <span className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 bg-white border border-gray-200 shadow-sm">
-            📍 Bharathiya Vidhya Bhavan, Mylapore, Chennai
+            📍 #11, First Floor, TSV Kovil Street, Alamelumanga Puram, Sankara Puram, Mylapore, Chennai
           </span>
         </div>
 
         <div className="flex flex-wrap gap-3 justify-center lg:justify-start">
           {[
-            ["10AM – 6PM", "Full Day Event"],
+            ["10 AM – 6 PM", "Full Day Event"],
             ["1:1", "Paper Review"],
-            ["CA Mentor", "Strategy session"],
+            ["CA Mentor", "Strategy Session"],
           ].map(([num, label]) => (
             <div
               key={label}
@@ -345,7 +344,7 @@ function WhyRTI() {
   const cards = [
     { title: "1:1 Paper Review",    bg: "#FFF5F5", border: "#FED7D7", accent: "#E53E3E", dot: "#FC8181" },
     { title: "CA Mentor Feedback",  bg: "#F0FFF4", border: "#C6F6D5", accent: "#276749", dot: "#68D391" },
-    { title: "Sep 2026 Strategy",   bg: "#FFFFF0", border: "#FEFCBF", accent: "#975A16", dot: "#F6E05E" },
+    { title: "Jan 2027 Strategy",   bg: "#FFFFF0", border: "#FEFCBF", accent: "#975A16", dot: "#F6E05E" },
     { title: "FOCAS Edu's Trust",   bg: "#E6FFFA", border: "#B2F5EA", accent: "#234E52", dot: "#4FD1C5" },
   ];
 
@@ -395,7 +394,7 @@ function WhyRTI() {
 
         <Reveal>
           <p className="text-center text-gray-500 text-base mb-8">
-            Backed by <span className="font-black text-gray-900">300+ students</span> who have placed their trust in us and made it their last attempt with FOCAS Edu.
+            Backed by <span className="font-black text-gray-900">500+ students</span> who have placed their trust in us and made it their last attempt with FOCAS Edu.
           </p>
         </Reveal>
 
@@ -498,7 +497,7 @@ function Compare() {
       <div className="max-w-3xl mx-auto">
         <Reveal className="text-center mb-8 md:mb-12">
           <h2 className="text-2xl sm:text-3xl md:text-5xl font-black tracking-tight text-gray-900 mb-3">
-            Why RTI Day is Different
+            Why RTI Day is different?
           </h2>
           <p className="text-gray-500 text-base md:text-lg">
             Not all revision events offer you the same features.
@@ -650,7 +649,7 @@ function RegisterPage({ onClose, campaignPhone }) {
   };
 
   // Base (pre-coupon) price in ₹ for the current selection.
-  const baseRupees = () => (form.groupSelection.length === 2 ? 999 : 499);
+  const baseRupees = () => (form.groupSelection.length === 2 ? 199 : 99);
 
   // paise → "₹449" or "₹449.10" (drops the decimals when the amount is whole).
   const formatRs = (paise) => {
@@ -743,7 +742,7 @@ function RegisterPage({ onClose, campaignPhone }) {
               // eventID = Razorpay payment id → dedupes against the server-side
               // CAPI Purchase so Meta counts ONE purchase, not two.
               window.fbq("track", "Purchase", {
-                content_name: "RTI Day 2026 Registration",
+                content_name: "Purchase",
                 content_type: "product",
                 currency: "INR",
                 value: amount,
@@ -805,7 +804,7 @@ function RegisterPage({ onClose, campaignPhone }) {
             className="w-full px-5 py-3.5 border-2 border-gray-200 rounded-2xl text-sm font-medium text-gray-700 outline-none focus:border-[#1D9E75] transition-all placeholder:text-gray-400" />
 
           <div>
-            <p className="text-sm font-semibold text-gray-700 mb-2">Appearing for CA Inter Sep 2026 attempt?</p>
+            <p className="text-sm font-semibold text-gray-700 mb-2">Appearing for CA Inter Jan 2027 attempt?</p>
             <div className="flex gap-3">
               {["Yes", "No"].map(opt => (
                 <button key={opt} onClick={() => setForm(f => ({ ...f, appliedForSep: opt }))}
@@ -838,8 +837,8 @@ function RegisterPage({ onClose, campaignPhone }) {
                 </button>
               ))}
             </div>
-            {form.groupSelection.length === 2 && <p className="text-xs text-gray-500 mt-2 text-center">Both groups selected — <span className="text-gray-400 mr-1" style={{ textDecoration: "line-through" }}>₹1499</span><strong>₹999</strong></p>}
-            {form.groupSelection.length === 1 && <p className="text-xs text-gray-500 mt-2 text-center">{form.groupSelection[0]} selected — <span className="text-gray-400 mr-1" style={{ textDecoration: "line-through" }}>₹799</span><strong>₹499</strong></p>}
+            {form.groupSelection.length === 2 && <p className="text-xs text-gray-500 mt-2 text-center">Both groups selected — <span className="text-gray-400 mr-1" style={{ textDecoration: "line-through" }}>₹999</span><strong>₹199</strong></p>}
+            {form.groupSelection.length === 1 && <p className="text-xs text-gray-500 mt-2 text-center">{form.groupSelection[0]} selected — <span className="text-gray-400 mr-1" style={{ textDecoration: "line-through" }}>₹499</span><strong>₹99</strong></p>}
           </div>
 
           {/* Coupon */}
@@ -945,11 +944,11 @@ function Footer() {
               <li className="flex gap-3"><span>🌐</span><a href="https://www.focasedu.com/rti" target="_blank" rel="noopener" className="hover:text-[#1D9E75] transition-colors">www.focasedu.com/rti</a></li>
               <li className="flex gap-3">
                 <span>📍</span>
-                <a href="https://share.google/13I896gB9ftR3hOI5" target="_blank" rel="noopener" className="hover:text-[#1D9E75] transition-colors">
-                  Bharathiya Vidhya Bhavan, Mylapore, Chennai
+                <a href="https://www.google.com/maps/search/?api=1&query=11+TSV+Kovil+Street+Alamelumanga+Puram+Mylapore+Chennai" target="_blank" rel="noopener" className="hover:text-[#1D9E75] transition-colors">
+                  #11, First Floor, TSV Kovil Street, Alamelumanga Puram, Sankara Puram, Mylapore, Chennai
                 </a>
               </li>
-              <li className="flex gap-3"><span>⏰</span><span>Event: 2nd Aug, 10 AM – 6 PM</span></li>
+              <li className="flex gap-3"><span>⏰</span><span>Event: 6th Dec, 10 AM – 6 PM</span></li>
             </ul>
           </div>
         </div>
@@ -1055,7 +1054,7 @@ export default function Rti() {
           className="flex items-center gap-2 px-5 py-3 rounded-full text-white font-bold text-sm shadow-2xl hover:-translate-y-0.5 hover:shadow-3xl transition-all"
           style={{ background: GREEN }}>
           <span className="w-2 h-2 rounded-full bg-white" style={{ animation: "ping 1.2s ease infinite" }} />
-          Register — ₹499
+          Register — ₹99
         </button>
       </div>
 
