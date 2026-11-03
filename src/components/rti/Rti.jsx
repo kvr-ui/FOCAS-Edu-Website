@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import logo from "../../../public/logo.png";
 import React from "react";
 import { trackLead } from "@/components/bigin/formKit";
+import ImageCarousel from "@/components/shared/ImageCarousel";
 import VideoCarousel from "@/components/shared/VideoCarousel";
 
 const GREEN = "#1D9E75";
@@ -37,9 +38,9 @@ function Reveal({ children, delay = 0, className = "" }) {
 
 const NAV_LINKS = [
   { label: "Home", href: "#home" },
+  { label: "Gallery", href: "#gallery" },
   { label: "Why RTI", href: "#why" },
   { label: "What to Expect", href: "#curriculum" },
-  { label: "Gallery", href: "#gallery" },
   { label: "FAQs", href: "#faq" },
 ];
 
@@ -551,14 +552,40 @@ function Compare() {
   );
 }
 
-const GALLERY_VIDEOS = [
-  { src: "https://vz-1b4abbd6-5f1.b-cdn.net/aab871ce-29fb-4305-b3b0-93b66237cb2b/playlist.m3u8", poster: "https://vz-1b4abbd6-5f1.b-cdn.net/aab871ce-29fb-4305-b3b0-93b66237cb2b/thumbnail_2dcfa6d5.jpg" },
-  { src: "https://vz-1b4abbd6-5f1.b-cdn.net/6e25a31d-9cb1-4cf5-b90c-09cd488072b0/playlist.m3u8", poster: "https://vz-1b4abbd6-5f1.b-cdn.net/6e25a31d-9cb1-4cf5-b90c-09cd488072b0/thumbnail_185e988f.jpg" },
-  { src: "https://vz-1b4abbd6-5f1.b-cdn.net/1945e8e1-88c8-48af-8728-ef4be26cace2/playlist.m3u8", poster: "https://vz-1b4abbd6-5f1.b-cdn.net/1945e8e1-88c8-48af-8728-ef4be26cace2/thumbnail_e3b573ac.jpg" },
-  { src: "https://vz-1b4abbd6-5f1.b-cdn.net/af30ec55-2c19-48cd-a06a-8c16b4f76e56/playlist.m3u8", poster: "https://vz-1b4abbd6-5f1.b-cdn.net/af30ec55-2c19-48cd-a06a-8c16b4f76e56/thumbnail_7129b5a0.jpg" },
-  { src: "https://vz-1b4abbd6-5f1.b-cdn.net/29c32588-ccb0-4ae0-acd8-9a6570e840af/playlist.m3u8", poster: "https://vz-1b4abbd6-5f1.b-cdn.net/29c32588-ccb0-4ae0-acd8-9a6570e840af/thumbnail_38f87620.jpg" },
-  { src: "https://vz-1b4abbd6-5f1.b-cdn.net/a67d22f5-f1fa-4f2d-9df7-42c6a26488af/playlist.m3u8", poster: "https://vz-1b4abbd6-5f1.b-cdn.net/a67d22f5-f1fa-4f2d-9df7-42c6a26488af/thumbnail_ec588370.jpg" },
-];
+// Event-day photos from RTI Day (Aug 2026), resized for web in public/rti/gallery.
+const GALLERY_IMAGES = Array.from({ length: 13 }, (_, i) => ({
+  src: `/rti/gallery/rti-day-${String(i + 1).padStart(2, "0")}.jpg`,
+  alt: "RTI Day — CA Mentors reviewing exam papers with students",
+}));
+
+// Student testimonial clips (vertical) — Bunny Stream video IDs.
+const BUNNY = "https://vz-1b4abbd6-5f1.b-cdn.net";
+const TESTIMONIAL_VIDEOS = [
+  "a73ff229-1ed6-41d5-91c6-5f4bfdeeda3c",
+  "b3d0071f-6da1-4e50-882c-82ff21080993",
+  "dd4ef5d1-f4af-4b42-963a-cc64ea775210",
+  "c7a8330c-7eb1-4b84-9121-ec6632c2efcf",
+  "a641b62a-3778-4e58-a612-03abfce884e5",
+  "6ca955b9-bc07-4c14-925f-c54f8d15e302",
+].map(id => ({ src: `${BUNNY}/${id}/play_1080p.mp4`, poster: `${BUNNY}/${id}/thumbnail.jpg` }));
+
+function Testimonials() {
+  if (!TESTIMONIAL_VIDEOS.length) return null;
+  return (
+    <section id="testimonials" className="py-24 px-6 bg-white">
+      <div className="max-w-5xl mx-auto">
+        <Reveal className="text-center mb-12">
+          <span className="inline-block px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-4" style={{ background: "#e8f8f2", color: "#0f6e56" }}>Testimonials</span>
+          <h2 className="text-3xl md:text-5xl font-black tracking-tight text-gray-900 mb-3">Hear it from students</h2>
+          <p className="text-gray-500 text-lg">What students said after RTI Day.</p>
+        </Reveal>
+        <Reveal>
+          <VideoCarousel videos={TESTIMONIAL_VIDEOS} portrait />
+        </Reveal>
+      </div>
+    </section>
+  );
+}
 
 function Gallery() {
   return (
@@ -569,7 +596,7 @@ function Gallery() {
           <h2 className="text-3xl md:text-5xl font-black tracking-tight text-gray-900 mb-3">What RTI Day looks like</h2>
         </Reveal>
         <Reveal>
-          <VideoCarousel videos={GALLERY_VIDEOS} />
+          <ImageCarousel images={GALLERY_IMAGES} />
         </Reveal>
       </div>
     </section>
@@ -927,7 +954,7 @@ function Footer() {
             <div className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-5">Quick Links</div>
             <ul className="flex flex-col gap-3">
               {[
-                { label: "Testimonials", id: "why" },
+                ...(TESTIMONIAL_VIDEOS.length ? [{ label: "Testimonials", id: "testimonials" }] : []),
                 { label: "What to Expect", id: "curriculum" },
                 { label: "How to Apply for RTI", id: "how-to-apply" },
                 { label: "Gallery", id: "gallery" },
@@ -1040,11 +1067,12 @@ export default function Rti() {
       <Navbar scrolled={scrolled} menuOpen={menuOpen} setMenuOpen={setMenuOpen} onRegister={openRegister} />
       <Hero onRegister={openRegister} />
       <Ticker />
+      <Gallery />
       <WhyRTI />
       <Curriculum />
+      <Testimonials />
       <HowToApply />
       <Compare />
-      <Gallery />
       <FAQ />
       <Footer />
 
