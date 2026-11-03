@@ -24,11 +24,11 @@ export default function RtiSuccess() {
           <div className="space-y-3 mb-8">
             <div className="bg-green-50 border border-green-200 rounded-xl p-4">
               <p className="text-sm font-semibold text-green-800">📅 Event Date</p>
-              <p className="text-lg font-black text-gray-900 mt-1">2nd August, Sunday</p>
+              <p className="text-lg font-black text-gray-900 mt-1">6th December, Sunday</p>
             </div>
             <div className="bg-green-50 border border-green-200 rounded-xl p-4">
               <p className="text-sm font-semibold text-green-800">📍 Venue</p>
-              <p className="text-lg font-black text-gray-900 mt-1">Bharathiya Vidhya Bhavan, Mylapore, Chennai</p>
+              <p className="text-lg font-black text-gray-900 mt-1">#11, First Floor, TSV Kovil Street, Alamelumanga Puram, Sankara Puram, Mylapore, Chennai</p>
             </div>
             <div className="bg-green-50 border border-green-200 rounded-xl p-4">
               <p className="text-sm font-semibold text-green-800">⏰ Time</p>
