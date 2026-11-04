@@ -7,14 +7,14 @@ import { F2F_CONVERSION_KEY, F2F_LEAD_KEY, PRIVACY_HREF, TERMS_HREF } from "./F2
 /**
  * /f2f-class-success — thank-you page at the end of the /f2f-class form.
  *
- * Lead fires on form submit; this page fires Meta Purchase + CompleteRegistration
- * and the GA / GTM events, so ads can optimise on this URL. They only fire when
+ * Lead fires on form submit; this page fires Meta CompleteRegistration and the
+ * GA / GTM events, so ads can optimise on this URL. They only fire when
  * the form just set F2F_CONVERSION_KEY — a refresh or a direct visit isn't
  * counted. PageView is sent by the router (App.jsx).
  */
 
 const PRODUCT = "F2F Class Mylapore";
-// No money changes hands on this form, so Purchase carries no revenue —
+// No money changes hands on this form, so the conversion carries no revenue —
 // a real fee here would inflate ROAS in Ads Manager.
 const PURCHASE_VALUE = 0;
 const MAP_LINK = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
@@ -58,19 +58,18 @@ export default function F2fClassSuccess() {
     if (!converted) return;
 
     const eventId = lead?.eventId;
-    const params = {
-      content_name: PRODUCT,
-      content_category: "F2F Class",
-      content_type: "product",
-      content_ids: [lead?.group || "F2F"],
-      currency: "INR",
-      value: PURCHASE_VALUE,
-    };
-    window.fbq?.("track", "Purchase", params, eventId ? { eventID: `${eventId}-purchase` } : undefined);
+    // Meta conversion for this flow is CompleteRegistration only (no Purchase —
+    // nothing is paid on the F2F form).
     window.fbq?.(
       "track",
       "CompleteRegistration",
-      { content_name: PRODUCT, currency: "INR", value: PURCHASE_VALUE },
+      {
+        content_name: PRODUCT,
+        content_category: "F2F Class",
+        content_ids: [lead?.group || "F2F"],
+        currency: "INR",
+        value: PURCHASE_VALUE,
+      },
       eventId ? { eventID: `${eventId}-registration` } : undefined
     );
     window.gtag?.("event", "purchase", {
