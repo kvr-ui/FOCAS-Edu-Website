@@ -235,7 +235,7 @@ function Hero({ onRegister }) {
 
         <div className="lg:hidden w-full rounded-3xl overflow-hidden shadow-2xl relative mb-5">
           <video
-            src="https://vz-1b4abbd6-5f1.b-cdn.net/81846c0c-1809-40fb-b30d-bb90d7069642/playlist.m3u8"
+            src="https://vz-1b4abbd6-5f1.b-cdn.net/e383975b-0dd4-46e2-901f-3810501fa177/play_360p.mp4"
             autoPlay
             muted
             loop
@@ -319,7 +319,7 @@ function Hero({ onRegister }) {
 
       <div className="hidden lg:block relative w-full max-w-md lg:w-[460px] h-80 md:h-[460px] rounded-3xl overflow-hidden shadow-2xl flex-shrink-0">
         <video
-          src="https://vz-1b4abbd6-5f1.b-cdn.net/81846c0c-1809-40fb-b30d-bb90d7069642/playlist.m3u8"
+          src="https://vz-1b4abbd6-5f1.b-cdn.net/e383975b-0dd4-46e2-901f-3810501fa177/play_360p.mp4"
           autoPlay
           muted
           loop
@@ -566,7 +566,6 @@ const TESTIMONIAL_VIDEOS = [
   "dd4ef5d1-f4af-4b42-963a-cc64ea775210",
   "c7a8330c-7eb1-4b84-9121-ec6632c2efcf",
   "a641b62a-3778-4e58-a612-03abfce884e5",
-  "6ca955b9-bc07-4c14-925f-c54f8d15e302",
 ].map(id => ({ src: `${BUNNY}/${id}/play_1080p.mp4`, poster: `${BUNNY}/${id}/thumbnail.jpg` }));
 
 function Testimonials() {
