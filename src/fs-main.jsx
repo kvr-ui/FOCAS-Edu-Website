@@ -5,6 +5,7 @@ import FsBook from "./components/fs/FsBook";
 import FsSuccess from "./components/fs/FsSuccess";
 import FsParents from "./components/fs/FsParents";
 import RegistrationSuccess from "./components/RegistrationSuccess";
+import { trackMetaPageViews } from "./lib/metaPageView";
 import "./index.css";
 
 // Standalone entry for the Foundation for School Students flow only
@@ -22,5 +23,8 @@ const router = createBrowserRouter([
   { path: "/success", element: <RegistrationSuccess /> },
   { path: "*", element: <FoundationSchool /> },
 ]);
+
+// Meta PageView on in-app route changes (first load is counted by fs.html).
+trackMetaPageViews(router);
 
 createRoot(document.getElementById("root")).render(<RouterProvider router={router} />);

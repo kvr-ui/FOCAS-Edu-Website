@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { useEffect } from "react";
+import { trackMetaPageViews } from "./lib/metaPageView";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import RegistrationSuccess from "./components/RegistrationSuccess";
@@ -82,17 +83,7 @@ const router = createBrowserRouter([
     },
 });
 const App = () => {
-    useEffect(() => {
-        const unsubscribe = router.subscribe((state) => {
-            if (state.location && typeof window !== "undefined") {
-                const fbq = window.fbq;
-                if (fbq) {
-                    fbq("track", "PageView");
-                }
-            }
-        });
-        return () => unsubscribe();
-    }, []);
+    useEffect(() => trackMetaPageViews(router), []);
     return (<QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />

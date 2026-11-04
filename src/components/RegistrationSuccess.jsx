@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { CheckCircle, Clock, Users, Phone } from "lucide-react";
-/* SAFE TRACK EVENT */
+import { REGISTRATION_KEY, takeConversion } from "@/lib/conversionFlag";
+/* SAFE TRACK EVENT — sent to GTM so these clicks show up in Tag Manager / GA4 */
 const trackEvent = (event) => {
-    console.log("Event:", event);
+    if (Array.isArray(window.dataLayer))
+        window.dataLayer.push({ event });
 };
 const RegistrationSuccess = () => {
     const [autoRedirect, setAutoRedirect] = useState(true);
@@ -11,11 +13,14 @@ const RegistrationSuccess = () => {
     const SUPPORT_NUMBERS = ["+91 63835 14285"];
     // ✅ Access fbq safely without TS errors
     const fbq = globalThis.fbq;
-    // ✅ Meta Pixel: fire conversion + pageview immediately on success page
+    // ✅ Meta Pixel: CompleteRegistration fires on this success page only when
+    // the user just filled the form (/focas, /fs, /fs/parents) or paid on
+    // /payment — a refresh or direct visit to this URL isn't counted.
+    // (PageView is sent globally on route change — see lib/metaPageView).
     useEffect(() => {
-        fbq?.("track", "PageView");
-        fbq?.("track", "CompleteRegistration");
-        // Skip Lead when the form already sent it (/fs flow sets this flag).
+        if (takeConversion(REGISTRATION_KEY))
+            fbq?.("track", "CompleteRegistration");
+        // Skip Lead when the form already sent it (/fs and /focas forms set this flag).
         let leadTracked = false;
         try {
             leadTracked = sessionStorage.getItem("focas_lead_tracked") === "1";

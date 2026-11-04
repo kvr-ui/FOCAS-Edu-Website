@@ -10,6 +10,7 @@ import {
   Row,
   captureUtms,
 } from "@/components/bigin/formKit";
+import { REGISTRATION_KEY, markConversion } from "@/lib/conversionFlag";
 
 /**
  * Native replica of the Zoho Bigin "Student Registration Form"
@@ -124,6 +125,14 @@ const CounselingForm = () => {
 
       // Fire lead tracking (same events the rest of the site uses).
       if (typeof window.fbq === "function") window.fbq("track", "Lead");
+      // Tell /success this Lead is already counted so it isn't sent twice.
+      try {
+        sessionStorage.setItem("focas_lead_tracked", "1");
+      } catch {
+        /* non-fatal */
+      }
+      // Form filled → the success page fires CompleteRegistration.
+      markConversion(REGISTRATION_KEY);
       if (typeof window.gtag === "function")
         window.gtag("event", "counseling_form_submit", {
           event_category: "engagement",

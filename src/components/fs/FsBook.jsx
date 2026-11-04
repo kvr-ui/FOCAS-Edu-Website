@@ -102,8 +102,8 @@ const FsBook = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Meta PageView is sent globally on route change (see lib/metaPageView).
   useEffect(() => {
-    fbq?.("track", "PageView");
     if (Array.isArray(window.dataLayer)) {
       window.dataLayer.push({ event: "fs_book_view" });
     }
@@ -132,7 +132,7 @@ const FsBook = () => {
       content_type: "product",
       currency: "INR",
       value: AMOUNT_RUPEES,
-    });
+    }, { eventID: paymentId });
     if (typeof window.gtag === "function") {
       window.gtag("event", "purchase", {
         currency: "INR",

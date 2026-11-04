@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { REGISTRATION_KEY, markConversion } from "@/lib/conversionFlag";
 import {
   Sparkles,
   CheckCircle,
@@ -41,8 +42,8 @@ const PaymentPage = () => {
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState("");
 
+  // Meta PageView is sent globally on route change (see lib/metaPageView).
   useEffect(() => {
-    fbq?.("track", "PageView");
     fbq?.("track", "InitiateCheckout", {
       content_name: "1:1 Mentor Counselling",
       currency: "INR",
@@ -86,12 +87,14 @@ const PaymentPage = () => {
 
       handler: (response) => {
         // ✅ Payment done (payment id: response.razorpay_payment_id)
+        // /success fires CompleteRegistration only when this flag is set.
+        markConversion(REGISTRATION_KEY);
         fbq?.("track", "Purchase", {
           content_name: "1:1 Mentor Counselling",
           content_type: "product",
           currency: "INR",
           value: AMOUNT_RUPEES,
-        });
+        }, { eventID: response.razorpay_payment_id });
         if (typeof window.gtag === "function") {
           window.gtag("event", "purchase", {
             currency: "INR",

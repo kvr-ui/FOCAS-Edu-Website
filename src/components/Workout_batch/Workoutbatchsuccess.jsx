@@ -1,10 +1,14 @@
 import { useEffect } from "react";
 import logo from "../../../public/logo.png";
+import { WORKOUT_REGISTRATION_KEY, takeConversion } from "@/lib/conversionFlag";
 
 const GREEN = "#1D9E75";
 
 export default function WorkoutBatchSuccess() {
   useEffect(() => {
+    // Only right after the form was filled — a refresh or direct visit to
+    // this URL isn't counted as a registration.
+    if (!takeConversion(WORKOUT_REGISTRATION_KEY)) return;
     // Meta Pixel — enrollment completed (conversion)
     if (window.fbq) {
       window.fbq("track", "CompleteRegistration", {

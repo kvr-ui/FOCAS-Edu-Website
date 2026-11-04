@@ -92,11 +92,10 @@ const MeetSchedule = () => {
   const selectedDayLabel =
     days.find((d) => d.key === selectedDay)?.label || "";
 
-  // 🔖 Tracking on page load.
+  // 🔖 Tracking on page load. Meta PageView is sent globally on route change,
+  // and Lead was already sent by CounselingForm on submit (CompleteRegistration
+  // fires on /success) — so nothing Meta-side here, to avoid double counting.
   useEffect(() => {
-    fbq?.("track", "PageView");
-    fbq?.("track", "CompleteRegistration");
-    fbq?.("track", "Lead");
     if (Array.isArray(window.dataLayer)) {
       window.dataLayer.push({ event: "meet_schedule_view" });
     }
@@ -125,7 +124,7 @@ const MeetSchedule = () => {
       content_type: "product",
       currency: "INR",
       value: AMOUNT_RUPEES,
-    });
+    }, { eventID: paymentId });
     if (typeof window.gtag === "function") {
       window.gtag("event", "purchase", {
         currency: "INR",

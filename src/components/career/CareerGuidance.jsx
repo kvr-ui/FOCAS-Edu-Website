@@ -21,6 +21,8 @@ import { BIGIN_CSS, DIAL_CODES, Honeypot, Row, captureUtms, trackLead } from "@/
 import { sendToZohoFlow } from "@/components/fs/FsForm";
 import { STATE_CITIES, STATES } from "@/data/indiaStatesCities";
 import { CG_CSS, NAVY, useCareerFonts } from "./theme";
+import { CAREER_PURCHASE_KEY, markConversion } from "@/lib/conversionFlag";
+import { firePurchase } from "./CareerGuidanceSuccess";
 
 /**
  * /career-guidance — paid (₹99) online Career Guidance Meet for 10th–12th students.
@@ -632,14 +634,10 @@ function RegisterModal({ onClose }) {
             amount: String(AMOUNT_RUPEES),
             paymentId: response.razorpay_payment_id,
           });
-          if (window.fbq) {
-            window.fbq("track", "Purchase", {
-              content_name: "Career Guidance Meet 2026",
-              content_type: "product",
-              currency: "INR",
-              value: AMOUNT_RUPEES,
-            }, { eventID: response.razorpay_payment_id });
-          }
+          // Meta Purchase fires on /career-guidance-success (form filled + paid).
+          // If sessionStorage is blocked, fire it here so the sale isn't lost.
+          const purchase = JSON.stringify({ paymentId: response.razorpay_payment_id, value: AMOUNT_RUPEES });
+          if (!markConversion(CAREER_PURCHASE_KEY, purchase)) firePurchase(JSON.parse(purchase));
           window.dataLayer?.push({ event: "career_guidance_payment_success", value: AMOUNT_RUPEES, currency: "INR" });
           window.location.href = "/career-guidance-success";
         },

@@ -9,6 +9,7 @@ import {
   captureUtms,
   trackLead,
 } from "@/components/bigin/formKit";
+import { REGISTRATION_KEY, markConversion } from "@/lib/conversionFlag";
 
 /**
  * Registration form for the Foundation for School Students program (/fs).
@@ -137,6 +138,8 @@ const FsForm = ({ forStudents = false }) => {
       } catch {
         /* non-fatal */
       }
+      // Form filled → the success page fires CompleteRegistration.
+      markConversion(REGISTRATION_KEY);
       if (typeof window.gtag === "function")
         window.gtag("event", "fs_form_submit", {
           event_category: "engagement",

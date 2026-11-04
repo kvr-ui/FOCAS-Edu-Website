@@ -127,7 +127,7 @@ export default function CounsellingBook() {
       content_type: "product",
       currency: "INR",
       value: AMOUNT_RUPEES,
-    });
+    }, { eventID: paymentId });
     window.gtag?.("event", "purchase", {
       transaction_id: paymentId,
       currency: "INR",

@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { CalendarDays, CheckCircle2, Clock, MessageCircle, Phone, Video } from "lucide-react";
 import { CG_CSS, useCareerFonts } from "./theme";
+import { CAREER_PURCHASE_KEY, takeConversion } from "@/lib/conversionFlag";
 
 // TODO: paste the Career Guidance Meet WhatsApp group invite link. The button stays hidden while empty.
 const WHATSAPP_GROUP_URL = "";
@@ -11,10 +12,31 @@ const DETAILS = [
   { icon: Video, label: "Mode", value: "Online · Google Meet" },
 ];
 
+// Meta Purchase for the Career Guidance Meet. eventID = Razorpay payment id so a
+// future server-side (CAPI) copy dedupes against it.
+export function firePurchase({ paymentId, value }) {
+  window.fbq?.(
+    "track",
+    "Purchase",
+    { content_name: "Career Guidance Meet 2026", content_type: "product", currency: "INR", value },
+    paymentId ? { eventID: paymentId } : undefined
+  );
+}
+
 export default function CareerGuidanceSuccess() {
   useCareerFonts();
   useEffect(() => {
     document.title = "Registration confirmed | Career Guidance Meet";
+
+    // Purchase fires here, only right after the form was filled and paid —
+    // a refresh or direct visit to this URL isn't counted.
+    const pending = takeConversion(CAREER_PURCHASE_KEY);
+    if (!pending) return;
+    try {
+      firePurchase(JSON.parse(pending));
+    } catch {
+      /* malformed flag — ignore */
+    }
   }, []);
 
   return (

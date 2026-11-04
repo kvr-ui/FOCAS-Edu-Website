@@ -793,7 +793,7 @@ function RegisterPage({ onClose }) {
 
             if (verifyData.success) {
               if (window.fbq) {
-                window.fbq("track", "Purchase", { content_name: "Manual ₹299", currency: "INR", value: 299 });
+                window.fbq("track", "Purchase", { content_name: "Manual ₹299", currency: "INR", value: 299 }, { eventID: response.razorpay_payment_id });
               }
               window.location.href = "/manual-success";
             } else {

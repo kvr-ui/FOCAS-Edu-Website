@@ -9,6 +9,7 @@ import {
   Row,
   captureUtms,
 } from "@/components/bigin/formKit";
+import { WORKOUT_REGISTRATION_KEY, markConversion } from "@/lib/conversionFlag";
 
 /**
  * Native replica of the Zoho Bigin "WORKOUT BATCH" form
@@ -107,6 +108,8 @@ const WorkoutBatchForm = () => {
       }
 
       if (typeof window.fbq === "function") window.fbq("track", "Lead");
+      // Form filled → /workout-batch-success fires CompleteRegistration.
+      markConversion(WORKOUT_REGISTRATION_KEY);
       if (typeof window.gtag === "function")
         window.gtag("event", "workout_batch_submit", {
           event_category: "engagement",

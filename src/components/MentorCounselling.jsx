@@ -915,9 +915,7 @@ export default function MentorCounselling() {
         page_path: "/mentor-counselling",
       });
     }
-    if (typeof window.fbq === "function") {
-      window.fbq("track", "PageView");
-    }
+    // Meta PageView is sent globally on route change (see lib/metaPageView).
   }, []);
 
   // Campaign tracking — runs once on page load
