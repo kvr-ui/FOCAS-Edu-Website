@@ -8,6 +8,18 @@ import RegistrationSuccess from "./components/RegistrationSuccess";
 import { trackMetaPageViews } from "./lib/metaPageView";
 import "./index.css";
 
+// After a new deploy, a tab that is still open may request page files from the
+// previous build that no longer exist. Reload once to pick up the new build
+// instead of showing an error screen.
+window.addEventListener("vite:preloadError", (event) => {
+  const key = "vite-preload-reload-at";
+  const last = Number(sessionStorage.getItem(key) || 0);
+  if (Date.now() - last < 10000) return; // just reloaded and still failing: don't loop
+  sessionStorage.setItem(key, String(Date.now()));
+  event.preventDefault();
+  window.location.reload();
+});
+
 // Standalone entry for the Foundation for School Students flow only
 // (built with vite.fs.config.js → dist-fs/). The domain root serves the
 // landing page; /fs is kept so the in-app links keep working.

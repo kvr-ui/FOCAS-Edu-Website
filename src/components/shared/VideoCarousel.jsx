@@ -1,13 +1,28 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 /**
  * Horizontal snap-scrolling testimonial video carousel with prev/next buttons.
  * `videos` is a list of { src, poster } (Bunny CDN HLS playlists + thumbnails);
  * `accent` colours the nav buttons; `portrait` sizes slides for vertical (9:16) clips.
+ *
+ * Posters (~200–300 KB each) are only loaded once the carousel is near the
+ * viewport, so they don't slow down the first load of the page.
  */
 export default function VideoCarousel({ videos, accent = "#0f6e56", portrait = false }) {
   const [current, setCurrent] = useState(0);
+  const [nearView, setNearView] = useState(false);
   const trackRef = useRef(null);
+
+  useEffect(() => {
+    const el = trackRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") { setNearView(true); return; }
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { setNearView(true); obs.disconnect(); } },
+      { rootMargin: "600px 0px" }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
 
   const scrollTo = (index) => {
     if (trackRef.current) {
@@ -35,7 +50,7 @@ export default function VideoCarousel({ videos, accent = "#0f6e56", portrait = f
       <div ref={trackRef} className="gallery-track">
         {videos.map((v, i) => (
           <div key={i} className={`gallery-slide${portrait ? " portrait" : ""} rounded-2xl overflow-hidden border border-gray-200 shadow-md flex-shrink-0`} style={{ background: "#111" }}>
-            <video src={v.src} poster={v.poster} controls preload="none" playsInline className="w-full object-cover block"
+            <video src={v.src} poster={nearView ? v.poster : undefined} controls preload="none" playsInline className="w-full object-cover block"
               style={portrait ? { aspectRatio: "9/16" } : { aspectRatio: "16/6", minHeight: "550px" }} />
           </div>
         ))}

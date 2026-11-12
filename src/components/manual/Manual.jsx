@@ -2,6 +2,12 @@ import { useState, useEffect, useRef } from "react";
 import logo from "../../../public/logo.png";
 import React from "react";
 import { trackLead } from "@/components/bigin/formKit";
+import useDeferredVideoSrc from "@/components/shared/useDeferredVideoSrc";
+
+// Hero video as MP4 (an HLS .m3u8 playlist only plays in Safari, not on Android/Chrome).
+// It downloads only after the page has loaded; the poster shows until then.
+const HERO_VIDEO = "https://vz-1b4abbd6-5f1.b-cdn.net/ea3a27e1-7239-4cda-8418-e2e78f49f6b5/play_480p.mp4";
+const HERO_POSTER = "/manual-assets/hero-poster.webp";
 
 const GREEN = "#1D9E75";
 const ORANGE = "#FFA500";
@@ -140,6 +146,8 @@ function Ticker() {
 // ─── Hero ─────────────────────────────────────────────────────────────────────
 
 function Hero({ onRegister }) {
+  const mobileVideoSrc = useDeferredVideoSrc(HERO_VIDEO, false);
+  const desktopVideoSrc = useDeferredVideoSrc(HERO_VIDEO, true);
   return (
     <section
       id="home"
@@ -190,7 +198,8 @@ function Hero({ onRegister }) {
         {/* Mobile video */}
         <div className="lg:hidden w-full rounded-3xl overflow-hidden shadow-2xl relative mb-5">
           <video
-            src="https://vz-1b4abbd6-5f1.b-cdn.net/ea3a27e1-7239-4cda-8418-e2e78f49f6b5/playlist.m3u8"
+            src={mobileVideoSrc}
+            poster={HERO_POSTER}
             autoPlay muted loop playsInline
             className="w-full object-cover"
             style={{ height: "calc(100dvh - 380px)", minHeight: "200px" }}
@@ -250,7 +259,8 @@ function Hero({ onRegister }) {
       <div className="hidden lg:block relative w-full max-w-lg lg:w-[520px] xl:w-[580px] flex-shrink-0" style={{ height: "560px" }}>
         <div className="absolute inset-0 rounded-3xl overflow-hidden shadow-2xl">
           <video
-            src="https://vz-1b4abbd6-5f1.b-cdn.net/ea3a27e1-7239-4cda-8418-e2e78f49f6b5/playlist.m3u8"
+            src={desktopVideoSrc}
+            poster={HERO_POSTER}
             autoPlay muted loop playsInline
             className="absolute inset-0 w-full h-full object-cover"
           />

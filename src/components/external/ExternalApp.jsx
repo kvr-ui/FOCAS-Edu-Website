@@ -1,6 +1,16 @@
 import React, { Suspense, lazy } from "react";
 import { Routes, Route } from "react-router-dom";
 import "./../../external.css";
+
+// Poppins (only the weights used: 300–800, no italics). Added as a <link> so a
+// slow or blocked Google Fonts request can never break the page.
+const POPPINS_HREF = "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap";
+if (typeof document !== "undefined" && !document.querySelector(`link[href="${POPPINS_HREF}"]`)) {
+  const link = document.createElement("link");
+  link.rel = "stylesheet";
+  link.href = POPPINS_HREF;
+  document.head.appendChild(link);
+}
 // Landing page components
 const About = lazy(() => import("./About"));
 const Courses = lazy(() => import("./Courses"));

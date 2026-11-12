@@ -3,6 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://connect.facebook.net" crossorigin />
+    <link rel="preconnect" href="https://www.facebook.com" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <title>Foundation for School Students | FOCAS Edu</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="icon" type="image/png" href="/favicon.png" />
@@ -31,7 +35,12 @@
       fbq("track", "PageView");
     </script>
     <!-- End Meta Pixel Code -->
-    <!-- Google Tag Manager -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@100..800&family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap"
+    />
+    <!-- Google Tag Manager + Google tag: loaded early and async, as before.
+         (Deferring them made GA intermittently drop gtag("event", ...) calls.) -->
     <script>
       (function (w, d, s, l, i) {
         w[l] = w[l] || [];
@@ -44,8 +53,6 @@
         f.parentNode.insertBefore(j, f);
       })(window, document, "script", "dataLayer", "%VITE_GTM_ID%");
     </script>
-    <!-- End Google Tag Manager -->
-    <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=%VITE_GA_ID%"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -54,9 +61,56 @@
       }
       gtag("js", new Date());
       gtag("config", "%VITE_GA_ID%");
+
+      // Razorpay Checkout: loaded after the page has loaded (it's only needed
+      // once a form is filled), so it doesn't block the first paint.
+      // Until it arrives, window.Razorpay is a small stand-in with the same API
+      // (new Razorpay(options), .on(), .open()): if someone presses Pay before the
+      // real script has loaded (slow network), it loads it right away and then
+      // opens the real checkout with the same options and handlers.
+      (function () {
+        var promise = null;
+        function loadRazorpay() {
+          if (!promise) {
+            promise = new Promise(function (resolve, reject) {
+              var s = document.createElement("script");
+              s.async = true;
+              s.src = "https://checkout.razorpay.com/v1/checkout.js";
+              s.onload = function () { resolve(window.Razorpay); };
+              s.onerror = function () { promise = null; s.remove(); reject(new Error("Razorpay failed to load")); };
+              document.head.appendChild(s);
+            });
+          }
+          return promise;
+        }
+        function RazorpayPending(options) {
+          var handlers = [];
+          this.on = function (event, fn) { handlers.push([event, fn]); return this; };
+          this.open = function () {
+            loadRazorpay().then(
+              function (Real) {
+                var rzp = new Real(options);
+                handlers.forEach(function (h) { rzp.on(h[0], h[1]); });
+                rzp.open();
+              },
+              function () {
+                alert("Payment could not load. Please check your internet connection and try again.");
+                if (options && options.modal && typeof options.modal.ondismiss === "function") options.modal.ondismiss();
+              }
+            );
+          };
+        }
+        window.Razorpay = RazorpayPending;
+        window.loadRazorpay = loadRazorpay;
+        function schedule() {
+          var start = function () { loadRazorpay().catch(function () {}); };
+          if (typeof window.requestIdleCallback === "function") window.requestIdleCallback(start, { timeout: 2000 });
+          else setTimeout(start, 1);
+        }
+        if (document.readyState === "complete") schedule();
+        else window.addEventListener("load", schedule);
+      })();
     </script>
-    <!-- Razorpay Checkout Script -->
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   </head>
 
   <body>

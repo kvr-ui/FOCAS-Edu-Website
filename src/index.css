@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Sora:wght@100..800&family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap');
+/* Sora + Urbanist are loaded via <link> in index.html / fs.html (faster than @import). */
 
 @tailwind base;
 @tailwind components;

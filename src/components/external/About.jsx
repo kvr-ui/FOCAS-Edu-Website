@@ -158,7 +158,7 @@ const About = () => {
           className="abs-center w-[60%] h-[250px] lg:w-[50%] lg:h-[380px] bg-[#a5ffaa] border-2 border-black rounded-t-full before:w-[100%] before:h-[100%] before:rounded-t-full before:bg-white before:absolute before:-top-[0.5rem] sm:before:-top-[0.75rem] md:before:-top-[1rem] before:-left-[0.5rem] sm:before:-left-[0.75rem] md:before:-left-[1rem]"
         ></div> */}
               <div className="absolute inset-0 z-10 pointer-events-none">
-                <img src="/Tutor/Group.png" alt="Tutor illustration" className="w-[90%] h-[230px] lg:w-[80%] lg:h-[380px] abs-center object-cover"/>
+                <img src="/Tutor/Group.webp" alt="Tutor illustration" className="w-[90%] h-[230px] lg:w-[80%] lg:h-[380px] abs-center object-cover"/>
               </div>
             </div>
           </div>
@@ -246,7 +246,7 @@ const About = () => {
             {
                 name: "Shree Krishna",
                 role: "Tutor",
-                image: "/Tutor/Shree_Krishna.png",
+                image: "/Tutor/Shree_Krishna.webp",
             },
             {
                 name: "Ramya",
@@ -256,7 +256,7 @@ const About = () => {
             {
                 name: "Vishalini",
                 role: "Tutor",
-                image: "/Tutor/vishalini.png",
+                image: "/Tutor/vishalini.webp",
             },
         ].map((tutor, index) => (<div key={index} className="flex flex-col items-center group cursor-pointer transition-all duration-300 hover:scale-105">
                   {/* Profile Image Container */}

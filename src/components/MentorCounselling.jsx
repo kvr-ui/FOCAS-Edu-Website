@@ -2,7 +2,14 @@ import { useState, useEffect, useRef } from "react";
 import logo from "../../public/logo.png";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { storyPoster, storyVideo } from "@/lib/storyMedia";
 import { CA_STATUS_OPTIONS, DIAL_CODES, captureUtms, trackLead } from "@/components/bigin/formKit";
+import useDeferredVideoSrc from "@/components/shared/useDeferredVideoSrc";
+
+// Hero video as MP4 (an HLS .m3u8 playlist only plays in Safari, not on Android/Chrome).
+// It downloads only after the page has loaded; the poster shows until then.
+const HERO_VIDEO = "https://vz-1b4abbd6-5f1.b-cdn.net/81846c0c-1809-40fb-b30d-bb90d7069642/play_480p.mp4";
+const HERO_POSTER = "/mentor-assets/hero-poster.webp";
 
 // Counselling bookings are saved on the RTI backend (RTI-Backend/server.js).
 const BACKEND = import.meta.env.VITE_RTI_BACKEND_URL || "http://localhost:8000";
@@ -150,6 +157,8 @@ function Ticker() {
 }
 
 function Hero({ onRegister }) {
+  const mobileVideoSrc = useDeferredVideoSrc(HERO_VIDEO, false);
+  const desktopVideoSrc = useDeferredVideoSrc(HERO_VIDEO, true);
   return (
     <section
       id="home"
@@ -186,7 +195,8 @@ function Hero({ onRegister }) {
 
         <div className="lg:hidden w-full rounded-3xl overflow-hidden shadow-2xl relative">
           <video
-            src="https://vz-1b4abbd6-5f1.b-cdn.net/81846c0c-1809-40fb-b30d-bb90d7069642/playlist.m3u8"
+            src={mobileVideoSrc}
+            poster={HERO_POSTER}
             autoPlay
             muted
             loop
@@ -271,7 +281,8 @@ function Hero({ onRegister }) {
 
       <div className="hidden lg:block relative w-full max-w-md lg:w-[460px] h-80 md:h-[460px] rounded-3xl overflow-hidden shadow-2xl flex-shrink-0">
         <video
-          src="https://vz-1b4abbd6-5f1.b-cdn.net/81846c0c-1809-40fb-b30d-bb90d7069642/playlist.m3u8"
+          src={desktopVideoSrc}
+          poster={HERO_POSTER}
           autoPlay
           muted
           loop
@@ -527,12 +538,12 @@ function Compare() {
 
 function Gallery() {
   const videos = [
-    "https://da3m0k666tznr.cloudfront.net/Successful_stories/Gayathri.mp4",
-    "https://da3m0k666tznr.cloudfront.net/Successful_stories/HariniAiswariya.mp4",
-    "https://da3m0k666tznr.cloudfront.net/Successful_stories/Sridevi.mp4",
-    "https://da3m0k666tznr.cloudfront.net/Successful_stories/Saishruthi.mp4",
-    "https://da3m0k666tznr.cloudfront.net/Successful_stories/Marimuthu.mp4",
-    "https://da3m0k666tznr.cloudfront.net/Successful_stories/Jeshurun.mp4"
+    "Gayathri",
+    "HariniAiswariya",
+    "Sridevi",
+    "Saishruthi",
+    "Marimuthu",
+    "Jeshurun"
   ];
   const thumbnails = [
     
@@ -572,7 +583,7 @@ function Gallery() {
           <div ref={trackRef} className="gallery-track">
             {videos.map((src, i) => (
               <div key={i} className="gallery-slide rounded-2xl overflow-hidden border border-gray-200 shadow-md flex-shrink-0" style={{ background: "#111" }}>
-                <video src={src} poster={thumbnails[i]} controls className="w-full object-cover block" style={{ aspectRatio: "16/6", minHeight: "550px" }} />
+                <video src={storyVideo(src)} poster={thumbnails[i] || storyPoster(src)} controls playsInline preload="none" className="w-full object-cover block" style={{ aspectRatio: "16/6", minHeight: "550px" }} />
               </div>
             ))}
           </div>

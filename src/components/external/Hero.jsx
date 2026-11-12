@@ -44,7 +44,7 @@ const Hero = () => {
 
             {/* Graduate Image */}
             <div className="relative z-10 transform hover:scale-105 transition-transform duration-500">
-              <img src="/Hero.png" alt="Graduate" className="h-auto w-[70%] mx-auto md:w-full drop-shadow-2xl"/>
+              <img src="/Hero.webp" alt="Graduate" className="h-auto w-[70%] mx-auto md:w-full drop-shadow-2xl"/>
             </div>
 
             {/* Floating Cards */}

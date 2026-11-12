@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogOverlay, DialogTitle, } from "@/components/ui/dialog";
 import CounselingForm from "@/components/CounselingForm";
 import thumnail from "../../public/thumnail.jpeg";
+import { AUDIT_VIDEO } from "@/lib/storyMedia";
 const HeroSection = () => {
     const [isVideoOpen, setIsVideoOpen] = useState(false);
     const [isCounselingOpen, setIsCounselingOpen] = useState(false);
@@ -156,7 +157,7 @@ const HeroSection = () => {
           <DialogTitle className="sr-only">FOCAS intro video</DialogTitle>
           <DialogDescription className="sr-only">Watch the FOCAS Edu introduction video.</DialogDescription>
           <div className="relative aspect-video w-full">
-            <video src="https://da3m0k666tznr.cloudfront.net/audit/audit.mp4" className="w-full h-full" controls autoPlay playsInline/>
+            <video src={AUDIT_VIDEO} className="w-full h-full" controls autoPlay playsInline/>
           </div>
         </DialogContent>
       </Dialog>

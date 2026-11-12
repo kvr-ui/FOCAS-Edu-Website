@@ -124,7 +124,7 @@ const FEATURES = [
     points: ["Know exactly what lost you marks."],
   },
   {
-    photo: "/Tutor/VenkatRamanan.png",
+    photo: "/Tutor/VenkatRamanan.webp",
     title: "Regular Mentorship & Progress Check-ins",
     highlight: "By CA K Venkat Ramanan, Founder & CEO, FOCAS Edu.",
     points: ["With students & parents."],

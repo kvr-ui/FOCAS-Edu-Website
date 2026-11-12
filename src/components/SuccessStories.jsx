@@ -1,60 +1,72 @@
 import React, { useRef, useState, useEffect } from "react";
 import { IoPlay, IoChevronBack, IoChevronForward, IoClose, } from "react-icons/io5";
+import { storyPoster, storyVideo } from "@/lib/storyMedia";
+// `video` is the story name; storyVideo() turns it into the Bunny MP4 URL.
 const stories = [
     {
         name: "Gayathri",
         certificate: "images/certificate.png",
-        video: "https://da3m0k666tznr.cloudfront.net/Successful_stories/Gayathri.mp4",
+        video: "Gayathri",
     },
     {
         name: "Harini Aiswariya",
         certificate: "images/certificate.png",
-        video: "https://da3m0k666tznr.cloudfront.net/Successful_stories/HariniAiswariya.mp4",
+        video: "HariniAiswariya",
     },
     {
         name: "Jeshurun",
         certificate: "images/certificate.png",
-        video: "https://da3m0k666tznr.cloudfront.net/Successful_stories/Jeshurun.mp4",
+        video: "Jeshurun",
     },
     {
         name: "Marimuthu",
         certificate: "images/certificate.png",
-        video: "https://da3m0k666tznr.cloudfront.net/Successful_stories/Marimuthu.mp4",
+        video: "Marimuthu",
     },
     {
         name: "Sai shruthi",
         certificate: "images/certificate.png",
-        video: "https://da3m0k666tznr.cloudfront.net/Successful_stories/Saishruthi.mp4",
+        video: "Saishruthi",
     },
     {
         name: "Sridevi",
         certificate: "images/certificate.png",
-        video: "https://da3m0k666tznr.cloudfront.net/Successful_stories/Sridevi.mp4",
+        video: "Sridevi",
     },
 ];
+// Muted looping preview that only downloads/plays while its card is on screen
+// and pauses when scrolled away — so phones decode 1–2 videos at a time instead
+// of all six at once (these files are 8–90 MB each).
+const PreviewVideo = ({ src }) => {
+    const ref = useRef(null);
+    const [active, setActive] = useState(false);
+    useEffect(() => {
+        const el = ref.current;
+        if (!el) return;
+        const observer = new IntersectionObserver(([entry]) => {
+            if (entry.isIntersecting) {
+                setActive(true);
+                el.play?.().catch(() => { });
+            }
+            else {
+                el.pause?.();
+            }
+        }, { threshold: 0.5 });
+        observer.observe(el);
+        return () => observer.disconnect();
+    }, []);
+    return (<video ref={ref} src={active ? storyVideo(src, 360) : undefined} poster={storyPoster(src)} className="w-full h-full object-cover" autoPlay loop muted playsInline preload="none"/>);
+};
 const SuccessStories = ({ titleClassName = "text-white", stories: customStories, title = "Inspiring Student Stories", centered = false }) => {
     const storyList = customStories?.length ? customStories : stories;
     const scrollRef = useRef(null);
     const [selectedVideo, setSelectedVideo] = useState(null);
     const [isHovered, setIsHovered] = useState(null);
-    const [sectionVisible, setSectionVisible] = useState(false);
     const sectionRef = useRef(null);
     const titleRef = useRef(null);
     const cardsRef = useRef([]);
     const modalRef = useRef(null);
     const bodyStyleRef = useRef(null);
-    // Defer video loading until section scrolls into view
-    useEffect(() => {
-        const observer = new IntersectionObserver(([entry]) => {
-            if (entry.isIntersecting) {
-                setSectionVisible(true);
-                observer.disconnect();
-            }
-        }, { threshold: 0.1 });
-        if (sectionRef.current)
-            observer.observe(sectionRef.current);
-        return () => observer.disconnect();
-    }, []);
     useEffect(() => {
         if (titleRef.current) {
             // Simple fade in for title
@@ -178,7 +190,11 @@ const SuccessStories = ({ titleClassName = "text-white", stories: customStories,
       <div className="relative">
         {/* Fixed: Added proper padding and removed problematic overflow */}
         <div className="px-6 md:px-8">
-          <div ref={scrollRef} className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide relative" style={{ scrollBehavior: "smooth" }}>
+          {/* No CSS scroll-behavior:smooth here: combined with scroll-snap it makes Chrome
+              do an animated snap on first layout, which it counts as a user scroll and
+              stops measuring LCP for the whole page. The arrow buttons already scroll
+              smoothly via scrollBy({ behavior: "smooth" }). */}
+          <div ref={scrollRef} className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide relative">
             {storyList.map((story, index) => (<div className="flex-center h-full w-[80vw] sm:w-[300px] md:w-[400px] py-3 md:py-5 md:px-10 flex-shrink-0" key={index} style={{
                 /* Fixed: Removed border that was causing visual issues */
                 paddingLeft: index === 0 ? "0" : centered ? "20px" : "12px",
@@ -199,10 +215,10 @@ const SuccessStories = ({ titleClassName = "text-white", stories: customStories,
                 maxHeight: "600px",
                 /* Fixed: Ensure cards are fully visible */
                 margin: "0 auto",
-            }} onClick={() => openVideoModal(story.video)} onMouseEnter={() => handleCardHover(index, true)} onMouseLeave={() => handleCardHover(index, false)} tabIndex={0} onKeyDown={(e) => {
+            }} onClick={() => openVideoModal(storyVideo(story.video))} onMouseEnter={() => handleCardHover(index, true)} onMouseLeave={() => handleCardHover(index, false)} tabIndex={0} onKeyDown={(e) => {
                 if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();
-                    openVideoModal(story.video);
+                    openVideoModal(storyVideo(story.video));
                 }
             }} role="button" aria-label={`Open video of ${story.name}`}>
                   <div className="absolute top-2 md:top-4 left-2 md:left-4 z-10">
@@ -212,7 +228,7 @@ const SuccessStories = ({ titleClassName = "text-white", stories: customStories,
                   </div>
 
                   <div className="relative h-full">
-                    <video src={sectionVisible ? story.video : undefined} className="w-full h-full object-cover" autoPlay loop muted playsInline preload="none"/>
+                    <PreviewVideo src={story.video}/>
 
                     <div className="absolute inset-0 flex items-center justify-center transition-opacity duration-300">
                       <div className={`bg-white bg-opacity-90 rounded-full p-3 md:p-4 shadow-2xl transform transition-all duration-300 ${isHovered === index ? "scale-110 bg-opacity-100" : ""}`}>
@@ -258,7 +274,7 @@ const SuccessStories = ({ titleClassName = "text-white", stories: customStories,
             </div>
 
             <div className="relative">
-              <video src={selectedVideo} className="w-full h-auto max-h-[70vh] md:max-h-[80vh] object-contain" controls autoPlay preload="metadata"/>
+              <video src={selectedVideo} className="w-full h-auto max-h-[70vh] md:max-h-[80vh] object-contain" controls autoPlay playsInline preload="metadata"/>
             </div>
           </div>
         </div>)}

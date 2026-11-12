@@ -4,6 +4,7 @@ import React from "react";
 import { trackLead } from "@/components/bigin/formKit";
 import ImageCarousel from "@/components/shared/ImageCarousel";
 import VideoCarousel from "@/components/shared/VideoCarousel";
+import useDeferredVideoSrc from "@/components/shared/useDeferredVideoSrc";
 
 const GREEN = "#1D9E75";
 const ORANGE = "#FFA500";
@@ -18,6 +19,11 @@ function useInView(threshold = 0.1) {
   }, []);
   return [ref, visible];
 }
+
+// Hero video: downloaded only after the page has loaded (see useDeferredVideoSrc).
+const HERO_VIDEO = "https://vz-1b4abbd6-5f1.b-cdn.net/e383975b-0dd4-46e2-901f-3810501fa177/play_360p.mp4";
+// Full-size (640×640) frame from the video, also preloaded by index.html on /rti.
+const HERO_POSTER = "/rti-assets/hero-poster.webp";
 
 function Reveal({ children, delay = 0, className = "" }) {
   const [ref, visible] = useInView();
@@ -199,6 +205,8 @@ function Ticker() {
 }
 
 function Hero({ onRegister }) {
+  const mobileVideoSrc = useDeferredVideoSrc(HERO_VIDEO, false);
+  const desktopVideoSrc = useDeferredVideoSrc(HERO_VIDEO, true);
   return (
     <section
       id="home"
@@ -235,7 +243,8 @@ function Hero({ onRegister }) {
 
         <div className="lg:hidden w-full rounded-3xl overflow-hidden shadow-2xl relative mb-5">
           <video
-            src="https://vz-1b4abbd6-5f1.b-cdn.net/e383975b-0dd4-46e2-901f-3810501fa177/play_360p.mp4"
+            src={mobileVideoSrc}
+            poster={HERO_POSTER}
             autoPlay
             muted
             loop
@@ -319,7 +328,8 @@ function Hero({ onRegister }) {
 
       <div className="hidden lg:block relative w-full max-w-md lg:w-[460px] h-80 md:h-[460px] rounded-3xl overflow-hidden shadow-2xl flex-shrink-0">
         <video
-          src="https://vz-1b4abbd6-5f1.b-cdn.net/e383975b-0dd4-46e2-901f-3810501fa177/play_360p.mp4"
+          src={desktopVideoSrc}
+          poster={HERO_POSTER}
           autoPlay
           muted
           loop
@@ -479,9 +489,11 @@ function HowToApply() {
           <p className="text-gray-500 text-lg italic mb-8">But how do you get your answer sheets? Watch this video to learn how.</p>
           <div className="rounded-3xl overflow-hidden border border-gray-200 shadow-sm mx-auto" style={{ maxWidth: "800px" }}>
             <video
-              src="https://vz-1b4abbd6-5f1.b-cdn.net/f931b325-d947-4757-8f70-98d2efcef184/playlist.m3u8"
+              src="https://vz-1b4abbd6-5f1.b-cdn.net/f931b325-d947-4757-8f70-98d2efcef184/play_360p.mp4"
               poster="https://vz-1b4abbd6-5f1.b-cdn.net/f931b325-d947-4757-8f70-98d2efcef184/thumbnail_207d2a98.jpg"
               controls
+              playsInline
+              preload="none"
               className="w-full object-contain"
               style={{ height: "auto", aspectRatio: "16/9", minHeight: "300px" }}
             />
@@ -566,7 +578,7 @@ const TESTIMONIAL_VIDEOS = [
   "dd4ef5d1-f4af-4b42-963a-cc64ea775210",
   "c7a8330c-7eb1-4b84-9121-ec6632c2efcf",
   "a641b62a-3778-4e58-a612-03abfce884e5",
-].map(id => ({ src: `${BUNNY}/${id}/play_1080p.mp4`, poster: `${BUNNY}/${id}/thumbnail.jpg` }));
+].map(id => ({ src: `${BUNNY}/${id}/play_480p.mp4`, poster: `${BUNNY}/${id}/thumbnail.jpg` }));
 
 function Testimonials() {
   if (!TESTIMONIAL_VIDEOS.length) return null;

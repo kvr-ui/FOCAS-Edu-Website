@@ -70,7 +70,7 @@ const Footer = () => {
 
           {/* Right: Person image - Hidden on tablet (md), visible on desktop (lg+) */}
           <div className="flex-shrink-0 w-[40%] pr-0 hidden lg:block">
-            <img src="/footer.png" alt="Happy student" className="w-full h-auto object-contain" draggable={false}/>
+            <img src="/footer.webp" alt="Happy student" className="w-full h-auto object-contain" draggable={false}/>
           </div>
         </div>
       </div>

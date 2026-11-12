@@ -30,9 +30,9 @@ export default function ImageCarousel({ images, accent = "#0f6e56" }) {
       `}</style>
 
       <div ref={trackRef} className="photo-track">
-        {images.map((img, i) => (
+        {images.map((img) => (
           <div key={img.src} className="photo-slide rounded-2xl overflow-hidden border border-gray-200 shadow-md flex-shrink-0 bg-gray-100">
-            <img src={img.src} alt={img.alt} loading={i < 3 ? "eager" : "lazy"} className="w-full block object-cover" style={{ aspectRatio: "3/2" }} />
+            <img src={img.src} alt={img.alt} loading="lazy" decoding="async" className="w-full block object-cover" style={{ aspectRatio: "3/2" }} />
           </div>
         ))}
       </div>

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { AUDIT_VIDEO, storyPoster, storyVideo } from "@/lib/storyMedia";
 import {
   Award,
   BookOpen,
@@ -53,8 +54,7 @@ export const FONTS_HREF =
 export const MANROPE = { fontFamily: "'Manrope', sans-serif" };
 export const LEXEND = { fontFamily: "'Lexend Deca', sans-serif" };
 
-const CDN = "https://da3m0k666tznr.cloudfront.net";
-const HERO_VIDEO = `${CDN}/audit/audit.mp4`;
+const HERO_VIDEO = AUDIT_VIDEO;
 const HERO_POSTER = "/counselling-assets/hero-poster.jpg";
 export const PHONE_DISPLAY = "+91 63835 14285";
 export const PHONE_TEL = "tel:+916383514285";
@@ -900,10 +900,11 @@ const StoryCard = ({ name, file }) => {
         <video
           ref={ref}
           className="aspect-[9/16] w-full object-cover object-top"
-          src={`${CDN}/Successful_stories/${file}.mp4#t=0.5`}
+          src={storyVideo(file)}
+          poster={storyPoster(file)}
           muted
           playsInline
-          preload="metadata"
+          preload="none"
         />
         {!playing && (
           <button

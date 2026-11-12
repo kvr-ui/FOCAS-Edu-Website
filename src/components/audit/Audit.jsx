@@ -48,9 +48,9 @@ const NAV_LINKS = [
 
 // Audit success stories shown on this page, in display order.
 const AUDIT_STORIES = [
-  { name: "Harini Aiswariya", video: "https://da3m0k666tznr.cloudfront.net/Successful_stories/HariniAiswariya.mp4" },
-  { name: "Gayathri",         video: "https://da3m0k666tznr.cloudfront.net/Successful_stories/Gayathri.mp4" },
-  { name: "Jeshurun",         video: "https://da3m0k666tznr.cloudfront.net/Successful_stories/Jeshurun.mp4" },
+  { name: "Harini Aiswariya", video: "HariniAiswariya" },
+  { name: "Gayathri",         video: "Gayathri" },
+  { name: "Jeshurun",         video: "Jeshurun" },
 ];
 
 const SCHEDULE = [
