@@ -33,6 +33,9 @@ import {
  */
 
 const HERO_IMG = "/fs-assets/parents/hero.webp";
+// Keep in sync with the /fs/parents preload in index.html.
+const HERO_SRCSET = "/fs-assets/parents/hero-640.webp 640w, /fs-assets/parents/hero.webp 960w";
+const HERO_SIZES = "(min-width: 1024px) 560px, 92vw";
 
 // TODO: YouTube video IDs. Sections render only once an ID is filled in.
 const WHAT_IS_CA_VIDEO_ID = "";
@@ -98,8 +101,13 @@ function Nav() {
 function HeroVisual() {
   return (
     <div className="relative overflow-hidden rounded-[2rem] border-2 border-[#0b3d33] bg-[#d6f0e6] shadow-[8px_8px_0_#0f6e56]">
+      {/* LCP image: 640w for most phones, 960w for large/high-DPR screens.
+          index.html preloads the same srcset on /fs/parents. */}
       <img
         src={HERO_IMG}
+        srcSet={HERO_SRCSET}
+        sizes={HERO_SIZES}
+        fetchpriority="high"
         alt="A parent and their child studying together at home"
         className="aspect-[4/5] w-full object-cover object-[50%_20%] sm:aspect-[5/4] lg:aspect-[4/5]"
       />
@@ -111,14 +119,14 @@ function HeroVisual() {
 function HeroDetails() {
   return (
     <>
-      <Reveal delay={0.1}>
+      <Reveal immediate delay={0.1}>
         <p className="mt-8 text-lg sm:text-xl text-[#0b3d33]/75">FOCAS Edu presents</p>
         <p className="mt-2 inline-flex items-center gap-2 rounded-full border border-[#0b3d33]/15 bg-white px-4 py-1.5 font-sora text-base font-bold sm:text-lg">
           <GraduationCap className="h-5 w-5 text-[#0f6e56]" />
           Foundation For School Students Program
         </p>
       </Reveal>
-      <Reveal delay={0.2}>
+      <Reveal immediate delay={0.2}>
         <div className="mt-6 flex items-start gap-3 rounded-2xl border-2 border-[#0b3d33] bg-white p-4 shadow-[4px_4px_0_#e9b949] sm:max-w-md">
           <Laptop className="mt-0.5 h-6 w-6 flex-shrink-0 text-[#0f6e56]" />
           <p className="text-lg sm:text-xl">
@@ -126,7 +134,7 @@ function HeroDetails() {
           </p>
         </div>
       </Reveal>
-      <Reveal delay={0.3}>
+      <Reveal immediate delay={0.3}>
         <p className="mt-8 font-sora text-lg font-bold">Have your doubts?</p>
         <button
           type="button"
@@ -149,7 +157,7 @@ function Hero() {
 
       <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-[1.1fr_1fr]">
         <div>
-          <Reveal>
+          <Reveal immediate>
             <p className="inline-flex items-center gap-2 rounded-full bg-[#0b3d33] px-4 py-1.5 text-xs font-bold uppercase tracking-[0.18em] text-[#e9b949]">
               <Users className="h-4 w-4" /> For Parents
             </p>
@@ -169,7 +177,7 @@ function Hero() {
           </div>
         </div>
 
-        <Reveal delay={0.2} className="relative mx-auto w-full max-w-xl">
+        <Reveal immediate delay={0.2} className="relative mx-auto w-full max-w-xl">
           <div
             aria-hidden
             className="pointer-events-none absolute -right-6 -top-6 h-40 w-40 rounded-3xl opacity-40"

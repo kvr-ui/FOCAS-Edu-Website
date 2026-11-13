@@ -24,8 +24,12 @@ function useInView(threshold = 0.1) {
   return [ref, visible];
 }
 
-export function Reveal({ children, delay = 0, className = "" }) {
+// `immediate`: render without the fade/slide-in. Use it for above-the-fold hero
+// content — an element that starts at opacity 0 isn't counted by Chrome as
+// painted until the fade has run, which pushed /fs/parents LCP to 9+ s.
+export function Reveal({ children, delay = 0, className = "", immediate = false }) {
   const [ref, visible] = useInView();
+  if (immediate) return <div className={className}>{children}</div>;
   return (
     <div
       ref={ref}
@@ -468,15 +472,33 @@ function FormModal({ forStudents }) {
 export function StickyMobileCTA({ source = "sticky" }) {
   const [show, setShow] = useState(false);
   useEffect(() => {
+    // Show once past the hero, hide once the form's top has reached the screen.
+    // The form position comes from an IntersectionObserver instead of calling
+    // getBoundingClientRect() on mount/every scroll, which forced a layout
+    // recalculation ("Forced reflow" in PageSpeed).
+    let pastHero = window.scrollY > 500;
+    let atForm = false;
+    const update = () => setShow(pastHero && !atForm);
     const onScroll = () => {
-      const form = document.getElementById("register");
-      const pastHero = window.scrollY > 500;
-      const atForm = form && form.getBoundingClientRect().top < window.innerHeight;
-      setShow(pastHero && !atForm);
+      const next = window.scrollY > 500;
+      if (next !== pastHero) { pastHero = next; update(); }
     };
-    onScroll();
+    const form = document.getElementById("register");
+    let io;
+    if (form && typeof IntersectionObserver !== "undefined") {
+      io = new IntersectionObserver(([entry]) => {
+        // visible now, or already scrolled above the viewport
+        atForm = entry.isIntersecting || entry.boundingClientRect.top < 0;
+        update();
+      });
+      io.observe(form);
+    }
+    update();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      io?.disconnect();
+    };
   }, []);
 
   return (

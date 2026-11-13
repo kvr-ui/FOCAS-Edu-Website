@@ -168,7 +168,7 @@ function Nav() {
 function HeroDetails() {
   return (
     <>
-      <Reveal delay={0.2}>
+      <Reveal immediate delay={0.2}>
         <p className="mt-8 text-lg text-[#0b3d33]/75">Make it Possible with the</p>
         <p className="mt-2 inline-flex items-center gap-2 rounded-full border border-[#0b3d33]/15 bg-white px-4 py-1.5 font-sora text-base font-bold">
           <GraduationCap className="h-5 w-5 text-[#0f6e56]" />
@@ -188,7 +188,7 @@ function HeroDetails() {
           ))}
         </ul>
       </Reveal>
-      <Reveal delay={0.3}>
+      <Reveal immediate delay={0.3}>
         <p className="mt-8 font-sora text-lg font-bold">Get ahead of the curve with FOCAS Edu.</p>
         <button
           type="button"
@@ -218,7 +218,7 @@ function Hero() {
 
       <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-[1fr_1fr]">
         <div>
-          <Reveal>
+          <Reveal immediate>
             <h1 className="font-sora text-4xl font-extrabold leading-[1.1] tracking-tight sm:text-5xl lg:text-[3.4rem]">
               Becoming a{" "}
               <span className="relative whitespace-nowrap text-[#0f6e56]">
@@ -230,7 +230,7 @@ function Hero() {
               years feels hard?
             </h1>
           </Reveal>
-          <Reveal delay={0.1}>
+          <Reveal immediate delay={0.1}>
             <p className="mt-6 text-xl font-semibold sm:text-2xl">
               It is challenging, but <span className="whitespace-nowrap rounded-md bg-[#e9b949] px-2 font-extrabold">NOT IMPOSSIBLE!</span>
             </p>
@@ -240,7 +240,7 @@ function Hero() {
           </div>
         </div>
 
-        <Reveal delay={0.2} className="relative mx-auto w-full max-w-xl">
+        <Reveal immediate delay={0.2} className="relative mx-auto w-full max-w-xl">
           {/* dotted accent + glow behind the collage */}
           <div
             aria-hidden

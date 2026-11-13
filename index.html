@@ -4,12 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Focas</title>
-    <!-- Warm up connections early: Meta Pixel first (ad landing-page views depend on it) -->
+    <!-- Warm up connections early: Meta Pixel first (ad landing-page views depend on it).
+         Max 4 preconnects per page: these 3 everywhere, plus the video CDN only on
+         pages with a hero video (added by the route script below). -->
     <link rel="preconnect" href="https://connect.facebook.net" crossorigin />
-    <link rel="preconnect" href="https://www.facebook.com" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preconnect" href="https://vz-1b4abbd6-5f1.b-cdn.net" />
     <!-- Meta Pixel Code — kept first and inline so PageView fires as early as possible -->
     <script>
       !(function (f, b, e, v, n, t, s) {
@@ -33,21 +33,48 @@
     </script>
     <!-- End Meta Pixel Code -->
     <script>
-      // Route-specific preload for each landing page's hero image (largest paint).
+      // Route-specific head hints, so each landing page's most important files
+      // start downloading immediately instead of after the page's code has run:
+      //   video  → preconnect to the Bunny video CDN (hero video pages only)
+      //   image  → preload the largest image (the LCP element)
+      //   fonts  → the page's own Google Fonts stylesheet. Must be the EXACT same
+      //            URL the page component adds (it skips adding it if present).
       (function () {
-        var heroPosters = {
-          "/rti": "/rti-assets/hero-poster.webp",
-          "/manual": "/manual-assets/hero-poster.webp",
-          "/mentor-counselling": "/mentor-assets/hero-poster.webp",
+        var BUNNY = "https://vz-1b4abbd6-5f1.b-cdn.net";
+        var MANROPE_LEXEND = "https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Lexend+Deca:wght@400;500;600;700;800&display=swap"; // = FONTS_HREF in counselling/Counselling.jsx
+        var CAREER_FONTS = "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=Plus+Jakarta+Sans:wght@400..800&display=swap"; // = FONT_HREF in career/theme.jsx
+        var routes = {
+          "/rti": { video: true, image: "/rti-assets/hero-poster.webp" },
+          "/manual": { video: true, image: "/manual-assets/hero-poster.webp" },
+          "/mentor-counselling": { video: true, image: "/mentor-assets/hero-poster.webp" },
+          "/fs": { image: "/fs-assets/students/Dharani.webp" }, // first hero collage photo (= HERO_STUDENTS[0] in fs/shared.jsx)
+          "/fs/parents": {
+            image: "/fs-assets/parents/hero.webp",
+            srcset: "/fs-assets/parents/hero-640.webp 640w, /fs-assets/parents/hero.webp 960w", // = HERO_SRCSET in fs/FsParents.jsx
+            sizes: "(min-width: 1024px) 560px, 92vw",
+          },
+          "/f2f-class": { fonts: MANROPE_LEXEND },
+          "/f2f-class-success": { fonts: MANROPE_LEXEND },
+          "/counselling": { fonts: MANROPE_LEXEND },
+          "/counselling/book": { fonts: MANROPE_LEXEND },
+          "/counselling-success": { fonts: MANROPE_LEXEND },
+          "/career-guidance": { fonts: CAREER_FONTS },
+          "/career-guidance-success": { fonts: CAREER_FONTS },
         };
-        var href = heroPosters[location.pathname.replace(/\/$/, "")];
-        if (!href) return;
-        var l = document.createElement("link");
-        l.rel = "preload";
-        l.as = "image";
-        l.href = href;
-        l.fetchPriority = "high";
-        document.head.appendChild(l);
+        var r = routes[location.pathname.replace(/\/$/, "")];
+        if (!r) return;
+        function add(attrs) {
+          var l = document.createElement("link");
+          for (var k in attrs) l.setAttribute(k, attrs[k]);
+          document.head.appendChild(l);
+        }
+        if (r.video) add({ rel: "preconnect", href: BUNNY });
+        if (r.image) {
+          var img = { rel: "preload", as: "image", href: r.image, fetchpriority: "high" };
+          if (r.srcset) { img.imagesrcset = r.srcset; img.imagesizes = r.sizes; }
+          add(img);
+        }
+        if (r.fonts) add({ rel: "stylesheet", href: r.fonts });
       })();
     </script>
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
