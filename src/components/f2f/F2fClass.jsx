@@ -86,7 +86,7 @@ const HERO_STATS = [
   ["Face to Face", "Offline Classes"],
   ["Live + Hybrid", "Recorded Lectures"],
   ["1 : 10", "Tutor : Students"],
-  ["All 7 Days", "6 AM – 8 PM"],
+  ["All 7 Days", "8 AM – 8 PM"],
   ["Mylapore", "Chennai"],
   ["Dec 16, 2026", "Batch Starts"],
 ];
@@ -124,7 +124,7 @@ const KIT = [
 ];
 
 const TIMINGS = [
-  { label: "Morning", time: "06:00 AM - 08:00 AM", tag: "Class" },
+  { label: "Morning", time: "08:00 AM - 10:00 AM", tag: "Class" },
   { label: "Morning Study Hours", time: "10:00 AM - 01:00 PM", tag: "Optional" },
   { label: "Afternoon", time: "03:00 PM - 08:00 PM", tag: "Class" },
 ];
